@@ -151,7 +151,7 @@ namespace KittencordSetup {
         protected override void OnPaint(PaintEventArgs e) {
             RoundedButton.PaintSurface(this, e.Graphics);
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            using (var track = RoundedButton.Outline(new Rectangle(0, 0, Width - 1, Height - 1), 3)) using (var brush = new SolidBrush(Color.FromArgb(54, 44, 65))) e.Graphics.FillPath(brush, track);
+            using (var track = RoundedButton.Outline(new Rectangle(0, 0, Width - 1, Height - 1), 3)) using (var brush = new SolidBrush(Color.FromArgb(120, 90, 74, 110))) e.Graphics.FillPath(brush, track);
             if (Value <= 0) return;
             var width = Math.Max(7, (Width - 1) * Math.Min(Value, Maximum) / Math.Max(1, Maximum));
             using (var fill = RoundedButton.Outline(new Rectangle(0, 0, width, Height - 1), 3)) using (var brush = new LinearGradientBrush(ClientRectangle, Color.FromArgb(172, 146, 224), Color.FromArgb(238, 171, 210), 0f)) e.Graphics.FillPath(brush, fill);

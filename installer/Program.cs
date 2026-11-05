@@ -218,7 +218,7 @@ namespace KittencordSetup {
         /// <summary>0 choose, 1 install, 2 done: drives the step indicator on the card.</summary>
         int stage;
         readonly Label versionBadge;
-        const int BrandX = 96, CardX = 518, CardWidth = 468;
+        const int BrandX = 96, CardX = 518, CardWidth = 468, GlassAlpha = 120;
         static readonly Rectangle Card = new Rectangle(CardX - 32, 22, CardWidth + 64, 636);
         public SetupForm() {
             Text = "Kittencord Setup"; Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); FormBorderStyle = FormBorderStyle.None; ClientSize = new Size(1040, 680); MinimumSize = Size; MaximumSize = Size;
@@ -248,7 +248,7 @@ namespace KittencordSetup {
             title = AddLabel("Install KittenCord", CardX, 92, CardWidth, 44, 25, true);
             subtitle = AddLabel("Choose your Discord installation.", CardX + 2, 138, CardWidth, 26, 10.5f, false); subtitle.ForeColor = Color.FromArgb(190, 180, 206);
             setupControls.Add(AddLabel("Discord installation", CardX + 2, 182, CardWidth, 22, 9.5f, true));
-            target.SetBounds(CardX, 208, CardWidth, 74); target.AccessibleName = "Discord installation"; target.Font = Font; target.BackColor = Color.FromArgb(33, 28, 44); target.ForeColor = ForeColor;
+            target.SetBounds(CardX, 208, CardWidth, 74); target.AccessibleName = "Discord installation"; target.Font = Font; target.BackColor = Color.FromArgb(33, 28, 44); target.FillAlpha = 150; target.ForeColor = ForeColor;
             var discovered = InstallService.Discover(); foreach (var directory in discovered) target.AddPath(directory); if (discovered.Length > 0) target.AddPath(discovered[0]); Controls.Add(target);
             verify = AddButton("Check installation", CardX, 290, 226, false, async delegate { await CheckInstallation(); }); ((RoundedButton)verify).Quiet = true; ((RoundedButton)verify).Symbol = "check"; verify.Height = 34; verify.Font = new Font("Segoe UI", 10); verify.Enabled = target.SelectedPath.Length > 0;
             browse = AddButton("Choose folder", CardX + CardWidth - 190, 290, 190, false, delegate { using (var dialog = new FolderBrowserDialog { Description = "Select the app-VERSION folder containing Discord.exe", ShowNewFolderButton = false }) if (dialog.ShowDialog(this) == DialogResult.OK) target.AddPath(dialog.SelectedPath); });
@@ -443,8 +443,9 @@ namespace KittencordSetup {
             // The card: soft shadow, near-opaque surface, faint violet edge and a lit top.
             for (var i = 6; i >= 1; i--) using (var shadowPath = RoundedButton.Outline(new Rectangle(Card.X - i * 2, Card.Y - i + 6, Card.Width + i * 4, Card.Height + i * 2), 22 + i)) using (var shadow = new SolidBrush(Color.FromArgb(14, 0, 0, 0))) g.FillPath(shadow, shadowPath);
             using (var cardPath = RoundedButton.Outline(Card, 22)) {
-                using (var surface = new LinearGradientBrush(Card, Color.FromArgb(240, 26, 20, 38), Color.FromArgb(244, 17, 13, 25), 90f)) g.FillPath(surface, cardPath);
-                using (var edge = new Pen(Color.FromArgb(90, 176, 146, 240))) g.DrawPath(edge, cardPath);
+                // Glass: the video stays visible through the card; the tint keeps text readable.
+                using (var surface = new LinearGradientBrush(Card, Color.FromArgb(GlassAlpha, 24, 18, 36), Color.FromArgb(GlassAlpha + 25, 14, 10, 22), 90f)) g.FillPath(surface, cardPath);
+                using (var edge = new Pen(Color.FromArgb(120, 200, 176, 255))) g.DrawPath(edge, cardPath);
             }
             using (var shine = new LinearGradientBrush(new Rectangle(Card.X + 40, Card.Y, Card.Width - 80, 2), Color.FromArgb(0, 214, 190, 255), Color.FromArgb(150, 214, 190, 255), 0f) { WrapMode = WrapMode.TileFlipX })
                 g.FillRectangle(shine, Card.X + 40, Card.Y, (Card.Width - 80) / 2, 1);
@@ -479,6 +480,8 @@ namespace KittencordSetup {
         public bool Accent;
         public bool Quiet;
         public string Symbol;
+        /// <summary>Below 255 the button lets the window behind it show through.</summary>
+        public int FillAlpha = 255;
         bool hovered;
         bool pressed;
         static Image githubMark;
@@ -509,7 +512,7 @@ namespace KittencordSetup {
                     var to = pressed ? Color.FromArgb(214, 120, 186) : hovered ? Color.FromArgb(250, 168, 220) : Color.FromArgb(236, 142, 204);
                     using (var fill = new LinearGradientBrush(bounds, from, to, 0f)) g.FillPath(fill, path);
                     using (var shine = new Pen(Color.FromArgb(90, 255, 255, 255))) g.DrawLine(shine, 10, 2, Width - 12, 2);
-                } else using (var fill = new SolidBrush(!Enabled ? Color.FromArgb(49, 42, 59) : pressed ? ControlPaint.Dark(BackColor, 0.08f) : hovered ? ControlPaint.Light(BackColor, 0.1f) : BackColor)) {
+                } else using (var fill = new SolidBrush(Color.FromArgb(FillAlpha, !Enabled ? Color.FromArgb(49, 42, 59) : pressed ? ControlPaint.Dark(BackColor, 0.08f) : hovered ? ControlPaint.Light(BackColor, 0.1f) : BackColor))) {
                     if (!Quiet || hovered || pressed) g.FillPath(fill, path);
                     if (!Quiet && !Accent) using (var border = new Pen(hovered ? Color.FromArgb(120, 98, 150) : Color.FromArgb(70, 60, 86))) g.DrawPath(border, path);
                 }

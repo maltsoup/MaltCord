@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
   "minimum_chrome_version": "111",
-  "name": "Kittencord Web (Development)",
-  "description": "Kittencord, a TestCord-based Discord modification. Development release candidate.",
-  "author": "Kittencord and upstream contributors",
+  "name": "KittenCord",
+  "description": "The cutest Discord client mod, in your browser.",
+  "author": "xtufa7",
   "icons": {
     "128": "kittycord.png"
   },

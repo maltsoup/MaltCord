@@ -5,6 +5,17 @@
  */
 
 export const kittycordChangelog = [{
+    id: "0.9.0", date: "2026-11-05", title: "KittenCord 0.9.0", changes: [
+        "First release. Setup is small (2.7 MB): it downloads KittenCord from the GitHub release, checks its SHA-256 and restarts Discord. Run it again to repair or choose Restore to remove KittenCord.",
+        "Plugins page: about 800 plugins from Vencord, Equicord, TestCord and KittenCord, with search, filters, a list or card view, counts and per-plugin health. Plugin Studio is a tab on the same page.",
+        "Themes page adds a Theme Library and a Snippet Library.",
+        "KittenCord plugins: Media Lab, Mini Dock, Time Capsule and the new Voice Log, a recap of every call you join.",
+        "Badges: choose and order your KittenCord badges. Vencord, Equicord and TestCord badges keep showing.",
+        "Safe Start: after two failed starts in a row, only the plugin that caused it stays off for one launch, and KittenCord tells you which one.",
+        "Transparent windows can be moved from Discord's top bar, and the window buttons are back.",
+        "A redesigned setup window."
+    ], limitations: "Windows desktop only. Setup is not code-signed yet, so Windows SmartScreen may warn about it."
+}, {
     id: "0.9.0-beta-1", date: "2026-11-03", title: "Kittencord 0.9.0 Beta 1", changes: [
         "Cloud source editing adds file creation, renaming, deletion, entry selection and source comparisons. Native packages keep their existing build and runtime.",
         "Media Lab adds a draggable image crop frame, real video thumbnails and trim handles. Precise controls are available under Advanced.",

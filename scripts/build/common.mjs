@@ -105,8 +105,9 @@ export const banner = {
 export const buildIdentity = {
     name: "Kittencord",
     version: VERSION,
-    channel: "beta",
-    betaSequence: PackageJSON.kittencordBeta ?? 1,
+    // "stable" for a release, "beta" while kittencordBeta counts the betas of this version.
+    channel: PackageJSON.kittencordChannel ?? "beta",
+    betaSequence: (PackageJSON.kittencordChannel ?? "beta") === "beta" ? PackageJSON.kittencordBeta ?? 1 : null,
     artifactSchema: 1,
     updaterEnabled: false,
     sourceCommit: gitHash,

@@ -2,6 +2,7 @@
     "name": "kittencord",
     "private": true,
     "version": "0.9.0",
+    "kittencordChannel": "stable",
     "kittencordBeta": 2,
     "description": "A cute Discord client mod",
     "license": "GPL-3.0-or-later",

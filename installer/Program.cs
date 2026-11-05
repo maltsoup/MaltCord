@@ -80,6 +80,13 @@ namespace KittencordSetup {
             }
         }
 
+        /// <summary>"Release" for stable builds, "Beta N" for betas.</summary>
+        public static string ReleaseLabel() {
+            string channel, beta;
+            Metadata.TryGetValue("channel", out channel);
+            if (channel == "beta") return "Beta " + (Metadata.TryGetValue("betaSequence", out beta) && !String.IsNullOrEmpty(beta) ? beta : "1");
+            return channel == "development" ? "Development" : "Release";
+        }
         public static byte[] Resource(string name) {
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(name)) {
                 if (stream == null) throw new IOException("Missing installer resource: " + name);
@@ -207,6 +214,12 @@ namespace KittencordSetup {
         bool lastRemove;
         bool retryRestart;
         bool retryVerify;
+        bool previewing;
+        /// <summary>0 choose, 1 install, 2 done: drives the step indicator on the card.</summary>
+        int stage;
+        readonly Label versionBadge;
+        const int BrandX = 96, CardX = 518, CardWidth = 468;
+        static readonly Rectangle Card = new Rectangle(CardX - 32, 22, CardWidth + 64, 636);
         public SetupForm() {
             Text = "Kittencord Setup"; Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); FormBorderStyle = FormBorderStyle.None; ClientSize = new Size(1040, 680); MinimumSize = Size; MaximumSize = Size;
             MaximizeBox = false; StartPosition = FormStartPosition.CenterScreen; BackColor = Color.FromArgb(23, 18, 31); ForeColor = Color.FromArgb(242, 234, 244);
@@ -225,40 +238,42 @@ namespace KittencordSetup {
             }
             if (Program.Metadata["artwork"] == "mekaiime-user-supplied") { using (var memory = new MemoryStream(Program.Resource("artwork.png"))) using (var image = Image.FromStream(memory)) artwork = new Bitmap(image); }
             using (var memory = new MemoryStream(Program.Resource("brand-logo.png"))) using (var image = Image.FromStream(memory)) brandLogo = new Bitmap(image);
-            using (var outline = RoundedButton.Outline(new Rectangle(0, 0, Width, Height), 12)) Region = new Region(outline);
-            AddLabel("Kittencord", 44, 27, 220, 38, 21, true);
-            string beta; if (!Program.Metadata.TryGetValue("betaSequence", out beta)) beta = "1";
-            var version = AddLabel("BETA " + beta + "  /  " + Program.Metadata["version"], 46, 72, 320, 24, 9, false); version.ForeColor = Color.FromArgb(189, 176, 205);
-            AddLabel("Your Discord.\nYour way.", 44, 463, 386, 108, 26, true);
-            title = AddLabel("Install Kittencord", 498, 155, 466, 44, 26, true);
-            subtitle = AddLabel("Choose your Discord installation.", 500, 207, 464, 28, 11, false); subtitle.ForeColor = Color.FromArgb(202, 192, 215);
-            setupControls.Add(AddLabel("Discord installation", 500, 252, 464, 25, 10, true));
-            target.SetBounds(500, 286, 464, 74); target.AccessibleName = "Discord installation"; target.Font = Font; target.BackColor = Color.FromArgb(38, 33, 47); target.ForeColor = ForeColor;
+            using (var outline = RoundedButton.Outline(new Rectangle(0, 0, Width, Height), 16)) Region = new Region(outline);
+            // Left: brand over the background. Right: one card that holds every control.
+            AddLabel("KittenCord", BrandX, 30, 260, 34, 19, true);
+            versionBadge = AddLabel("v" + Program.Metadata["version"] + "  ·  " + Program.ReleaseLabel(), BrandX + 2, 66, 220, 22, 9, true); versionBadge.ForeColor = Color.FromArgb(232, 220, 255);
+            versionBadge.TextAlign = ContentAlignment.MiddleCenter; versionBadge.Width = TextRenderer.MeasureText(versionBadge.Text, versionBadge.Font).Width + 22;
+            var tagline = AddLabel("Your Discord.\nYour way.", 34, 440, 420, 112, 30, true); tagline.ForeColor = Color.White;
+            var pitch = AddLabel("About 800 plugins, themes and badges in the Discord you already use.", 37, 552, 410, 44, 10, false); pitch.ForeColor = Color.FromArgb(222, 212, 236);
+            title = AddLabel("Install KittenCord", CardX, 92, CardWidth, 44, 25, true);
+            subtitle = AddLabel("Choose your Discord installation.", CardX + 2, 138, CardWidth, 26, 10.5f, false); subtitle.ForeColor = Color.FromArgb(190, 180, 206);
+            setupControls.Add(AddLabel("Discord installation", CardX + 2, 182, CardWidth, 22, 9.5f, true));
+            target.SetBounds(CardX, 208, CardWidth, 74); target.AccessibleName = "Discord installation"; target.Font = Font; target.BackColor = Color.FromArgb(33, 28, 44); target.ForeColor = ForeColor;
             var discovered = InstallService.Discover(); foreach (var directory in discovered) target.AddPath(directory); if (discovered.Length > 0) target.AddPath(discovered[0]); Controls.Add(target);
-            browse = AddButton("Choose folder", 786, 368, 178, false, delegate { using (var dialog = new FolderBrowserDialog { Description = "Select the app-VERSION folder containing Discord.exe", ShowNewFolderButton = false }) if (dialog.ShowDialog(this) == DialogResult.OK) target.AddPath(dialog.SelectedPath); });
-            ((RoundedButton)browse).Quiet = true; ((RoundedButton)browse).Symbol = "folder"; browse.Height = 32;
-            verify = AddButton("Check installation", 500, 368, 240, false, async delegate { await CheckInstallation(); }); ((RoundedButton)verify).Quiet = true; ((RoundedButton)verify).Symbol = "check"; verify.Height = 32; verify.Enabled = target.SelectedPath.Length > 0;
+            verify = AddButton("Check installation", CardX, 290, 226, false, async delegate { await CheckInstallation(); }); ((RoundedButton)verify).Quiet = true; ((RoundedButton)verify).Symbol = "check"; verify.Height = 34; verify.Font = new Font("Segoe UI", 10); verify.Enabled = target.SelectedPath.Length > 0;
+            browse = AddButton("Choose folder", CardX + CardWidth - 190, 290, 190, false, delegate { using (var dialog = new FolderBrowserDialog { Description = "Select the app-VERSION folder containing Discord.exe", ShowNewFolderButton = false }) if (dialog.ShowDialog(this) == DialogResult.OK) target.AddPath(dialog.SelectedPath); });
+            ((RoundedButton)browse).Quiet = true; ((RoundedButton)browse).Symbol = "folder"; browse.Height = 34; browse.Font = new Font("Segoe UI", 10);
             target.SelectionChanged += delegate { install.Enabled = restore.Enabled = verify.Enabled = target.SelectedPath.Length > 0; };
-            restart.Text = "Restart Discord after setup"; restart.Checked = true; restart.BackColor = Color.Transparent; restart.SetBounds(500, 411, 464, 50); Controls.Add(restart);
-            install = AddButton("Install / Repair", 500, 479, 464, true, async delegate { await Run(false); }); install.Height = 48; ((RoundedButton)install).Symbol = "arrow"; install.Enabled = target.SelectedPath.Length > 0;
-            restore = AddButton("Restore previous installation", 500, 537, 464, false, async delegate { if (MessageBox.Show(this, "Restore the loader used before Kittencord? Kittencord settings and backups will be kept.", "Restore", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) await Run(true); }); restore.Height = 38; ((RoundedButton)restore).Quiet = true; ((RoundedButton)restore).Symbol = "restore";
+            restart.Text = "Restart Discord after setup"; restart.Checked = true; restart.BackColor = Color.Transparent; restart.SetBounds(CardX, 338, CardWidth, 50); Controls.Add(restart);
+            install = AddButton("Install / Repair", CardX, 404, CardWidth, true, async delegate { await Run(false); }); install.Height = 52; ((RoundedButton)install).Symbol = "arrow"; install.Enabled = target.SelectedPath.Length > 0;
+            restore = AddButton("Restore previous installation", CardX, 466, CardWidth, false, async delegate { if (MessageBox.Show(this, "Restore the loader used before KittenCord? KittenCord settings and backups will be kept.", "Restore", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) await Run(true); }); restore.Height = 40; ((RoundedButton)restore).Quiet = true; ((RoundedButton)restore).Symbol = "restore";
             restore.Enabled = target.SelectedPath.Length > 0;
             setupControls.AddRange(new Control[] { target, browse, verify, restart, install, restore });
-            status.SetBounds(500, 595, 464, 25); status.BackColor = Color.Transparent; status.ForeColor = Color.FromArgb(163, 151, 181); status.Font = new Font("Segoe UI", 9); status.Text = "Your settings and a recovery copy are kept."; Controls.Add(status);
-            for (var i = 0; i < steps.Length; i++) { steps[i] = AddLabel("", 500, 250 + i * 31, 464, 26, 10, false); steps[i].Visible = false; }
-            meter.SetBounds(500, 487, 464, 8); meter.Maximum = 7; meter.Visible = false; Controls.Add(meter);
-            done = AddButton("All done. You can close me", 500, 561, 464, true, delegate { Close(); }); done.Height = 48; ((RoundedButton)done).Symbol = "check"; done.Visible = false;
-            failure = AddLabel("", 500, 255, 464, 205, 11, false); failure.ForeColor = Color.FromArgb(246, 189, 204); failure.Visible = false; failure.AccessibleName = "Setup error";
-            retry = AddButton("Try again", 500, 479, 464, true, async delegate { if (retryVerify) await CheckInstallation(); else await Run(lastRemove, retryRestart); }); retry.Height = 48; ((RoundedButton)retry).Symbol = "restore"; retry.Visible = false; retry.AccessibleName = "Retry setup";
-            back = AddButton("Back to setup", 500, 537, 464, false, delegate { ResetSetup(); }); back.Height = 38; ((RoundedButton)back).Quiet = true; back.Visible = false;
-            var credits = AddButton(Program.MaintainerName, 36, 601, 130, false, delegate { Process.Start(new ProcessStartInfo(Program.MaintainerUrl) { UseShellExecute = true }); }); ((RoundedButton)credits).Quiet = true; ((RoundedButton)credits).Symbol = "github"; credits.AccessibleDescription = Program.MaintainerUrl;
-            if (video != null) { playback = AddButton("Play video", 278, 601, 152, false, delegate { SetVideoPlayback(!videoTimer.Enabled); }); ((RoundedButton)playback).Quiet = true; playback.Height = 34; playback.Font = new Font("Segoe UI", 9); playback.AccessibleName = "Toggle background video"; }
-            var footer = AddLabel("Kittencord " + Program.Metadata["version"] + " Beta " + beta, 44, 644, 386, 22, 9, false); footer.ForeColor = Color.FromArgb(212, 202, 222);
-            var license = new LinkLabel { Text = "Credits & license", UseMnemonic = false, BackColor = Color.Transparent, LinkBehavior = LinkBehavior.HoverUnderline, LinkColor = Color.FromArgb(205, 191, 230) }; license.SetBounds(500, 644, 464, 28); license.LinkClicked += delegate { ShowCredits(); }; Controls.Add(license);
-            var close = AddButton("", 968, 23, 40, false, delegate { Close(); }); ((RoundedButton)close).Quiet = true; ((RoundedButton)close).Symbol = "close"; close.AccessibleName = "Close installer"; close.TabIndex = 20; CancelButton = close; AcceptButton = install;
+            status.SetBounds(CardX + 2, 524, CardWidth, 40); status.BackColor = Color.Transparent; status.ForeColor = Color.FromArgb(160, 149, 180); status.Font = new Font("Segoe UI", 9); status.Text = "Your settings and a recovery copy are kept."; Controls.Add(status);
+            for (var i = 0; i < steps.Length; i++) { steps[i] = AddLabel("", CardX + 2, 186 + i * 31, CardWidth, 26, 10, false); steps[i].Visible = false; }
+            meter.SetBounds(CardX, 412, CardWidth, 8); meter.Maximum = 7; meter.Visible = false; Controls.Add(meter);
+            done = AddButton("All done. You can close me", CardX, 470, CardWidth, true, delegate { Close(); }); done.Height = 52; ((RoundedButton)done).Symbol = "check"; done.Visible = false;
+            failure = AddLabel("", CardX + 2, 186, CardWidth, 200, 10.5f, false); failure.ForeColor = Color.FromArgb(250, 190, 206); failure.Visible = false; failure.AccessibleName = "Setup error";
+            retry = AddButton("Try again", CardX, 404, CardWidth, true, async delegate { if (retryVerify) await CheckInstallation(); else await Run(lastRemove, retryRestart); }); retry.Height = 52; ((RoundedButton)retry).Symbol = "restore"; retry.Visible = false; retry.AccessibleName = "Retry setup";
+            back = AddButton("Back to setup", CardX, 466, CardWidth, false, delegate { ResetSetup(); }); back.Height = 40; ((RoundedButton)back).Quiet = true; back.Visible = false;
+            var credits = AddButton(Program.MaintainerName, 30, 614, 124, false, delegate { Process.Start(new ProcessStartInfo(Program.MaintainerUrl) { UseShellExecute = true }); }); ((RoundedButton)credits).Quiet = true; ((RoundedButton)credits).Symbol = "github"; credits.Height = 36; credits.Font = new Font("Segoe UI", 10); credits.AccessibleDescription = Program.MaintainerUrl;
+            if (video != null) { playback = AddButton("Play video", 160, 614, 132, false, delegate { SetVideoPlayback(!videoTimer.Enabled); }); ((RoundedButton)playback).Quiet = true; playback.Height = 36; playback.Font = new Font("Segoe UI", 10); playback.AccessibleName = "Toggle background video"; }
+            var license = new LinkLabel { Text = "Credits & license", UseMnemonic = false, BackColor = Color.Transparent, LinkBehavior = LinkBehavior.HoverUnderline, LinkColor = Color.FromArgb(200, 184, 236), ActiveLinkColor = Color.White, Font = new Font("Segoe UI", 9) }; license.SetBounds(CardX + 2, 612, 200, 24); license.LinkClicked += delegate { ShowCredits(); }; Controls.Add(license);
+            var footer = AddLabel("GPL-3.0-or-later · Not affiliated with Discord", CardX + CardWidth - 300, 612, 300, 24, 8.5f, false); footer.ForeColor = Color.FromArgb(128, 118, 148); footer.TextAlign = ContentAlignment.MiddleRight;
+            var close = AddButton("", CardX + CardWidth - 34, 38, 38, false, delegate { Close(); }); close.Height = 38; ((RoundedButton)close).Quiet = true; ((RoundedButton)close).Symbol = "close"; close.AccessibleName = "Close installer"; close.TabIndex = 20; CancelButton = close; AcceptButton = install;
             Shown += async delegate {
                 ActiveControl = install;
-                if (target.SelectedPath.Length > 0 && File.Exists(InstallService.StatePath(Program.DataRoot, target.SelectedPath))) await CheckInstallation();
+                if (!previewing && target.SelectedPath.Length > 0 && File.Exists(InstallService.StatePath(Program.DataRoot, target.SelectedPath))) await CheckInstallation();
             };
             FormClosing += delegate(object sender, FormClosingEventArgs e) { if (busy) { e.Cancel = true; status.Text = "Wait for installation or restoration to finish before closing."; } };
         }
@@ -275,20 +290,21 @@ namespace KittencordSetup {
         void SetVideoPlayback(bool playing) { videoTimer.Enabled = playing; if (playing) video.Play(); else video.Pause(); playback.Text = playing ? "Pause video" : "Play video"; }
         void DragWindow(object sender, MouseEventArgs e) { if (e.Button == MouseButtons.Left) { ReleaseCapture(); SendMessage(Handle, 0xA1, new IntPtr(2), IntPtr.Zero); } }
         protected override void OnMouseDown(MouseEventArgs e) { base.OnMouseDown(e); DragWindow(this, e); }
+        void SetStage(int value) { if (stage == value) return; stage = value; RefreshBackdrop(); }
         void BeginStages(bool remove, bool shouldRestart) {
             AcceptButton = null; ActiveControl = null;
-            retryVerify = false;
+            retryVerify = false; SetStage(1);
             done.Visible = retry.Visible = back.Visible = failure.Visible = false;
-            title.Font = new Font("Segoe UI", 26, FontStyle.Bold);
+            title.Font = new Font("Segoe UI", 25, FontStyle.Bold);
             foreach (var control in setupControls) control.Visible = false;
-            title.Text = remove ? "Restoring Discord" : "Installing Kittencord";
+            title.Text = remove ? "Restoring Discord" : "Installing KittenCord";
             subtitle.Text = "Keep this window open until setup finishes.";
             stageIds = remove ? new[] { "verify", "close", "restore", "commit" } : new[] { "verify", "close", "core", "backup", "activate", "commit" };
-            var labels = remove ? new[] { "Verify installation & recovery copy", "Close selected Discord", "Restore previous loader", "Save restoration record" } : new[] { "Verify core & Discord installation", "Close selected Discord", "Copy versioned Kittencord core", "Preserve previous loader", "Inject & verify app.asar loader", "Save recovery record" };
+            var labels = remove ? new[] { "Verify installation & recovery copy", "Close selected Discord", "Restore previous loader", "Save restoration record" } : new[] { "Verify core & Discord installation", "Close selected Discord", "Copy versioned KittenCord core", "Preserve previous loader", "Inject & verify app.asar loader", "Save recovery record" };
             if (shouldRestart) { var ids = new List<string>(stageIds); ids.Add("restart"); stageIds = ids.ToArray(); var names = new List<string>(labels); names.Add("Request Discord restart"); labels = names.ToArray(); }
             for (var i = 0; i < steps.Length; i++) { steps[i].Visible = i < labels.Length; steps[i].Text = i < labels.Length ? "○  " + labels[i] : ""; steps[i].ForeColor = Color.FromArgb(164, 147, 173); }
             completedStages = 0; meter.Maximum = stageIds.Length; meter.Value = 0; meter.Visible = true;
-            status.SetBounds(500, 510, 464, 44); status.Text = "Preparing setup...";
+            status.SetBounds(CardX + 2, 432, CardWidth, 44); status.Text = "Preparing setup...";
         }
         void Progress(InstallProgress update) {
             status.Text = update.Message;
@@ -296,16 +312,17 @@ namespace KittencordSetup {
             if (index < 0) return;
             var label = steps[index]; var text = label.Text.Length > 3 ? label.Text.Substring(3) : label.Text;
             label.Text = (update.Completed ? "✓  " : "›  ") + text;
-            label.ForeColor = update.Completed ? Color.FromArgb(153, 221, 183) : Color.FromArgb(242, 234, 244);
+            label.ForeColor = update.Completed ? Color.FromArgb(150, 226, 190) : Color.FromArgb(244, 238, 252);
             if (update.Completed) { completedStages++; meter.Value = Math.Min(completedStages, meter.Maximum); }
         }
         void Complete(bool remove, bool restarted) {
             retry.Visible = back.Visible = failure.Visible = false;
             done.Text = "All done. You can close me"; ((RoundedButton)done).Symbol = "check";
-            title.Text = remove ? "✓ Previous loader restored" : "✓ You're all set!";
-            title.Font = new Font("Segoe UI", remove ? 19 : 23, FontStyle.Bold);
+            SetStage(2);
+            title.Text = remove ? "Previous loader restored" : "You're all set!";
+            title.Font = new Font("Segoe UI", remove ? 21 : 25, FontStyle.Bold);
             subtitle.Text = "All done. You can close this window now.";
-            status.Text = remove ? "Kittencord settings and backups were kept." : restarted ? "Discord restart requested. Find Kittencord in Settings." : "Open Discord when you're ready. Find Kittencord in Settings.";
+            status.Text = remove ? "KittenCord settings and backups were kept." : restarted ? "Discord restart requested. Find KittenCord in Discord settings." : "Open Discord when you're ready. Find KittenCord in Discord settings.";
             done.Visible = true; AcceptButton = done;
         }
         void Failed(string message, bool operationCompleted) {
@@ -314,10 +331,10 @@ namespace KittencordSetup {
             retryRestart = operationCompleted;
             title.Font = new Font("Segoe UI", 23, FontStyle.Bold);
             title.Text = operationCompleted ? "Discord didn't restart" : "Setup needs attention";
-            subtitle.Text = operationCompleted ? (lastRemove ? "Restoration finished. Retry only restarts Discord." : "Kittencord is installed. Retry only restarts Discord.") : "Fix the issue, then try again or change your options.";
+            subtitle.Text = operationCompleted ? (lastRemove ? "Restoration finished. Retry only restarts Discord." : "KittenCord is installed. Retry only restarts Discord.") : "Fix the issue, then try again or change your options.";
             failure.Text = message; failure.Visible = true;
             retry.Text = operationCompleted ? "Restart Discord" : "Try again"; retry.Visible = back.Visible = true;
-            status.SetBounds(500, 595, 464, 25); status.Text = "Your selected folder and options are kept.";
+            status.SetBounds(CardX + 2, 524, CardWidth, 40); status.Text = "Your selected folder and options are kept.";
             AcceptButton = retry; ActiveControl = retry;
         }
         void ResetSetup() {
@@ -325,8 +342,9 @@ namespace KittencordSetup {
             foreach (var step in steps) step.Visible = false;
             meter.Visible = done.Visible = retry.Visible = back.Visible = failure.Visible = false;
             foreach (var control in setupControls) control.Visible = true;
-            title.Font = new Font("Segoe UI", 26, FontStyle.Bold); title.Text = "Install Kittencord"; subtitle.Text = "Choose your Discord installation.";
-            status.SetBounds(500, 595, 464, 25); status.Text = "Your settings and a recovery copy are kept.";
+            SetStage(0);
+            title.Font = new Font("Segoe UI", 25, FontStyle.Bold); title.Text = "Install KittenCord"; subtitle.Text = "Choose your Discord installation.";
+            status.SetBounds(CardX + 2, 524, CardWidth, 40); status.Text = "Your settings and a recovery copy are kept.";
             AcceptButton = install; ActiveControl = install;
         }
         async Task CheckInstallation() {
@@ -357,6 +375,7 @@ namespace KittencordSetup {
         }
         public void Preview(string state) {
             if (state != "progress" && state != "complete" && state != "error") throw new IOException("Unknown preview state.");
+            previewing = true;
             BeginStages(false, true);
             for (var i = 0; i < (state == "complete" ? stageIds.Length : 3); i++) Progress(new InstallProgress(stageIds[i], "Preview of setup stages. No installation was performed.", true));
             if (state == "complete") Complete(false, true);
@@ -404,13 +423,55 @@ namespace KittencordSetup {
                     var matrix = new ColorMatrix { Matrix33 = video == null ? 0.29f : 0.85f }; attributes.SetColorMatrix(matrix);
                     g.DrawImage(backgroundImage, new Rectangle((Width - width) / 2, (Height - height) / 2, width, height), 0, 0, backgroundImage.Width, backgroundImage.Height, GraphicsUnit.Pixel, attributes);
                 }
-                using (var fade = new LinearGradientBrush(ClientRectangle, Color.FromArgb(20, BackColor), Color.FromArgb(video == null ? 118 : 140, BackColor), 0f)) g.FillRectangle(fade, ClientRectangle);
-                using (var fade = new LinearGradientBrush(ClientRectangle, Color.FromArgb(0, BackColor), Color.FromArgb(video == null ? 175 : 110, BackColor), 90f)) g.FillRectangle(fade, ClientRectangle);
+                // Keep the picture vivid in the middle; darken the top for the brand and the bottom for the tagline.
+                using (var top = new LinearGradientBrush(new Rectangle(0, -1, Width, 152), Color.FromArgb(150, 12, 9, 20), Color.FromArgb(0, 12, 9, 20), 90f)) g.FillRectangle(top, 0, 0, Width, 149);
+                using (var bottom = new LinearGradientBrush(new Rectangle(0, 359, Width, Height - 357), Color.FromArgb(0, 12, 9, 20), Color.FromArgb(225, 12, 9, 20), 90f)) g.FillRectangle(bottom, 0, 361, Width, Height - 361);
+                if (video == null) using (var dim = new SolidBrush(Color.FromArgb(70, BackColor))) g.FillRectangle(dim, ClientRectangle);
                 g.Restore(artworkState);
+            } else {
+                using (var glow = new GraphicsPath()) {
+                    glow.AddEllipse(-160, 120, 760, 620);
+                    using (var brush = new PathGradientBrush(glow) { CenterColor = Color.FromArgb(120, 139, 92, 246), SurroundColors = new[] { Color.FromArgb(0, 139, 92, 246) } }) g.FillPath(brush, glow);
+                }
             }
             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
-            g.DrawImage(brandLogo, video == null ? new Rectangle(50, 105, 380, 380) : new Rectangle(46, 112, 150, 150));
-            using (var outline = RoundedButton.Outline(new Rectangle(0, 0, Width - 1, Height - 1), 12)) using (var border = new Pen(Color.FromArgb(92, 110, 78, 120))) g.DrawPath(border, outline);
+            g.DrawImage(brandLogo, new Rectangle(30, 24, 58, 58));
+            if (video == null && artwork == null) g.DrawImage(brandLogo, new Rectangle(70, 130, 300, 300));
+            // Version badge behind its label.
+            using (var badge = RoundedButton.Outline(new Rectangle(versionBadge.Left, versionBadge.Top, versionBadge.Width, versionBadge.Height), versionBadge.Height / 2))
+            using (var fill = new SolidBrush(Color.FromArgb(150, 139, 92, 246))) using (var edge = new Pen(Color.FromArgb(150, 200, 175, 255))) { g.FillPath(fill, badge); g.DrawPath(edge, badge); }
+            // The card: soft shadow, near-opaque surface, faint violet edge and a lit top.
+            for (var i = 6; i >= 1; i--) using (var shadowPath = RoundedButton.Outline(new Rectangle(Card.X - i * 2, Card.Y - i + 6, Card.Width + i * 4, Card.Height + i * 2), 22 + i)) using (var shadow = new SolidBrush(Color.FromArgb(14, 0, 0, 0))) g.FillPath(shadow, shadowPath);
+            using (var cardPath = RoundedButton.Outline(Card, 22)) {
+                using (var surface = new LinearGradientBrush(Card, Color.FromArgb(240, 26, 20, 38), Color.FromArgb(244, 17, 13, 25), 90f)) g.FillPath(surface, cardPath);
+                using (var edge = new Pen(Color.FromArgb(90, 176, 146, 240))) g.DrawPath(edge, cardPath);
+            }
+            using (var shine = new LinearGradientBrush(new Rectangle(Card.X + 40, Card.Y, Card.Width - 80, 2), Color.FromArgb(0, 214, 190, 255), Color.FromArgb(150, 214, 190, 255), 0f) { WrapMode = WrapMode.TileFlipX })
+                g.FillRectangle(shine, Card.X + 40, Card.Y, (Card.Width - 80) / 2, 1);
+            using (var shine = new LinearGradientBrush(new Rectangle(Card.X + Card.Width / 2, Card.Y, (Card.Width - 80) / 2, 2), Color.FromArgb(150, 214, 190, 255), Color.FromArgb(0, 214, 190, 255), 0f))
+                g.FillRectangle(shine, Card.X + Card.Width / 2, Card.Y, (Card.Width - 80) / 2, 1);
+            DrawSteps(g);
+            using (var divider = new Pen(Color.FromArgb(40, 255, 255, 255))) g.DrawLine(divider, CardX, 596, CardX + CardWidth, 596);
+            using (var outline = RoundedButton.Outline(new Rectangle(0, 0, Width - 1, Height - 1), 16)) using (var border = new Pen(Color.FromArgb(110, 120, 88, 170))) g.DrawPath(border, outline);
+        }
+        /// <summary>Choose → Install → Done, with the current step lit.</summary>
+        void DrawSteps(Graphics g) {
+            var names = new[] { "Choose", "Install", "Done" };
+            int x = CardX, y = 44;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+            using (var font = new Font("Segoe UI", 9, FontStyle.Bold)) using (var number = new Font("Segoe UI", 8.5f, FontStyle.Bold)) {
+                for (var i = 0; i < names.Length; i++) {
+                    bool current = i == stage, finished = i < stage;
+                    var circle = new Rectangle(x, y, 24, 24);
+                    using (var fill = current ? (Brush)new LinearGradientBrush(circle, Color.FromArgb(167, 128, 255), Color.FromArgb(240, 150, 210), 45f) : new SolidBrush(finished ? Color.FromArgb(70, 150, 226, 190) : Color.FromArgb(44, 37, 56))) g.FillEllipse(fill, circle);
+                    if (finished) RoundedButton.DrawSymbol(g, "check", new Rectangle(x + 4, y + 4, 16, 16), Color.FromArgb(160, 236, 200));
+                    else using (var brush = new SolidBrush(current ? Color.White : Color.FromArgb(170, 158, 190))) using (var centered = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }) g.DrawString((i + 1).ToString(), number, brush, new RectangleF(x, y + 1, 24, 24), centered);
+                    var width = (int)Math.Ceiling(g.MeasureString(names[i], font).Width);
+                    using (var brush = new SolidBrush(current ? Color.White : finished ? Color.FromArgb(160, 226, 196) : Color.FromArgb(140, 130, 160))) g.DrawString(names[i], font, brush, x + 29, y + 3);
+                    x += 30 + width + 10;
+                    if (i < names.Length - 1) { using (var line = new Pen(i < stage ? Color.FromArgb(120, 150, 226, 190) : Color.FromArgb(60, 255, 255, 255), 1.5f)) g.DrawLine(line, x, y + 12, x + 26, y + 12); x += 36; }
+                }
+            }
         }
         protected override void Dispose(bool disposing) { if (disposing) { videoTimer.Dispose(); if (video != null) video.Dispose(); if (artwork != null) artwork.Dispose(); brandLogo.Dispose(); } base.Dispose(disposing); }
     }
@@ -440,12 +501,21 @@ namespace KittencordSetup {
         }
         protected override void OnPaint(PaintEventArgs e) {
             var g = e.Graphics; PaintSurface(this, g); g.SmoothingMode = SmoothingMode.AntiAlias;
-            using (var path = Outline(new Rectangle(1, 1, Width - 3, Height - 3), Math.Min(6, (Height - 3) / 2))) using (var fill = new SolidBrush(!Enabled ? Color.FromArgb(49, 42, 59) : pressed ? ControlPaint.Dark(BackColor, 0.08f) : hovered ? ControlPaint.Light(BackColor, 0.08f) : BackColor)) {
-                if (!Quiet || hovered || pressed) g.FillPath(fill, path);
-                if (!Quiet && !Accent) using (var border = new Pen(Color.FromArgb(73, 62, 86))) g.DrawPath(border, path);
+            var bounds = new Rectangle(1, 1, Width - 3, Height - 3);
+            using (var path = Outline(bounds, Math.Min(10, (Height - 3) / 2))) {
+                if (Accent && Enabled) {
+                    // Primary action: violet to pink, brighter on hover, a lit top edge.
+                    var from = pressed ? Color.FromArgb(140, 100, 235) : hovered ? Color.FromArgb(182, 146, 255) : Color.FromArgb(160, 118, 250);
+                    var to = pressed ? Color.FromArgb(214, 120, 186) : hovered ? Color.FromArgb(250, 168, 220) : Color.FromArgb(236, 142, 204);
+                    using (var fill = new LinearGradientBrush(bounds, from, to, 0f)) g.FillPath(fill, path);
+                    using (var shine = new Pen(Color.FromArgb(90, 255, 255, 255))) g.DrawLine(shine, 10, 2, Width - 12, 2);
+                } else using (var fill = new SolidBrush(!Enabled ? Color.FromArgb(49, 42, 59) : pressed ? ControlPaint.Dark(BackColor, 0.08f) : hovered ? ControlPaint.Light(BackColor, 0.1f) : BackColor)) {
+                    if (!Quiet || hovered || pressed) g.FillPath(fill, path);
+                    if (!Quiet && !Accent) using (var border = new Pen(hovered ? Color.FromArgb(120, 98, 150) : Color.FromArgb(70, 60, 86))) g.DrawPath(border, path);
+                }
                 if (Focused && ShowFocusCues) using (var pen = new Pen(Color.FromArgb(220, 205, 253), 2)) g.DrawPath(pen, path);
             }
-            var color = Enabled ? ForeColor : Color.FromArgb(155, 140, 165);
+            var color = !Enabled ? Color.FromArgb(155, 140, 165) : Accent ? Color.White : ForeColor;
             var textWidth = Text.Length == 0 ? 0 : TextRenderer.MeasureText(Text, Font).Width;
             var iconWidth = Symbol == null ? 0 : 26;
             var left = Math.Max(12, (Width - textWidth - iconWidth) / 2);

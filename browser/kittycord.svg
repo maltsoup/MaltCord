@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Kittycord">
+  <rect width="128" height="128" rx="28" fill="#232428"/>
+  <path fill="#e7a5d2" d="M24 53 18 17 49 36Q64 30 79 36L110 17 104 53Q113 66 108 86Q99 111 64 111Q29 111 20 86Q15 66 24 53Z"/>
+  <path fill="#232428" d="M42 64a6 8 0 1 0 0 16a6 8 0 1 0 0-16M86 64a6 8 0 1 0 0 16a6 8 0 1 0 0-16M57 85h14l-7 8Z"/>
+</svg>

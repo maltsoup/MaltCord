@@ -1,0 +1,159 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+:root {
+    color-scheme: dark;
+    font: 14px system-ui, sans-serif;
+    background: #1e1f24;
+    color: #ececf1;
+   
+}
+
+body {
+    margin: 0;
+   
+}
+
+main {
+    max-width: 1000px;
+    padding: 24px;
+    margin: auto;
+   
+}
+
+header, .fields, .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+   
+}
+
+header {
+    justify-content: space-between;
+   
+}
+
+h1 {
+    font-size: 24px;
+   
+}
+
+h2 {
+    font-size: 17px;
+    margin: 0 0 14px;
+   
+}
+
+section {
+    padding: 20px;
+    margin: 16px 0;
+    background: #27282f;
+    border: 1px solid #42434e;
+    border-radius: 12px;
+   
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 10px 0;
+   
+}
+
+input, select, textarea, button {
+    font: inherit;
+    color: inherit;
+    background: #202127;
+    border: 1px solid #555665;
+    border-radius: 7px;
+    padding: 9px 12px;
+   
+}
+
+button {
+    cursor: pointer;
+   
+}
+
+button:disabled {
+    cursor: default;
+    opacity: 0.5;
+   
+}
+
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+    outline: 2px solid #b8a4ff;
+    outline-offset: 3px;
+   
+}
+
+p, footer {
+    color: #c4c4d0;
+    line-height: 1.6;
+   
+}
+
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    line-height: 1.6;
+    max-height: 420px;
+    overflow: auto;
+   
+}
+
+#connection {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+   
+}
+
+#dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #999;
+   
+}
+
+#dot.verified {
+    background: #58ce89;
+    animation: connection-pulse 2s ease-in-out infinite;
+   
+}
+
+#matches button {
+    margin: 4px 8px 4px 0;
+   
+}
+
+#status {
+    border-left: 3px solid #b8a4ff;
+    padding-left: 12px;
+   
+}
+
+[hidden] {
+    display: none !important;
+   
+}
+
+@keyframes connection-pulse {
+    50% {
+    opacity: 0.45;
+   
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #dot.verified {
+    animation: none;
+   
+}
+}

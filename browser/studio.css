@@ -1,0 +1,468 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.kc-studio-import {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.kc-native-workspace {
+    display: grid;
+    grid-template-columns: minmax(140px, 20%) minmax(0, 1fr);
+    flex: 1;
+    min-height: 240px;
+    border-block: 1px solid var(--border-subtle);
+}
+
+.kc-studio-panel {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    flex-direction: column;
+}
+
+.kc-studio-panel[hidden] {
+    display: none;
+}
+
+#workspace-tabs button[aria-selected="true"] {
+    border-color: var(--brand-500);
+    color: var(--text-default, var(--text-normal));
+    background: var(--background-secondary);
+}
+
+#settings-panel,
+#console-panel,
+#diagnostics-panel {
+    padding: 12px;
+}
+
+#operation-log {
+    overflow: auto;
+    white-space: pre-wrap;
+    font-family: var(--font-code, monospace);
+}
+
+.kc-studio-primary {
+    border-color: var(--brand-500);
+}
+
+header button,
+nav button {
+    transition: border-color 350ms ease-in-out, transform 350ms ease-in-out;
+}
+
+header button:hover,
+nav button:hover {
+    border-color: var(--brand-500);
+    transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    header button,
+    nav button,
+    header button:hover,
+    nav button:hover {
+        transition: none;
+        transform: none;
+    }
+}
+
+#file-explorer {
+    overflow: auto;
+    padding: 8px;
+    border-inline-end: 1px solid var(--border-subtle);
+}
+
+#file-explorer button {
+    display: block;
+    width: 100%;
+    text-align: start;
+    overflow-wrap: anywhere;
+    margin-bottom: 4px;
+}
+
+#import-review {
+    width: min(800px, 90vw);
+    max-height: 85vh;
+    overflow: auto;
+    color: var(--text-default, var(--text-normal));
+    background: var(--background-primary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+#import-source {
+    overflow: auto;
+    max-height: 45vh;
+    white-space: pre;
+    padding: 12px;
+    background: var(--background-secondary);
+    border-radius: 8px;
+}
+
+#import-review footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.kc-studio-import input::file-selector-button {
+    color: inherit;
+    background: var(--background-secondary, #333);
+    border: 1px solid var(--border-subtle, #777);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font: inherit;
+    cursor: pointer;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px 8px;
+}
+
+nav select,
+header select {
+    margin-left: 8px;
+    padding: 6px;
+    color: inherit;
+    background: var(--background-secondary, #333);
+    border: 1px solid var(--border-subtle, #777);
+    border-radius: 8px;
+}
+
+#diagnostics {
+    overflow: auto;
+    max-height: 160px;
+    padding: 0 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+details {
+    padding: 8px 12px;
+}
+
+#runtime-preview {
+    max-height: 45vh;
+    overflow: auto;
+    padding: 12px;
+    border-top: 1px solid #444;
+}
+
+#runtime-output {
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #555;
+    border-radius: 8px;
+    background: var(--background-primary, #25252a);
+    color: var(--text-normal, #eee);
+}
+
+#runtime-output button {
+    margin: 4px 8px 4px 0;
+}
+
+#runtime-output label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0;
+}
+
+#runtime-log {
+    max-height: 120px;
+    overflow: auto;
+    white-space: pre-wrap;
+}
+
+/* Native Studio workbench: KittenCord accent, quiet secondary actions and an editor-first layout. */
+
+/* The generic button rules above still style the legacy Studio window, which shares this file; these are scoped to the native workbench. */
+/* stylelint-disable no-descending-specificity */
+.kc-workbench {
+    --kc-accent: var(--brand-500, #8f6bff);
+    --kc-accent-soft: color-mix(in srgb, var(--kc-accent) 16%, transparent);
+    --kc-line: var(--border-subtle, color-mix(in srgb, currentcolor 14%, transparent));
+    --kc-panel: var(--background-secondary, color-mix(in srgb, currentcolor 4%, transparent));
+
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: var(--font-primary, system-ui, sans-serif);
+    font-size: 13px;
+}
+
+.kc-workbench-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 56px;
+    padding: 10px 16px;
+    background: var(--kc-panel);
+    border-bottom: 1px solid var(--kc-line);
+}
+
+.kc-workbench-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.kc-workbench-brand strong {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.kc-workbench-brand svg {
+    box-sizing: content-box;
+    padding: 7px;
+    border-radius: 9px;
+    color: var(--kc-accent);
+    background: var(--kc-accent-soft);
+}
+
+.kc-workbench-project {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.kc-workbench button,
+.kc-workbench select {
+    min-height: 32px;
+    padding: 6px 11px;
+    font-size: 12px;
+    color: inherit;
+    background: transparent;
+    border: 1px solid var(--kc-line);
+    border-radius: 6px;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.kc-workbench button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.kc-workbench .kc-studio-import {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    max-width: 150px;
+    padding: 0 10px;
+    overflow: hidden;
+    border: 1px solid var(--kc-line);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.kc-workbench .kc-studio-import input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.kc-workbench-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--background-primary);
+    border-bottom: 1px solid var(--kc-line);
+}
+
+.kc-workbench-toolbar #compile {
+    order: 1;
+    margin-inline-start: auto;
+}
+
+.kc-workbench-toolbar #run {
+    order: 2;
+    padding-inline: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: var(--kc-accent);
+    border-color: transparent;
+}
+
+.kc-workbench-toolbar #disable {
+    order: 3;
+}
+
+.kc-workbench-toolbar #delete-draft,
+.kc-workbench-toolbar #refresh {
+    color: var(--text-muted, inherit);
+    border-color: transparent;
+}
+
+.kc-workbench #workspace-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 16px;
+    background: var(--kc-panel);
+    border-bottom: 1px solid var(--kc-line);
+}
+
+.kc-workbench #workspace-tabs button {
+    padding: 12px 18px;
+    color: var(--text-muted);
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+}
+
+.kc-workbench #workspace-tabs button[aria-selected="true"] {
+    color: var(--text-normal);
+    background: var(--background-primary);
+    box-shadow: inset 0 -2px var(--kc-accent);
+}
+
+.kc-workbench #files-panel > nav {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px 8px 220px;
+    background: var(--background-primary);
+    border-bottom: 1px solid var(--kc-line);
+}
+
+.kc-workbench #files-panel > nav select {
+    max-width: 300px;
+}
+
+.kc-workbench .kc-native-workspace {
+    grid-template-columns: 204px minmax(0, 1fr);
+    min-height: 440px;
+}
+
+.kc-workbench #file-explorer {
+    padding: 14px 8px;
+    background: var(--kc-panel);
+}
+
+.kc-workbench #file-explorer::before {
+    content: "Project files";
+    display: block;
+    padding: 0 10px 14px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.kc-workbench #file-explorer button {
+    margin: 2px 0;
+    padding: 8px 10px;
+    font-family: var(--font-code, ui-monospace, monospace);
+    text-align: left;
+    background: transparent;
+    border-color: transparent;
+    border-radius: 4px;
+}
+
+.kc-workbench #file-explorer button[aria-pressed="true"] {
+    background: var(--kc-accent-soft);
+    box-shadow: inset 2px 0 var(--kc-accent);
+}
+
+.kc-workbench #container {
+    min-height: 440px;
+    padding: 0;
+}
+
+.kc-workbench #operation-log,
+.kc-workbench #diagnostics {
+    max-height: none;
+    padding: 12px 14px;
+    font: 12px/1.6 var(--font-code, ui-monospace, monospace);
+    background: var(--kc-panel);
+    border: 1px solid var(--kc-line);
+    border-radius: 8px;
+}
+
+.kc-workbench > details {
+    padding: 10px 20px;
+    font-size: 11px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--kc-line);
+}
+
+.kc-workbench-status {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 6px 16px;
+    font-size: 11px;
+    color: var(--text-muted);
+    background: var(--kc-panel);
+    border-top: 1px solid var(--kc-line);
+}
+
+.kc-workbench #status {
+    margin: 0;
+    padding: 0;
+}
+
+.kc-workbench #status::before {
+    content: "";
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    margin-right: 8px;
+    vertical-align: 1px;
+    background: var(--kc-accent);
+    border-radius: 50%;
+}
+
+.kc-workbench button:hover:not(:disabled),
+.kc-workbench .kc-studio-import:hover {
+    background: color-mix(in srgb, currentcolor 7%, transparent);
+    border-color: color-mix(in srgb, var(--kc-accent) 45%, var(--kc-line));
+}
+
+.kc-workbench-toolbar #run:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--kc-accent) 85%, #fff);
+}
+
+.kc-workbench-toolbar #disable:hover:not(:disabled) {
+    border-color: color-mix(in srgb, #f23f43 55%, var(--kc-line));
+}
+
+@media (width < 780px) {
+    .kc-workbench-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .kc-workbench #files-panel > nav {
+        padding-left: 12px;
+    }
+
+    .kc-workbench .kc-native-workspace {
+        grid-template-columns: 150px minmax(0, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kc-workbench button,
+    .kc-workbench select {
+        transition: none;
+    }
+}

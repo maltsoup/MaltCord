@@ -1,0 +1,11 @@
+{
+    "testcordplugins/IGP": "Downloads an executable OpenPGP library. A reviewed packaged dependency is required.",
+    "testcordplugins/pdf-viewer": "Downloads executable PDF libraries and a worker. Reviewed packaged dependencies are required.",
+    "testcordplugins/PanelLayout": "Evaluates imported module source. A packaged or declarative module format is required.",
+    "testcordplugins/jstextreplace": "Evaluates user supplied JavaScript replacements. A declarative replacement format is required.",
+    "testcordplugins/teX": "Imports executable KaTeX from a remote CDN. A reviewed packaged dependency is required.",
+    "testcordplugins/eval": "Executes arbitrary JavaScript and exposes a native evaluation command. Unavailable in browser builds.",
+    "testcordplugins/remoteControl": "Includes remote JavaScript evaluation commands. A reviewed browser implementation without source execution is required.",
+    "testcordplugins/rotatorSuite": "Evaluates JavaScript in profile fields. A declarative browser implementation is required.",
+    "testcordplugins/DynamicIslande": "Requires PanelLayout, whose imported JavaScript modules are unavailable in this browser build."
+}

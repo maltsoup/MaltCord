@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; worker-src 'self' blob:; connect-src 'none'; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kitty Plugin Studio</title>
+    <link rel="stylesheet" href="editor.css">
+    <link rel="stylesheet" href="studio.css">
+    <link rel="stylesheet" href="vendor/monaco/studio.css">
+    <script type="module" src="vendor/monaco/studio.js"></script>
+</head>
+<body>
+    <header><strong>Kitty Plugin Studio</strong>
+        <button id="new" type="button">New project</button>
+        <button id="new-color" type="button">New color project</button>
+        <label class="kc-studio-import">Import project<input id="import" type="file" accept="application/json,.json,.js,.ts"></label>
+        <button id="save-project" type="button">Export project</button>
+        <button id="validate" type="button">Run checks</button>
+        <button id="export-package" type="button" disabled>Export package</button>
+    </header>
+    <nav aria-label="Studio views">
+        <button id="source-view" type="button">Source</button>
+        <button id="project-view" type="button">Project JSON</button>
+        <button id="apply-project" type="button">Apply project JSON</button>
+        <button id="format" type="button">Format</button>
+        <button id="select" type="button">Select all</button>
+        <label>Language<select id="language"><option value="javascript">JavaScript</option><option value="typescript">TypeScript</option><option value="declarative">Builder JSON</option></select></label>
+    </nav>
+    <p id="status" role="status" aria-live="polite">Loading packaged Studio…</p>
+    <main id="container" aria-label="Plugin code editor"></main>
+    <pre id="diagnostics" role="log" aria-label="Studio check results"></pre>
+    <section id="runtime-preview" hidden>
+        <h2>Isolated development preview</h2>
+        <label><input id="runtime-consent" type="checkbox">I reviewed this source and allow running it in the isolated preview.</label>
+        <button id="runtime-start" type="button">Start or reload preview & tests</button><button id="runtime-stop" type="button">Stop preview</button>
+        <p id="runtime-status" role="status">Validate a project before starting. Preview settings stay in memory.</p>
+        <div id="runtime-output" aria-label="Isolated plugin preview"></div><pre id="runtime-log" role="log"></pre>
+    </section>
+    <details><summary>API & test scope</summary><p>New functional projects use utility-v1: publishPanel, settings, onAction, onSettings and checkpoint. They run as reviewed desktop Local plugins. Color projects remain available separately. No Discord, DOM, network or native APIs. Checks compile and validate without execution; runtime activation requires Plugin Manager review.</p><p>Project JSON edits metadata, API, language, source and assertions. Apply it before checking. Files stay local; no automatic installation.</p></details>
+</body>
+</html>

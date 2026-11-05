@@ -1,0 +1,93 @@
+{
+  "manifest_version": 3,
+  "minimum_chrome_version": "111",
+  "name": "Kittencord Web (Development)",
+  "description": "Kittencord, a TestCord-based Discord modification. Development release candidate.",
+  "author": "Kittencord and upstream contributors",
+  "icons": {
+    "128": "kittycord.png"
+  },
+  "host_permissions": [
+    "https://discord.com/*",
+    "https://canary.discord.com/*",
+    "https://ptb.discord.com/*"
+  ],
+  "permissions": [],
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": [
+        "https://discord.com/*",
+        "https://canary.discord.com/*",
+        "https://ptb.discord.com/*"
+      ],
+      "js": [
+        "content.js",
+        "editor-bridge.js"
+      ],
+      "all_frames": false,
+      "world": "ISOLATED"
+    },
+    {
+      "run_at": "document_start",
+      "matches": [
+        "https://discord.com/*",
+        "https://canary.discord.com/*",
+        "https://ptb.discord.com/*"
+      ],
+      "js": [
+        "dist/Kittycord.js"
+      ],
+      "all_frames": false,
+      "world": "MAIN"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "dist/Kittycord.css"
+      ],
+      "matches": [
+        "https://discord.com/*",
+        "https://canary.discord.com/*",
+        "https://ptb.discord.com/*"
+      ]
+    }
+  ],
+  "background": {
+    "service_worker": "keybinds.js"
+  },
+  "commands": {
+    "TOGGLE_MUTE": {
+      "description": "Toggle Mute — Toggle your microphone's transmission on and off."
+    },
+    "TOGGLE_DEAFEN": {
+      "description": "Toggle Deafen — Toggle your speaker's playback on and off. Also disables your microphone while deafened."
+    },
+    "TOGGLE_VOICE_MODE": {
+      "description": "Toggle VAD — Toggle to switch between Push-to-talk and Voice Activity mode."
+    },
+    "TOGGLE_STREAMER_MODE": {
+      "description": "Toggle Streamer Mode — Toggle to enable/disable Streamer Mode."
+    },
+    "TOGGLE_GO_LIVE_STREAMING": {
+      "description": "Toggle Screen Share — Toggle to start/stop streaming in your current voice channel. Streams can only be started with this keybind if Discord recognises the game you are currently playing."
+    },
+    "NAVIGATE_BACK": {
+      "description": "Navigate Back — Might conflict with your browsers native keybinds"
+    },
+    "NAVIGATE_FORWARD": {
+      "description": "Navigate Forward — Might conflict with your browsers native keybinds"
+    },
+    "SAVE_CLIP": {
+      "description": "Save Clip — Clips the last 30 seconds to 2 minutes of your stream, depending on your settings."
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src https://generativelanguage.googleapis.com https://api.openai.com;"
+  },
+  "optional_host_permissions": [
+    "https://generativelanguage.googleapis.com/*",
+    "https://api.openai.com/*"
+  ]
+}

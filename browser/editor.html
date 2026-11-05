@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kittencord QuickCSS Editor</title>
+    <link rel="stylesheet" href="editor.css">
+    <link rel="stylesheet" href="vendor/monaco/index.css">
+    <script type="module" src="vendor/monaco/index.js"></script>
+</head>
+<body>
+    <header>
+        <strong>Kittencord QuickCSS</strong>
+        <button id="save" type="button">Save</button>
+        <button id="export" type="button">Export CSS</button>
+        <button id="copy" type="button">Copy all</button>
+        <button id="select" type="button">Select all</button>
+        <button id="undo" type="button">Undo</button>
+        <button id="redo" type="button">Redo</button>
+        <button id="reload" type="button">Reload saved</button>
+    </header>
+    <p id="status" role="status" aria-live="polite">Connecting to Kittencord. Open this editor from Kittencord settings.</p>
+    <main id="container" aria-label="QuickCSS editor"></main>
+</body>
+</html>

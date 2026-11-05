@@ -1,0 +1,9 @@
+{
+    "schemaVersion": 1,
+    "product": "Kittycord",
+    "upstream": "https://github.com/TestcordDev/TestCord.git",
+    "branch": "main",
+    "commit": "af92dbaec665c7e7106c3503cfb6691248d03623",
+    "recordedOn": "2026-10-25",
+    "license": "GPL-3.0-or-later"
+}

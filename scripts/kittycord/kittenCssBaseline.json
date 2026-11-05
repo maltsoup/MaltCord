@@ -1,0 +1,62 @@
+{
+    "src/components/settings/PrivacySecurityPanel.css": {
+        "colors": 162,
+        "motion": 40,
+        "selectors": 208
+    },
+    "src/components/settings/QuickAction.css": {
+        "colors": 0,
+        "motion": 2,
+        "selectors": 0
+    },
+    "src/components/settings/SpecialCard.css": {
+        "colors": 17,
+        "motion": 4,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/changelog/styles.css": {
+        "colors": 1,
+        "motion": 11,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/health/styles.css": {
+        "colors": 138,
+        "motion": 48,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/kittycordDeveloperTools/developerTools.css": {
+        "colors": 0,
+        "motion": 3,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/kittycordMarketplace/sleepingCat.css": {
+        "colors": 0,
+        "motion": 4,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/presets/styles.css": {
+        "colors": 26,
+        "motion": 48,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/stats/styles.css": {
+        "colors": 12,
+        "motion": 8,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/themes/CodeViewerModal.css": {
+        "colors": 17,
+        "motion": 0,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/themes/SnippetMarketplace.css": {
+        "colors": 12,
+        "motion": 1,
+        "selectors": 0
+    },
+    "src/components/settings/tabs/themes/styles.css": {
+        "colors": 47,
+        "motion": 26,
+        "selectors": 3
+    }
+}

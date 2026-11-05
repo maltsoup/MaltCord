@@ -1,0 +1,19 @@
+.vc-owner-crown-icon {
+    color: var(--status-warning);
+}
+
+.vc-kittencord-rgb-cat {
+    color: #e780be;
+    animation: vc-kittencord-rgb 8s linear infinite;
+}
+
+@keyframes vc-kittencord-rgb {
+    0%, 100% { color: #e780be; }
+    25% { color: #9d9dff; }
+    50% { color: #62dcc7; }
+    75% { color: #f4c65d; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .vc-kittencord-rgb-cat { animation: none; }
+}

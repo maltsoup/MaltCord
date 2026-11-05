@@ -1,0 +1,203 @@
+/*
+ * Vencord, a modification for Discord's desktop app
+ * Copyright (c) 2022 Vendicated and contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+import { onceDefined } from "@shared/onceDefined";
+import electron, { app, BrowserWindowConstructorOptions, Menu } from "electron";
+import { dirname, join } from "path";
+
+import { RendererSettings } from "./settings";
+import { patchTrayMenu } from "./trayMenu";
+import { DATA_DIR, IS_VANILLA } from "./utils/constants";
+import { patchWebRequestMultiplexer } from "./utils/webRequestMultiplexer";
+
+console.log("[Kittencord] Starting up...");
+
+// Electron replaces the previous listener on every webRequest registration, which lets
+// Discord's own development-only onHeadersReceived listener (allowDevHosts) clobber our
+// CSP patches. This hooks session creation, so every session is multiplexed before any
+// code can register on it.
+if (!IS_VANILLA) patchWebRequestMultiplexer();
+
+// Our injector file at app/index.js
+const injectorPath = require.main!.filename;
+
+// The original app.asar
+const asarPath = join(dirname(injectorPath), "..", "_app.asar");
+
+const discordPkg = require(join(asarPath, "package.json"));
+require.main!.filename = join(asarPath, discordPkg.main);
+if (IS_VESKTOP || IS_EQUIBOP) require.main!.filename = join(dirname(injectorPath), "..", "..", "package.json");
+
+// @ts-expect-error Untyped method? Dies from cringe
+app.setAppPath(asarPath);
+
+if (!IS_VANILLA) {
+    const settings = RendererSettings.store;
+
+    patchTrayMenu();
+
+    /*
+     * re-apply the patch when discord ships a new host version. skipped
+     * on vesktop and equibop because they manage their own updates.
+     */
+    if (!IS_VESKTOP && !IS_EQUIBOP) {
+        try {
+            require("./hostUpdateHook").installHostUpdateHook();
+        } catch (err) {
+            console.error("[Kittencord] Failed to install host update hook", err);
+        }
+    }
+
+    // Repatch after host updates on Windows and Linux
+    if (process.platform === "win32" || process.platform === "linux") {
+        require("./persistAfterDiscordUpdates");
+    }
+
+    if (process.platform === "win32" && settings.winCtrlQ) {
+        const originalBuild = Menu.buildFromTemplate;
+        Menu.buildFromTemplate = function (template) {
+            if (template[0]?.label === "&File") {
+                const { submenu } = template[0];
+                if (Array.isArray(submenu)) {
+                    submenu.push({
+                        label: "Quit (Hidden)",
+                        visible: false,
+                        acceleratorWorksWhenHidden: true,
+                        accelerator: "Control+Q",
+                        click: () => app.quit()
+                    });
+                }
+            }
+            return originalBuild.call(this, template);
+        };
+    }
+
+    class BrowserWindow extends electron.BrowserWindow {
+        constructor(options: BrowserWindowConstructorOptions) {
+            if (!options?.webPreferences?.preload || !options.title) {
+                super(options);
+                return;
+            }
+
+            const { frameless, mainWindowFrameless, nativeTitleBar, disableMinSize, transparent, macosVibrancyStyle, windowsMaterial } = settings;
+
+            const original = options.webPreferences.preload;
+            const isMainWindow = options.title === "Discord";
+            options.webPreferences.preload = join(__dirname, "preload.js");
+            options.webPreferences.sandbox = false;
+            // work around discord unloading when in background
+            options.webPreferences.backgroundThrottling = false;
+
+            if (mainWindowFrameless && isMainWindow) {
+                options.frame = false;
+            } else if (frameless) {
+                options.frame = false;
+            } else if (process.platform === "win32" && nativeTitleBar && !transparent) {
+                // A transparent window gets no Windows frame, so the native title bar is only used without transparency;
+                // otherwise Discord keeps its own window buttons (both settings together left no buttons at all).
+                delete options.frame;
+            }
+
+            if (disableMinSize) {
+                options.minWidth = 0;
+                options.minHeight = 0;
+            }
+
+            if (transparent) {
+                options.transparent = true;
+                options.backgroundColor = "#00000000";
+            }
+            if (process.platform === "darwin" && macosVibrancyStyle) {
+                options.vibrancy = macosVibrancyStyle;
+                options.backgroundColor = "#00000000";
+            }
+            if (process.platform === "win32" && windowsMaterial && windowsMaterial !== "none") {
+                options.backgroundMaterial = windowsMaterial;
+                options.backgroundColor = "#00000000";
+            }
+
+            options.webPreferences.devTools = true;
+
+            process.env.DISCORD_PRELOAD = original;
+
+            super(options);
+
+            this.webContents.on("before-input-event", (event, input) => {
+                if (input.type === "keyDown") {
+                    const isCtrl = input.control || input.meta;
+                    const key = input.key.toLowerCase();
+                    if ((isCtrl && input.shift && key === "i") || (isCtrl && input.alt && key === "i") || key === "f12") {
+                        if (this.webContents.isDevToolsOpened()) {
+                            this.webContents.closeDevTools();
+                        } else {
+                            this.webContents.openDevTools({ mode: "right" });
+                        }
+                        event.preventDefault();
+                    }
+                }
+            });
+
+            this.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+                if (isMainFrame) {
+                    console.error(`[Kittencord] Main frame failed to load (${errorCode}): ${errorDescription} - ${validatedURL}`);
+                }
+            });
+
+            this.webContents.on("preload-error", (_event, preloadPath, error) => {
+                console.error(`[Kittencord] Preload failed to load (${preloadPath}):`, error);
+            });
+
+            if (disableMinSize) {
+                // Disable the Electron call entirely so that Discord can't dynamically change the size
+                this.setMinimumSize = (_width: number, _height: number) => { };
+            }
+        }
+    }
+    Object.assign(BrowserWindow, electron.BrowserWindow);
+    // esbuild may rename our BrowserWindow, which leads to it being excluded
+    // from getFocusedWindow(), so this is necessary
+    // https://github.com/discord/electron/blob/13-x-y/lib/browser/api/browser-window.ts#L60-L62
+    Object.defineProperty(BrowserWindow, "name", { value: "BrowserWindow", configurable: true });
+
+    // Replace electrons exports with our custom BrowserWindow
+    const electronPath = require.resolve("electron");
+    delete require.cache[electronPath]!.exports;
+    require.cache[electronPath]!.exports = {
+        ...electron,
+        BrowserWindow
+    };
+
+    // Patch appSettings to force enable devtools
+    onceDefined(global, "appSettings", s => {
+        s.set("DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOU_ARE_DOING", true);
+        s.set("DANGEROUS_ENABLE_DEVTOOLS_ONLY_ENABLE_IF_YOU_KNOW_WHAT_YOURE_DOING", true);
+    });
+
+    process.env.DATA_DIR = DATA_DIR;
+    // The setting is `default: false` and its description is "print a native stack trace
+    // when Discord crashes", i.e. the toggle turns traces *on*. `=== true` is therefore
+    // "off unless explicitly enabled". The previous `!== false` also turned them on for any
+    // unset or legacy value, which is every install that never touched the toggle, since
+    // the renderer only materialises the default via getDefaultValue.
+    if (settings.plugins?.NoTrack?.disableStackDumping === true) process.env.ELECTRON_ENABLE_STACK_DUMPING = "true";
+} else {
+    console.log("[Kittencord] Running in vanilla mode. Not loading Kittencord");
+}
+
+console.log("[Kittencord] Loading original Discord app.asar");
+require(require.main!.filename);

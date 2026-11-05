@@ -1,0 +1,74 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.kc-market-empty {
+    display: grid;
+    place-items: center;
+    min-height: 240px;
+    color: var(--text-muted);
+}
+
+.kc-market-empty svg {
+    width: min(240px, 70%);
+    overflow: visible;
+}
+
+.kc-sleeping-cat-shadow {
+    fill: var(--background-modifier-accent);
+}
+
+.kc-sleeping-cat-body {
+    transform-origin: 120px 132px;
+    animation: kc-cat-breath 5s ease-in-out infinite;
+}
+
+.kc-sleeping-cat-fur,
+.kc-sleeping-cat-face {
+    fill: color-mix(in srgb, var(--brand-500) 20%, var(--background-secondary));
+    stroke: var(--text-muted);
+    stroke-width: 1.5px;
+    stroke-linejoin: round;
+}
+
+.kc-sleeping-cat-tail,
+.kc-sleeping-cat-lines,
+.kc-sleeping-cat-paw {
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    stroke-width: 2px;
+}
+
+.kc-sleeping-cat-tail {
+    stroke-width: 12px;
+    stroke: color-mix(in srgb, var(--brand-500) 40%, var(--background-secondary));
+    transform-origin: 173px 115px;
+    animation: kc-cat-tail 7s ease-in-out infinite;
+}
+
+.kc-sleeping-cat-nose,
+.kc-sleeping-cat-dot {
+    fill: var(--brand-500);
+}
+
+.kc-sleeping-cat-dot {
+    opacity: 0.4;
+}
+
+@keyframes kc-cat-breath {
+    50% { transform: scaleY(1.025); }
+}
+
+@keyframes kc-cat-tail {
+    50% { transform: rotate(-3deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kc-sleeping-cat-body,
+    .kc-sleeping-cat-tail {
+        animation: none;
+    }
+}

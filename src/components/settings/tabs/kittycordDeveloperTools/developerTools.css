@@ -1,0 +1,144 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.kc-dev-hero {
+    display: grid;
+    gap: 18px;
+    padding: 22px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: linear-gradient(120deg, color-mix(in srgb, var(--brand-500) 10%, var(--background-secondary)), var(--background-secondary));
+}
+
+.kc-dev-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.kc-dev-status {
+    padding: 4px 10px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.kc-dev-status-enabled {
+    color: var(--text-positive);
+    border-color: color-mix(in srgb, var(--text-positive) 35%, transparent);
+    background: color-mix(in srgb, var(--text-positive) 8%, transparent);
+}
+
+.kc-dev-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.kc-dev-hero > :last-child {
+    margin-bottom: 0;
+}
+
+.kc-dev-shortcuts {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--background-secondary);
+}
+
+.kc-dev-shortcuts strong {
+    color: var(--text-normal);
+    font-size: 14px;
+}
+
+.kc-dev-shortcuts p {
+    color: var(--text-muted);
+    margin: 4px 0 0;
+    font-size: 12px;
+}
+
+.kc-dev-shortcuts .kc-tools-actions {
+    margin: 0;
+}
+
+.kc-dev-shortcuts button {
+    transition: transform 500ms cubic-bezier(0.42, 0, 0.58, 1), border-color 500ms cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.kc-dev-shortcuts button:hover {
+    transform: translateY(-2px);
+}
+
+.kc-dev-steps {
+    padding-inline-start: 24px;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+.kc-dev-steps li + li {
+    margin-top: 8px;
+}
+
+.kc-dev-code-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 10px 14px;
+    border: 1px solid var(--border-subtle);
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    background: var(--background-tertiary);
+    color: var(--text-normal);
+    font-family: var(--font-code);
+    font-size: 12px;
+}
+
+.kc-dev-code-heading > :last-child {
+    margin-inline-start: auto;
+    color: var(--text-muted);
+    font-family: var(--font-primary);
+}
+
+.kc-dev-source {
+    margin-top: 0;
+    border-radius: 0 0 8px 8px;
+    max-height: 360px;
+}
+
+@media (width <= 600px) {
+    .kc-dev-hero {
+        padding: 16px;
+    }
+
+    .kc-dev-heading {
+        align-items: flex-start;
+    }
+
+    .kc-dev-shortcuts {
+        padding: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kc-dev-shortcuts button {
+        transition: none;
+    }
+
+    .kc-dev-shortcuts button:hover {
+        transform: none;
+    }
+}

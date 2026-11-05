@@ -1,0 +1,77 @@
+div[data-selenium-video-tile],
+div[class*="videoWrapper"],
+div[class*="media-engine-video"],
+video {
+    border-radius: var(--vc-pfp-radius, 12px) !important;
+}
+
+div[data-selenium-video-tile],
+div[class*="videoWrapper"] {
+    overflow: hidden !important;
+}
+
+/* The picture is painted and masked on ::before so this element can carry the
+   glow filter unmasked. A filter on the backdrop wrapper would also trace
+   whatever that wrapper paints, like a profile gradient. Avoid :has() here, the
+   managed sheet can drop those rules at boot. */
+div[data-selenium-video-tile] div[role="img"] {
+    position: relative;
+    width: 100% !important;
+    height: 100% !important;
+    background: none !important;
+    filter: var(--vc-pfp-glow-filter, none) !important;
+    transition: filter 250ms ease;
+
+    > * {
+        display: none;
+    }
+}
+
+div[data-selenium-video-tile] div[role="img"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: center / contain no-repeat;
+    background-image: var(--full-res-avatar);
+    transform: scale(var(--vc-pfp-zoom, 1));
+    -webkit-mask-image: var(--vc-pfp-avatar-mask, url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='5'%20fill='%23fff'/%3E%3C/svg%3E"));
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    mask-image: var(--vc-pfp-avatar-mask, url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='5'%20fill='%23fff'/%3E%3C/svg%3E"));
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+}
+
+/* The doubled [role="img"] beats FullVCPFP's `border-radius: unset !important` */
+div[data-selenium-video-tile] div[role="img"][role="img"] {
+    border-radius: var(--vc-pfp-avatar-radius, 5%) !important;
+}
+
+/* The hide-background switch also hides the per-user backdrop behind focused tiles */
+div[data-selenium-video-tile][style*="--vc-pfp-hide-bg"] [class*="background"] {
+    background: none !important;
+}
+
+/* Box mode rings the tile box while speaking, like Discord's own border.
+   Picture mode rings the picture through the filter above instead. Stream
+   tiles never carry the speaking marker; the stream exclusion is a backstop. No transition: fading a blurred shadow repaints it every
+   frame. */
+div[data-selenium-video-tile][style*="--vc-pfp-speaking"]:not([style*="--vc-pfp-ring-pic"], [style*="--vc-pfp-stream"]) {
+    box-shadow: 0 0 0 2px var(--green-360, #23a55a), 0 0 16px 3px rgb(35 165 90 / 50%) !important;
+}
+
+/* Camera tiles have no picture, so they keep Discord's own tile border */
+div[data-selenium-video-tile][style*="--vc-pfp-ring-pic"]:not([style*="--vc-pfp-camera"]) [class*="border__"] {
+    display: none !important;
+}
+
+/* Let the halo fade past the tile box instead of cutting off at its edge */
+div[data-selenium-video-tile][style*="--vc-pfp-hide-bg"] {
+    overflow: visible !important;
+}
+
+div[data-selenium-video-tile][style*="--vc-pfp-hide-bg"] [class*="content"] {
+    overflow: visible !important;
+}

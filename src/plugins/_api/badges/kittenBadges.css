@@ -1,0 +1,171 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.vc-kitten-name-crown {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-inline-start: 4px;
+    vertical-align: middle;
+    line-height: 1;
+    color: var(--icon-feedback-warning, var(--text-feedback-warning, var(--text-brand)));
+}
+
+.vc-kitten-name-crown svg {
+    width: 16px;
+    height: 16px;
+}
+
+.vc-kitten-display-year strong {
+    color: var(--text-strong, var(--text-normal));
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.vc-kitten-layout {
+    color: var(--text-default, var(--text-normal));
+    max-height: 360px;
+    overflow: auto;
+}
+
+.vc-kitten-layout-modal {
+    color: var(--text-default, var(--text-normal));
+    background: var(--background-surface-high, var(--modal-background, var(--background-floating, var(--background-secondary))));
+    border-radius: 8px;
+    width: min(560px, calc(100vw - 32px));
+    border: 1px solid var(--border-subtle);
+    overflow: hidden;
+    font-family: var(--font-primary);
+}
+
+.vc-kitten-layout-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 18px;
+}
+
+.vc-kitten-layout-content {
+    padding: 16px 20px;
+}
+
+.vc-kitten-layout-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--background-surface-low, var(--background-primary));
+}
+
+.vc-kitten-layout-modal .vc-btn-base {
+    border-radius: 8px;
+    min-height: 34px;
+}
+
+.vc-kitten-layout-preview {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px;
+    margin-block: 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--background-surface-low, var(--background-primary));
+}
+
+.vc-kitten-layout-preview img,
+.vc-kitten-layout-row > img {
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.vc-kitten-layout-modal :is(p, label) {
+    line-height: 1.5;
+}
+
+.vc-kitten-layout-modal :is(h1, h2, h3) {
+    color: var(--text-default, var(--text-normal));
+}
+
+.vc-kitten-layout-row > span:first-of-type {
+    flex: 1;
+    min-width: 0;
+}
+
+.vc-kitten-layout-index {
+    width: 24px;
+    color: var(--text-muted);
+}
+
+.vc-kitten-cloud-badges {
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 100%;
+    gap: 4px;
+    vertical-align: middle;
+}
+
+.vc-kitten-badge:not(.vc-kitten-badge-tooltip) {
+    flex: 0 0 22px;
+    width: 22px;
+    height: 22px;
+    line-height: 1;
+}
+
+
+
+.vc-kitten-badge img {
+    object-fit: contain;
+}
+
+.vc-kitten-layout-row {
+    color: var(--text-default, var(--text-normal));
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-wrap: wrap;
+    font-size: 13px;
+}
+
+.vc-kitten-layout-row > .vc-btn-base {
+    min-width: 32px;
+    padding: 6px;
+}
+
+.vc-kitten-layout-row:last-child {
+    border-bottom: 0;
+}
+
+.vc-kitten-profile-details {
+    display: grid;
+    gap: 6px;
+    color: var(--text-default, var(--text-normal));
+    font-family: var(--font-primary);
+    font-size: 12px;
+    padding: 8px 16px;
+}
+
+.vc-kitten-profile-details small {
+    color: var(--text-muted);
+}
+
+.vc-kitten-profile-details button {
+    justify-self: start;
+}
+
+.vc-kitten-display-year {
+    display: grid;
+    gap: 4px;
+}
+
+
+.vc-kitten-layout-row[draggable="true"] { cursor: grab; }
+.vc-kitten-layout-row[data-dragging] { opacity: .5; }

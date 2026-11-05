@@ -1,0 +1,731 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+/*
+ * KittenCord settings foundation (UI_REDESIGN_SPEC_090 §3, §4, §7).
+ * Colors come only from Discord variables and color-mix, so every theme applies.
+ * Motion is limited to the ten motions listed in §7; reduced motion turns all of it off.
+ */
+
+.kc-premium-settings {
+    --kc-e-out: cubic-bezier(.2, .8, .2, 1);
+    --kc-e-io: cubic-bezier(.42, 0, .58, 1);
+    --kc-t1: 150ms;
+    --kc-t2: 240ms;
+    --kc-t3: 320ms;
+    --kc-fg: var(--text-default, var(--text-normal));
+    --kc-fg-strong: var(--text-strong, var(--header-primary, var(--kc-fg)));
+    --kc-fg-muted: var(--text-muted);
+    --kc-brand: var(--brand-500, var(--text-brand));
+    --kc-card: var(--background-base-lower, var(--background-secondary));
+    --kc-sep: var(--border-subtle, color-mix(in srgb, var(--kc-fg) 12%, transparent));
+    --kc-hover: color-mix(in srgb, var(--kc-fg) 5%, transparent);
+    --kc-tint: color-mix(in srgb, var(--kc-fg) 6%, transparent);
+    --kc-brand-tint: color-mix(in srgb, var(--kc-brand) 16%, transparent);
+    --kc-brand-tint-hover: color-mix(in srgb, var(--kc-brand) 22%, transparent);
+    --kc-danger: var(--text-feedback-critical, var(--status-danger));
+    --kc-ok: var(--status-positive, var(--text-feedback-positive));
+    --kc-warn: var(--status-warning, var(--text-feedback-warning));
+}
+
+/* Page anatomy */
+
+.kc-pref-page,
+.kc-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 720px;
+}
+
+/* 1. Page enter: groups fade in and rise 6px, once per navigation, stagger 40ms over at most 5 steps */
+.kc-page > * {
+    animation: kc-rise var(--kc-t3) var(--kc-e-out) both;
+}
+
+.kc-page > :nth-child(2) {
+    animation-delay: 40ms;
+}
+
+.kc-page > :nth-child(3) {
+    animation-delay: 80ms;
+}
+
+.kc-page > :nth-child(4) {
+    animation-delay: 120ms;
+}
+
+.kc-page > :nth-child(n + 5) {
+    animation-delay: 160ms;
+}
+
+@keyframes kc-rise {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.kc-page-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.kc-page-heading {
+    flex: 1;
+    min-width: 0;
+}
+
+.kc-premium-settings .kc-page-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+    color: var(--kc-fg-strong);
+}
+
+.kc-premium-settings.kc-preference .kc-page-description {
+    margin-top: 3px;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.kc-page-actions {
+    position: relative;
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 3. Segmented control: a pill slides between segments */
+.kc-segments {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: inline-flex;
+    align-self: flex-start;
+    gap: 2px;
+    max-width: 100%;
+    overflow-x: auto;
+    padding: 3px;
+    border-radius: 8px;
+    /* Opaque under the tint: the bar stays pinned while the list scrolls behind it. */
+    background: linear-gradient(var(--kc-tint), var(--kc-tint)), var(--modal-background, var(--background-base-low, var(--background-primary)));
+    box-shadow: 0 6px 12px -8px color-mix(in srgb, var(--background-tertiary, var(--background-primary)) 80%, transparent);
+    scrollbar-width: none;
+}
+
+.kc-segment {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: none;
+    padding: 5px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--kc-fg-muted);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: color var(--kc-t2) var(--kc-e-io);
+}
+
+.kc-segment:hover,
+.kc-segment[aria-selected="true"] {
+    color: var(--kc-fg-strong);
+}
+
+.kc-segment:focus-visible {
+    outline: 2px solid var(--border-focus, var(--kc-brand));
+    outline-offset: -2px;
+}
+
+.kc-segment-count {
+    font-size: 11px;
+    opacity: .6;
+    font-variant-numeric: tabular-nums;
+}
+
+.kc-segment-pill {
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    z-index: 0;
+    border-radius: 6px;
+    background: var(--kc-card);
+    box-shadow: 0 0 0 1px var(--kc-sep);
+    transition: left var(--kc-t2) var(--kc-e-out), width var(--kc-t2) var(--kc-e-out);
+}
+
+/* Groups and rows */
+
+.kc-pref-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.kc-pref-group-head {
+    padding-inline: 2px;
+}
+
+.kc-premium-settings .kc-pref-group-title {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--kc-fg-muted);
+}
+
+.kc-premium-settings.kc-preference .kc-pref-group-description {
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.kc-premium-settings.kc-preference .kc-pref-group-footer {
+    padding-inline: 2px;
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+.kc-pref-list {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--kc-sep);
+    border-radius: 8px;
+    background: var(--kc-card);
+}
+
+.kc-pref-row {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--kc-fg);
+    font: inherit;
+    text-align: start;
+}
+
+.kc-premium-settings.kc-preference .kc-pref-list > .kc-pref-row + .kc-pref-row {
+    border-top: 1px solid var(--kc-sep);
+}
+
+.kc-pref-main {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 11px 14px;
+}
+
+/* 4. Row hover: tint only, the tile warms to brand and the chevron nudges; the row itself never moves */
+.kc-pref-link,
+.kc-pref-switch {
+    cursor: pointer;
+}
+
+.kc-pref-link,
+.kc-pref-switch,
+.kc-plugin-row {
+    transition: background var(--kc-t1) var(--kc-e-io);
+}
+
+.kc-pref-link:hover,
+.kc-pref-switch:hover,
+.kc-plugin-row:hover {
+    background: var(--kc-hover);
+}
+
+.kc-pref-switch[data-disabled] {
+    cursor: not-allowed;
+    opacity: .6;
+}
+
+.kc-tile {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: var(--kc-tint);
+    color: var(--interactive-normal, var(--kc-fg-muted));
+    transition: background var(--kc-t2) var(--kc-e-io), color var(--kc-t2) var(--kc-e-io);
+}
+
+.kc-tile > svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* 5. Enabling an item crossfades its tile to the brand tint */
+.kc-tile[data-brand],
+.kc-pref-switch[data-enabled] .kc-tile,
+.kc-plugin-row[data-enabled] .kc-tile {
+    background: var(--kc-brand-tint);
+    color: var(--kc-brand);
+}
+
+.kc-pref-link:hover .kc-tile,
+.kc-pref-switch:hover .kc-tile,
+.kc-plugin-row:hover .kc-tile {
+    background: var(--kc-brand-tint-hover);
+    color: var(--kc-brand);
+}
+
+.kc-pref-text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.kc-pref-label {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--kc-fg-strong);
+}
+
+.kc-pref-description {
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.3;
+    color: var(--kc-fg-muted);
+    text-overflow: ellipsis;
+}
+
+.kc-pref-detail {
+    flex: none;
+    max-width: 40%;
+    overflow: hidden;
+    font-size: 12px;
+    color: var(--kc-fg-muted);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kc-pref-control {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    gap: 8px;
+}
+
+.kc-pref-chevron {
+    flex: none;
+    color: var(--kc-fg-muted);
+    transition: transform var(--kc-t2) var(--kc-e-out), color var(--kc-t1) var(--kc-e-io);
+}
+
+.kc-pref-link:hover .kc-pref-chevron {
+    transform: translateX(3px);
+    color: var(--kc-fg-strong);
+}
+
+.kc-pref-extra {
+    padding: 0 14px 12px 56px;
+    font-size: 12px;
+    color: var(--kc-fg-muted);
+}
+
+.kc-pref-block {
+    padding: 12px 14px;
+}
+
+.kc-pref-block :is(h5, h3) {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.kc-pref-block p {
+    font-size: 12px;
+    color: var(--kc-fg-muted);
+}
+
+.kc-pref-credits summary {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--kc-fg-strong);
+}
+
+.kc-pref-credits ul {
+    display: grid;
+    gap: 6px;
+    margin: 10px 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+}
+
+.kc-pref-credits li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+}
+
+.kc-pref-credits li span {
+    color: var(--kc-fg-muted);
+}
+
+.kc-danger-zone .kc-pref-group-title {
+    color: var(--kc-danger);
+}
+
+.kc-pref-link:disabled {
+    cursor: not-allowed;
+    opacity: .6;
+}
+
+.kc-pref-link:focus-visible {
+    outline: 2px solid var(--border-focus, var(--kc-brand));
+    outline-offset: -2px;
+}
+
+/* Buttons (§4): 32px controls, 28px inside rows */
+
+.kc-premium-settings.kc-preference .vc-btn-base.kc-btn {
+    min-height: 32px;
+    padding: 0 14px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color var(--kc-t1) var(--kc-e-io), color var(--kc-t1) var(--kc-e-io), transform var(--kc-t1) var(--kc-e-io);
+}
+
+.kc-premium-settings.kc-preference .vc-btn-base.kc-btn-row {
+    min-height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+
+.kc-icon-btn {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--interactive-normal, var(--kc-fg-muted));
+    cursor: pointer;
+    transition: background var(--kc-t1) var(--kc-e-io), color var(--kc-t1) var(--kc-e-io), transform var(--kc-t1) var(--kc-e-io);
+}
+
+.kc-icon-btn:hover {
+    background: var(--kc-hover);
+    color: var(--interactive-hover, var(--kc-fg-strong));
+}
+
+.kc-icon-btn:focus-visible {
+    outline: 2px solid var(--border-focus, var(--kc-brand));
+    outline-offset: 1px;
+}
+
+.kc-icon-btn:disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+
+.kc-icon-btn:active {
+    transform: scale(.97);
+}
+
+/* 7. Press feedback */
+.kc-premium-settings.kc-preference .vc-btn-base.kc-btn:active {
+    transform: scale(.97);
+}
+
+/* 5. Switch: the knob slides and stretches slightly while pressed (KittenCord pages only) */
+.kc-premium-settings .vc-switch-thumb {
+    transition: left var(--kc-t2) var(--kc-e-out), transform var(--kc-t1) var(--kc-e-io);
+    transform-origin: center;
+}
+
+.kc-premium-settings .vc-switch-container:active .vc-switch-thumb {
+    transform: scaleX(1.15);
+}
+
+.kc-premium-settings .vc-switch-indicator {
+    transition: background-color var(--kc-t2) var(--kc-e-io), border-color var(--kc-t2) var(--kc-e-io);
+}
+
+/* 6. Popovers open from their anchor corner */
+.kc-popover {
+    position: absolute;
+    top: calc(100% + 6px);
+    z-index: 10;
+    min-width: 200px;
+    max-width: min(320px, calc(100vw - 32px));
+    padding: 6px;
+    border: 1px solid var(--kc-sep);
+    border-radius: 8px;
+    background: var(--background-surface-high, var(--kc-card));
+    box-shadow: var(--shadow-high, var(--elevation-high));
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(.96);
+    transform-origin: top right;
+    visibility: hidden;
+    transition: opacity var(--kc-t1) var(--kc-e-io), transform var(--kc-t2) var(--kc-e-out), visibility 0s linear var(--kc-t2);
+}
+
+.kc-popover[data-align="end"] {
+    right: 0;
+}
+
+.kc-popover[data-align="start"] {
+    left: 0;
+    transform-origin: top left;
+}
+
+.kc-popover[data-open] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    visibility: visible;
+    transition: opacity var(--kc-t1) var(--kc-e-io), transform var(--kc-t2) var(--kc-e-out);
+}
+
+/* 8. Counters pop once when the number changes */
+.kc-counter {
+    display: inline-grid;
+    place-items: center;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 8px;
+    background: var(--kc-brand);
+    color: var(--control-primary-text-default, var(--white-500));
+    font-size: 10px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.kc-counter[data-pop] {
+    animation: kc-pop var(--kc-t2) var(--kc-e-out);
+}
+
+@keyframes kc-pop {
+    0% {
+        transform: scale(.4);
+    }
+
+    70% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* 9. Filtered lists: rows fade in, no layout animation */
+.kc-list-fade > * {
+    animation: kc-fade var(--kc-t2) var(--kc-e-out) both;
+}
+
+@keyframes kc-fade {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* 10. Status dot: two soft pings when the page opens, then still */
+.kc-status-dot {
+    display: inline-block;
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--kc-ok);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--kc-ok) 50%, transparent);
+    animation: kc-ping 2.4s var(--kc-e-io) 2;
+}
+
+.kc-status-dot[data-tone="warning"] {
+    background: var(--kc-warn);
+}
+
+.kc-status-dot[data-tone="danger"] {
+    background: var(--kc-danger);
+}
+
+@keyframes kc-ping {
+    70% {
+        box-shadow: 0 0 0 6px transparent;
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 transparent;
+    }
+}
+
+@container (width < 420px) {
+    .kc-pref-main {
+        gap: 10px;
+        padding: 10px 12px;
+    }
+
+    .kc-pref-extra {
+        padding-left: 12px;
+    }
+
+    .kc-pref-detail {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kc-premium-settings *,
+    .kc-premium-settings *::before,
+    .kc-premium-settings *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* Page shells: existing pages render inside a segment, so their old tool header is replaced by the page header */
+.kc-shell-body {
+    min-width: 0;
+}
+
+.kc-premium-settings.kc-preference .kc-shell-body .kc-tool-header {
+    display: none;
+}
+
+.kc-shell-body .vc-settings-tab {
+    padding: 0;
+}
+
+/* Notifications bell (Home header) */
+.kc-bell {
+    position: relative;
+    display: inline-flex;
+}
+
+.kc-bell-count {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    pointer-events: none;
+}
+
+.kc-popover-head,
+.kc-popover-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 4px 6px;
+}
+
+.kc-popover-foot {
+    justify-content: flex-end;
+    border-top: 1px solid var(--kc-sep);
+}
+
+.kc-popover-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.kc-premium-settings.kc-preference .kc-popover-note {
+    padding: 12px 8px;
+    font-size: 13px;
+    color: var(--kc-fg-muted);
+}
+
+.kc-bell .kc-popover {
+    width: min(340px, calc(100vw - 32px));
+}
+
+.kc-notification[data-unread] .kc-pref-label::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin-inline-end: 6px;
+    border-radius: 50%;
+    background: var(--kc-brand);
+    vertical-align: middle;
+}
+
+.kc-tile .kc-badge-image,
+.kc-pref-row .kc-badge-image {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.kc-list-sentinel {
+    height: 1px;
+}
+
+.kc-plugin-source-tile {
+    overflow: hidden;
+}
+
+.kc-plugin-source-tile > img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.kc-plugin-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.kc-plugin-tag {
+    padding: 1px 7px;
+    border-radius: 999px;
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--text-muted);
+    background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+}
+
+.kc-plugins-view {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+    margin: 8px 0 -4px;
+}
+
+.kc-plugins-cards {
+    padding: 12px;
+}

@@ -1,0 +1,80 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.kc-mini-dock {
+    padding: 16px;
+    min-height: 100%;
+    color: var(--text-default, var(--text-normal));
+    background: var(--background-surface-high, var(--background-secondary));
+}
+
+.kc-mini-dock header {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+}
+
+.kc-mini-dock small {
+    display: block;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+.kc-dock-participants {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-block: 18px;
+}
+
+.kc-dock-person {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+.kc-dock-person img {
+    border-radius: 50%;
+    border: 2px solid var(--border-subtle);
+}
+
+.kc-dock-person[data-speaking="true"] img {
+    border-color: var(--status-positive, var(--text-positive));
+}
+
+.kc-mini-dock[data-compact="false"] .kc-dock-person {
+    width: 100%;
+}
+
+.kc-dock-speaking {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--status-positive, var(--text-positive));
+}
+
+.kc-dock-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.kc-mini-dock label {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 18px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.kc-mini-dock input {
+    width: 100%;
+    accent-color: var(--brand-500);
+}
+

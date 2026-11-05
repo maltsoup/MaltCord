@@ -1,0 +1,735 @@
+/*
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+.kc-tools-card {
+    padding: 16px;
+    margin: 12px 0;
+    border: 1px solid var(--border-subtle, var(--background-modifier-accent));
+    border-radius: var(--radius-sm, 8px);
+}
+
+.kc-tool-page {
+    display: grid;
+    color: var(--text-default, var(--text-normal));
+    gap: 16px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.kc-catalog-source {
+    max-height: 240px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-family: var(--font-code);
+    font-size: 13px;
+}
+
+.kc-builder-block {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px auto auto;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.kc-builder-preview {
+    padding: 16px;
+    border: 2px solid;
+    border-radius: 8px;
+}
+
+.kc-builder-swatch {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin: 4px 8px 0 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+}
+
+.kc-tool-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kc-tool-header h2,
+.kc-tool-header p {
+    margin: 0;
+}
+
+.kc-tool-header p {
+    margin-top: 4px;
+    color: var(--text-muted);
+}
+
+.kc-tool-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    color: var(--text-brand, var(--brand-400));
+    background: var(--background-modifier-accent);
+}
+
+.kc-tool-page .kc-tools-card {
+    margin: 0;
+}
+
+.kc-tool-page .kc-tools-card > p {
+    margin: 8px 0;
+}
+
+.kc-tool-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.kc-tool-field {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+}
+
+.kc-select {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    min-height: 38px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-subtle, var(--background-modifier-accent));
+    border-radius: 8px;
+    background: var(--input-background, var(--background-secondary));
+    color: var(--text-normal);
+    font: inherit;
+    color-scheme: inherit;
+}
+
+.kc-select-popout {
+    min-width: max-content;
+    max-width: calc(100vw - 16px);
+}
+
+.kc-select-anchor {
+    min-width: 0;
+    width: 100%;
+}
+
+.kc-select:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+.kc-market-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr));
+    gap: 16px;
+}
+
+.kc-market-grid .kc-tools-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+
+.kc-source-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-brand, var(--brand-400));
+}
+
+.kc-tool-steps {
+    margin: 0;
+    padding-left: 24px;
+    color: var(--text-normal);
+    line-height: 1.7;
+}
+
+.kc-tools-card section[aria-label^="Local plugin controls"] {
+    display: grid;
+    gap: 12px;
+}
+
+.kc-tool-field > label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-normal);
+}
+
+.kc-tool-editor textarea {
+    min-height: 200px;
+    font-family: var(--font-code);
+    font-size: 13px;
+    line-height: 1.6;
+    tab-size: 4;
+}
+
+.kc-search-select {
+    position: relative;
+    min-width: 0;
+}
+
+.kc-search-select > summary {
+    cursor: pointer;
+    padding: 9px 12px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--input-background, var(--background-secondary));
+    color: var(--text-normal);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+
+
+.kc-search-select-options {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 4px);
+    z-index: 20;
+    min-width: min(240px, 100%);
+    padding: 8px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--background-floating, var(--background-secondary));
+    box-shadow: var(--shadow-low);
+}
+
+.kc-search-select-options > input {
+    width: 100%;
+    margin-bottom: 6px;
+}
+
+.kc-search-select-options > div {
+    max-height: 240px;
+    overflow: auto;
+}
+
+.kc-search-select-option {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 7px 4px;
+    color: var(--text-normal);
+    cursor: pointer;
+}
+
+.kc-search-select-option:hover {
+    background: var(--background-modifier-hover);
+}
+
+.kc-search-select-option input {
+    width: 16px;
+    flex-shrink: 0;
+    accent-color: var(--brand-500);
+}
+
+
+
+.kc-tool-details {
+    border: 1px solid var(--border-subtle, var(--background-modifier-accent));
+    border-radius: 8px;
+}
+
+.kc-tool-details > summary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.kc-tool-details > summary:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+.kc-tool-details[open] > summary {
+    color: var(--text-normal);
+}
+
+.kc-tool-details > div {
+    padding: 0 16px 12px;
+}
+
+.kc-tool-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+}
+
+.kc-tool-stats > div {
+    display: grid;
+    gap: 4px;
+    padding: 12px;
+    text-align: center;
+    background: var(--background-modifier-accent);
+    border-radius: 8px;
+    color: var(--text-muted);
+}
+
+.kc-tool-stats strong {
+    font-size: 22px;
+    color: var(--text-normal);
+}
+
+.kc-tools-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.kc-settings-group {
+    min-width: 0;
+}
+
+.kc-group-tabs {
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    padding: 4px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--background-secondary);
+    margin-bottom: 24px;
+}
+
+.kc-group-tabs .kc-group-tab {
+    flex-shrink: 0;
+    border-radius: 7px;
+    min-height: 36px;
+    padding: 8px 14px;
+    color: var(--text-muted) !important; /* Keep grouped navigation readable over inherited button rules. */
+    background: transparent !important; /* Keep grouped navigation consistent with settings. */
+}
+
+.kc-group-tabs .kc-group-tab[aria-selected="true"] {
+    color: var(--text-strong, var(--text-normal)) !important; /* Expose the active tool over inherited button rules. */
+    background: var(--background-modifier-selected, var(--background-surface-higher, var(--background-surface-high, var(--control-secondary-background-default)))) !important; /* Support current Discord surface tokens and older themes. */
+}
+
+.kc-group-panel {
+    min-width: 0;
+}
+
+.kc-group-panel:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 4px;
+}
+
+.kc-recovery-card {
+    display: grid;
+    gap: 12px;
+    margin: 16px 0;
+}
+
+.kc-recovery-card .kc-tools-actions {
+    margin-top: 0;
+}
+
+.kc-market-grid .kc-tools-actions {
+    margin-top: auto;
+    padding-top: 8px;
+}
+
+.kc-tool-page .vc-btn-base,
+.kc-tools-actions .vc-btn-base {
+    min-height: 36px;
+    border-radius: var(--radius-sm, 8px);
+    background-color: var(--control-secondary-background-default) !important; /* Override inherited global button colors within Kittycord tools. */
+    color: var(--text-default) !important; /* Override inherited global button colors within Kittycord tools. */
+    gap: 8px;
+}
+
+.kc-tools-actions .vc-btn-base svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.kc-tool-page .vc-btn-primary,
+.kc-tools-actions .vc-btn-primary {
+    background-color: var(--control-primary-background-default) !important; /* Preserve native primary colors over inherited global rules. */
+    color: var(--control-primary-text-default) !important; /* Preserve native primary colors over inherited global rules. */
+}
+
+.kc-tool-page .vc-btn-dangerPrimary,
+.kc-tools-actions .vc-btn-dangerPrimary {
+    background-color: var(--control-critical-primary-background-default) !important; /* Preserve native destructive colors over inherited global rules. */
+    color: var(--control-critical-primary-text-default) !important; /* Preserve native destructive colors over inherited global rules. */
+}
+
+.kc-tool-page .vc-btn-dangerSecondary {
+    background-color: var(--control-critical-secondary-background-default) !important; /* Preserve native destructive colors over inherited global rules. */
+    color: var(--control-critical-secondary-text-default) !important; /* Preserve native destructive colors over inherited global rules. */
+}
+
+@media (width <= 600px) {
+    .kc-builder-block {
+        grid-template-columns: minmax(0, 1fr) 48px;
+    }
+
+    .kc-tool-fields {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.kc-premium-settings {
+    --kc-panel: var(--background-secondary, var(--background-base-low));
+    --kc-line: var(--border-subtle, var(--background-modifier-accent));
+    --kc-accent: var(--brand-500, var(--text-brand));
+
+    min-width: 0;
+    color: var(--text-normal);
+}
+
+.kc-premium-settings .kc-tool-header {
+    padding: 0 0 16px;
+    border: 0;
+    border-bottom: 1px solid var(--kc-line);
+    border-radius: 0;
+    background: transparent;
+}
+
+.kc-premium-settings .kc-tool-icon {
+    width: 44px;
+    height: 44px;
+    color: var(--kc-accent);
+    background: color-mix(in srgb, var(--kc-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--kc-accent) 20%, transparent);
+    border-radius: 8px;
+}
+
+.kc-premium-settings .kc-tools-card,
+.kc-premium-settings .kc-tool-details {
+    border-color: var(--kc-line);
+    border-radius: 8px;
+    background: var(--kc-panel);
+}
+
+.kc-premium-settings .kc-tools-card {
+    padding: 20px;
+}
+
+.kc-premium-settings .kc-group-tabs {
+    padding: 6px;
+    border-color: var(--kc-line);
+    border-radius: var(--kc-radius-sm, 5px);
+    background: var(--kc-panel);
+    scrollbar-width: thin;
+}
+
+.kc-premium-settings .kc-catalog-source,
+:where(.kc-premium-settings) .kc-source-diff {
+    scrollbar-color: color-mix(in srgb, var(--kc-accent) 40%, transparent) transparent;
+    scrollbar-width: thin;
+}
+
+.kc-package-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.kc-package-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.kc-package-title > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.kc-package-title h2 {
+    margin: 0;
+}
+
+.kc-package-version {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.kc-status {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--kc-accent, var(--text-normal));
+    background: color-mix(in srgb, var(--kc-accent, var(--brand-500)) 12%, transparent);
+}
+
+.kc-status[data-status="active"] {
+    color: var(--text-positive);
+    background: color-mix(in srgb, var(--text-positive) 12%, transparent);
+}
+
+.kc-status[data-status="blocked"] {
+    color: var(--text-danger);
+    background: color-mix(in srgb, var(--text-danger) 12%, transparent);
+}
+
+.kc-permission-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--kc-line, var(--border-subtle));
+}
+
+.kc-premium-settings .kc-permission-row p {
+    margin: 4px 0;
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.kc-source-diff,
+.kc-source-editor {
+    max-height: 420px;
+    overflow: auto;
+    white-space: pre-wrap;
+    font-family: var(--font-code);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.kc-source-diff span {
+    display: block;
+}
+
+.kc-diff-added {
+    background: color-mix(in srgb, var(--text-positive) 12%, transparent);
+    color: var(--text-positive);
+}
+
+.kc-diff-removed {
+    background: color-mix(in srgb, var(--text-danger) 12%, transparent);
+    color: var(--text-danger);
+}
+
+.kc-operation-progress {
+    display: grid;
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid var(--kc-line);
+    border-radius: 8px;
+}
+
+.kc-operation-progress progress {
+    width: 100%;
+    height: 4px;
+    accent-color: var(--kc-accent);
+}
+
+.kc-cloud-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.kc-cloud-publisher {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.kc-cloud-publisher small {
+    display: block;
+    color: var(--text-muted);
+}
+
+.kc-cloud-screenshots {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+}
+
+.kc-cloud-message {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: var(--text-normal);
+    font: inherit;
+}
+
+.kc-cloud-download progress {
+    width: 100%;
+    accent-color: var(--brand-500);
+}
+
+.kc-cloud-bell {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px;
+}
+
+.kc-cloud-unread-count {
+    position: absolute;
+    inset-block-start: -3px;
+    inset-inline-end: -5px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 3px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    background: var(--brand-500);
+    color: var(--white-500);
+    border: 1px solid var(--background-primary);
+}
+
+.kc-tools-card[data-unread="true"] {
+    border-inline-start-color: var(--brand-500);
+}
+
+.kc-cloud-screenshots img {
+    max-width: 320px;
+    max-height: 220px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+@supports (interpolate-size: allow-keywords) {
+    .kc-premium-settings .kc-tool-details {
+        interpolate-size: allow-keywords;
+    }
+
+    .kc-premium-settings .kc-tool-details::details-content {
+        height: 0;
+        overflow: clip;
+    }
+
+    .kc-premium-settings .kc-tool-details[open]::details-content {
+        height: auto;
+    }
+}
+
+.kc-market-cover {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--kc-line);
+}
+
+.kc-measurement-table {
+    width: 100%;
+    color: var(--text-normal);
+    text-align: start;
+    border-collapse: collapse;
+}
+
+.kc-measurement-table th,
+.kc-measurement-table td {
+    padding: 8px;
+    border-bottom: 1px solid var(--kc-line);
+    overflow-wrap: anywhere;
+}
+
+.kc-measurement-table caption {
+    text-align: start;
+    padding-block: 12px;
+    color: var(--text-muted);
+}
+
+.kc-security-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.kc-account-list {
+    display: grid;
+    gap: 8px;
+}
+
+.kc-account-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    text-align: start;
+    padding: 12px;
+}
+
+.kc-account-row > span {
+    flex: 1;
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+    overflow-wrap: anywhere;
+}
+
+.kc-account-row img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+}
+
+.kc-account-row small {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+.kc-health-more {
+    flex: 1;
+    max-width: 240px;
+}
+
+.kc-search-select > summary:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+.kc-account-setup-scroll {
+    max-height: 320px;
+    overflow: auto;
+    margin-block: 12px;
+}
+
+.kc-account-theme-input {
+    width: 100%;
+    min-height: 80px;
+    box-sizing: border-box;
+    resize: vertical;
+    padding: 10px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: var(--input-background, var(--background-secondary));
+    color: var(--text-normal);
+    font: inherit;
+}

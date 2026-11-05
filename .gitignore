@@ -1,0 +1,83 @@
+dist
+node_modules
+.VSCodeCounter
+.vars
+.secrets
+.input
+.pnpm-store
+
+*.exe
+vencord_installer
+equicord_installer
+
+.idea
+.DS_Store
+
+yarn.lock
+bun.lock
+package-lock.json
+
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+
+.modules/
+src/userplugins
+src/testcordplugins/PanelLayout/usermodules/
+
+ExtensionCache/
+/settings
+
+# vencord companion module cache
+.modules
+
+# wakatime related stuff
+.wakatime-project
+
+# todo
+TODO.md*
+nul
+
+who-fucking-cares-dude/
+
+# discord modules cache
+misc/bundle
+
+# intl scripts
+misc/scripts
+
+# local test harness
+tests/*
+!tests/kittycord*.test.ts
+!tests/kittycordEnvironment.d.ts
+!tests/tsconfig.kittycord.json
+work/
+/KittenCord_Visual_References/
+archive/
+releases/
+
+# Cloud development state and credentials
+.wrangler/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+!.env.example
+!.dev.vars.example
+kittencord-cloud/wrangler.production.jsonc
+
+/KittenCord_Round2_Visual_References/
+
+/mambo.mp4
+
+/Cosmic Kawaii Cat Orbit Sticker.png
+
+/KittenCord_Round3_Visual_References/
+
+!tests/helpers/
+!tests/helpers/kittycordNativeHost.ts
+kittencord-cloud/apps/dashboard/vendor/

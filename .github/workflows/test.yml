@@ -1,0 +1,90 @@
+name: Test
+on:
+    push:
+        tags:
+            - 'v*'
+            - 'rc-*'
+        branches:
+            - main
+            - dev
+            - dev2
+            - 'kittycord/**'
+    pull_request:
+        branches:
+            - main
+            - dev
+            - dev2
+            - 'kittycord/**'
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    Test:
+        name: Test
+        strategy:
+            fail-fast: false
+            matrix:
+                os: [ubuntu-latest, windows-latest]
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - uses: actions/checkout@v7
+
+            - name: Setup PNPM
+              uses: pnpm/setup@v2.1.0
+              with:
+                  runtime: node@v24
+                  require-lockfile: true
+
+            - name: Typecheck
+              run: pnpm testTsc
+
+
+
+
+            - name: Lint
+              run: pnpm lint
+
+            - name: Styles
+              run: pnpm lint-styles
+
+            - name: Packaged browser editor styles
+              run: pnpm exec stylelint browser/editor.css browser/studio.css browser/assistant.css
+
+            - name: Intl patch markers
+              run: pnpm lint:intl
+
+            - name: CSS selectors
+              run: pnpm lint:css
+
+            - name: Patch source checks
+              run: pnpm lint:patches
+
+            - name: Runtime hook ownership
+              run: pnpm lint:runtime-hooks
+
+            - name: Test if desktop version compiles
+              run: pnpm buildStandalone
+
+            - name: Test if web version compiles
+              run: pnpm buildWeb
+
+            - name: Verify Kittycord build metadata and resources
+              run: pnpm kittycord:verify-build
+
+            - name: Verify packaged AST security worker
+              run: pnpm kittencord:verify-security-worker
+
+            - name: Build Windows installer
+              if: runner.os == 'Windows'
+              run: pnpm kittencord:build-installer
+
+            - name: Test if plugin structure is valid
+              run: pnpm generatePluginJson
+
+
+
+            - name: Publication source hygiene
+              run: pnpm kittencord:prepare-publication

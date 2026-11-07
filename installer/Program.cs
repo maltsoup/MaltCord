@@ -369,8 +369,9 @@ namespace KittencordSetup {
                 var diagnosis = InstallService.Diagnose(problem);
                 Failed(diagnosis.Message, false);
                 if (Program.RecordEvent("check-failed", directory, problem) != null) status.Text = "Details saved beside setup in setup-diagnostics.jsonl";
-                retryVerify = diagnosis.Code != "CORE_CHANGED";
+                retryVerify = diagnosis.Code != "CORE_CHANGED" && diagnosis.Code != "DISCORD_RESET";
                 if (!retryVerify) retry.Text = "Install / Repair";
+                if (diagnosis.Code == "DISCORD_RESET") { title.Text = "KittenCord needs reinstalling"; subtitle.Text = "Discord restored its own files."; }
             } finally { busy = false; browse.Enabled = target.Enabled = restart.Enabled = true; install.Enabled = restore.Enabled = verify.Enabled = target.SelectedPath.Length > 0; }
         }
         public void Preview(string state) {

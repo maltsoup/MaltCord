@@ -62,6 +62,18 @@ namespace KittencordSetup {
                 foreach (var injected in new[] { false, true }) { var fixtureInjected = injected;
                     Test("Interrupted swap recovered " + injected, delegate { var app = Fixture("interrupt-" + fixtureInjected, fixtureInjected); Check(Install(app, "interrupted") == null, "Interruption hook did not stop."); Check(!Directory.Exists(Path.Combine(app, "resources/app.asar")) && !File.Exists(Path.Combine(app, "resources/app.asar")), "Fixture did not interrupt the swap."); InstallService.Recover(app, Data(app), false, message => {}); Check(fixtureInjected ? Directory.Exists(Path.Combine(app, "resources/app.asar")) : File.Exists(Path.Combine(app, "resources/app.asar")), "Interrupted loader not restored."); Install(app, null); });
                 }
+                Test("Discord restoring its own app.asar is reinstalled, not refused", delegate {
+                    var app = Fixture("discord-reset", false); Install(app, null);
+                    var resources = Path.Combine(app, "resources");
+                    // What a Discord update or repair leaves behind: its original archive back as app.asar, our loader gone.
+                    Directory.Delete(Path.Combine(resources, "app.asar"), true); File.Move(Path.Combine(resources, "_app.asar"), Path.Combine(resources, "app.asar"));
+                    try { InstallService.Verify(app, Data(app)); throw new Exception("Verify accepted a reset Discord."); }
+                    catch (IOException problem) { Check(InstallService.Diagnose(problem).Code == "DISCORD_RESET", "Reset Discord was not explained: " + problem.Message); }
+                    var reinstalled = Install(app, null);
+                    Check(Directory.Exists(Path.Combine(resources, "app.asar")) && File.Exists(Path.Combine(resources, "_app.asar")), "Reinstall did not put the loader back.");
+                    Check(InstallService.Verify(app, Data(app)).LoaderHash == reinstalled.LoaderHash, "Reinstalled loader does not verify.");
+                    Check(Directory.GetFiles(Data(app), "installation-*.json.previous-*").Length >= 1, "The old record was not kept.");
+                });
                 Test("Modified active loader blocks repair and removal", delegate { var app = Fixture("changed", true); Install(app, null); var path = Path.Combine(app, "resources/app.asar/index.js"); File.AppendAllText(path, "User modification."); Refuses(delegate { Install(app, null); }); Refuses(delegate { InstallService.Uninstall(app, Data(app), false, message => {}); }); Check(File.ReadAllText(path).EndsWith("User modification."), "Modified file overwritten."); });
                 Test("Modified previous backup blocks removal", delegate { var app = Fixture("backup", true); var state = Install(app, null); File.AppendAllText(Path.Combine(state.RestoreLoader, "index.js"), "Changed."); Refuses(delegate { InstallService.Uninstall(app, Data(app), false, message => {}); }); Check(Directory.Exists(Path.Combine(app, "resources/app.asar")), "Active loader lost."); });
                 Test("Modified original archive blocks removal", delegate { var app = Fixture("original", true); Install(app, null); File.AppendAllText(Path.Combine(app, "resources/_app.asar"), "Changed."); Refuses(delegate { InstallService.Uninstall(app, Data(app), false, message => {}); }); });

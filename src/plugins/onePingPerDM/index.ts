@@ -62,7 +62,7 @@ export default definePlugin({
                     noWarn: true
                 },
                 {
-                    match: /sound:(\i\?(\i):void 0,volume:\i,onClick)/,
+                    match: /sound:(\i\?(\i):void 0,volume:)/,
                     replace: "sound:!$self.isPrivateChannelRead(arguments[0]?.message)?undefined:$self.playSound()?$2:$1",
                     noWarn: true
                 }

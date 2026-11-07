@@ -230,7 +230,7 @@ export default definePlugin({
             ]
         },
         {
-            find: ".MINUTE],[45*",
+            find: ".full,ariaHidden:!0",
             replacement: {
                 // Tooltips for timestamp markdown (e.g. <t:1234567890>)
                 match: /(__unsupportedReactNodeAsText:).{0,50}?\.full/,

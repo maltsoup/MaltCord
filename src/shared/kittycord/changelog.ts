@@ -5,6 +5,11 @@
  */
 
 export const kittycordChangelog = [{
+    id: "0.9.1", date: "2026-11-07", title: "KittenCord 0.9.1", changes: [
+        "Works with Discord's new update. Discord changed how its code is packaged, which left Discord stuck on \"Starting\" with KittenCord installed. Includes Vencord's and Equicord's fixes for this update.",
+        "Setup reinstalls KittenCord when Discord restored its own files after an update or repair, instead of refusing."
+    ], limitations: "Windows desktop only. Setup is not code-signed yet, so Windows SmartScreen may warn about it."
+}, {
     id: "0.9.0", date: "2026-11-05", title: "KittenCord 0.9.0", changes: [
         "First release. Setup is small (2.7 MB): it downloads KittenCord from the GitHub release, checks its SHA-256 and restarts Discord. Run it again to repair or choose Restore to remove KittenCord.",
         "Plugins page: about 800 plugins from Vencord, Equicord, TestCord and KittenCord, with search, filters, a list or card view, counts and per-plugin health. Plugin Studio is a tab on the same page.",

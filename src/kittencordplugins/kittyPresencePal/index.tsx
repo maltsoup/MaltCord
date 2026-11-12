@@ -8,7 +8,7 @@ import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
-import definePlugin, { OptionType } from "@utils/types";
+import definePlugin, { OptionType, type PluginNative } from "@utils/types";
 import { Button, FluxDispatcher, React, TextInput, useEffect, useMemo, useState } from "@webpack/common";
 
 import style from "./style.css?managed";
@@ -17,12 +17,25 @@ interface DetectableGame {
     id: string;
     name: string;
     icon?: string;
+    /** Windows executable name Discord's game scanner looks for. */
+    exe?: string;
 }
 
 interface CustomGame {
     id: string;
     name: string;
+    exe?: string;
 }
+
+interface DetectableApp {
+    id?: string;
+    name?: string;
+    icon?: string;
+    executables?: { name?: string; os?: string; is_launcher?: boolean; }[];
+}
+
+// Only present in the desktop build, where it runs a hidden process named after the game.
+const native = (VencordNative as any)?.pluginHelpers?.KittyPresencePal as PluginNative<typeof import("./native")> | undefined;
 
 const DETECTABLE_URL = "https://discord.com/api/v9/applications/detectable";
 const SOCKET_ID = "KittyPresencePal";
@@ -57,9 +70,13 @@ async function loadGames(): Promise<DetectableGame[]> {
     const res = await fetch(DETECTABLE_URL);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
-    gameCache = (data as any[])
+    gameCache = (data as DetectableApp[])
         .filter(g => g?.id && g?.name)
-        .map(g => ({ id: String(g.id), name: String(g.name), icon: g.icon }))
+        .map(g => {
+            const exes = (g.executables ?? []).filter(e => e.os === "win32" && e.name);
+            const exe = (exes.find(e => !e.is_launcher) ?? exes[0])?.name;
+            return { id: String(g.id), name: String(g.name), icon: g.icon, exe: exe?.replace(/^>/, "") };
+        })
         .sort((a, b) => a.name.localeCompare(b.name));
     return gameCache;
 }
@@ -74,22 +91,35 @@ function pushRecent(id: string) {
     settings.store.recents = JSON.stringify(recents.slice(0, MAX_RECENTS));
 }
 
-function playGame(game: { id: string; name: string; }) {
+/** Returns a message when the real-game route was unavailable and the fallback activity was used. */
+async function playGame(game: { id: string; name: string; exe?: string; }): Promise<string | undefined> {
+    let notice: string | undefined;
+    dispatchActivity(null);
     current = { id: game.id, name: game.name, start: Date.now() };
-    dispatchActivity({
-        application_id: game.id,
-        name: game.name,
-        type: 0,
-        flags: 0,
-        ...(settings.store.showElapsed ? { timestamps: { start: current.start } } : {})
-    });
+
+    // Preferred: run a process named after the game so Discord detects it as a real game.
+    const started = game.exe && native ? await native.startGame(game.exe).catch(() => null) : null;
+    if (!started?.ok) {
+        // Fallback: a client-side activity. It uses the application ID, so it only works for registered games.
+        if (game.exe && native) notice = started?.error ?? "Real game detection failed, using a basic activity instead.";
+        else if (game.exe) notice = "Real game detection needs the desktop app, using a basic activity instead.";
+        dispatchActivity({
+            application_id: game.id,
+            name: game.name,
+            type: 0,
+            flags: 0,
+            ...(settings.store.showElapsed ? { timestamps: { start: current.start } } : {})
+        });
+    }
     settings.store.lastGame = JSON.stringify(game);
     pushRecent(game.id);
+    return notice;
 }
 
 function stopGame() {
     current = null;
     dispatchActivity(null);
+    void native?.stopGame().catch(() => { });
 }
 
 function toggleFavorite(id: string) {
@@ -132,6 +162,7 @@ function PresencePalModal({ modalProps }: { modalProps: any; }) {
     const [playingId, setPlayingId] = useState<string | null>(current?.id ?? null);
     const [customName, setCustomName] = useState("");
     const [customId, setCustomId] = useState("");
+    const [notice, setNotice] = useState<string | null>(null);
     const [, force] = useState(0);
     const rerender = () => force(n => n + 1);
 
@@ -157,18 +188,20 @@ function PresencePalModal({ modalProps }: { modalProps: any; }) {
             game={g}
             isFav={favs.includes(g.id)}
             isPlaying={playingId === g.id}
-            onPlay={() => { playGame(g); setPlayingId(g.id); }}
-            onStop={() => { stopGame(); setPlayingId(null); }}
+            onPlay={() => { setPlayingId(g.id); setNotice(null); void playGame(g).then(n => setNotice(n ?? null)); }}
+            onStop={() => { stopGame(); setPlayingId(null); setNotice(null); }}
             onFav={() => { toggleFavorite(g.id); rerender(); }}
         />
     );
 
     const addCustom = () => {
         const name = customName.trim();
-        // A custom game needs a real Discord application ID to be recognised
-        const id = customId.trim();
-        if (!name || !/^\d{15,22}$/.test(id)) return;
-        settings.store.customGames = JSON.stringify([...custom.filter(c => c.id !== id), { id, name }]);
+        // Either a Windows executable name (detected as a real game) or a Discord application ID
+        const value = customId.trim();
+        const isAppId = /^\d{15,22}$/.test(value);
+        if (!name || !(isAppId || /^[^\s].*\.exe$/i.test(value))) return;
+        const entry: CustomGame = isAppId ? { id: value, name } : { id: `custom:${value.toLowerCase()}`, name, exe: value };
+        settings.store.customGames = JSON.stringify([...custom.filter(c => c.id !== entry.id), entry]);
         setCustomName("");
         setCustomId("");
         rerender();
@@ -189,6 +222,7 @@ function PresencePalModal({ modalProps }: { modalProps: any; }) {
                 )}
 
                 <TextInput placeholder={loading ? "Loading games…" : `Search ${games.length} games`} value={query} onChange={setQuery} autoFocus />
+                {notice && <div className="kpp-error">{notice}</div>}
                 {error && <div className="kpp-error">Couldn't load the game list: {error}</div>}
 
                 {q ? (
@@ -207,7 +241,7 @@ function PresencePalModal({ modalProps }: { modalProps: any; }) {
                 <div className="kpp-section">Add custom game</div>
                 <div className="kpp-custom">
                     <TextInput placeholder="Name" value={customName} onChange={setCustomName} />
-                    <TextInput placeholder="Discord application ID" value={customId} onChange={setCustomId} />
+                    <TextInput placeholder="Executable (game.exe) or app ID" value={customId} onChange={setCustomId} />
                     <Button size={Button.Sizes.SMALL} onClick={addCustom}>Add</Button>
                 </div>
             </ModalContent>
@@ -243,8 +277,8 @@ export default definePlugin({
 
     start() {
         if (!settings.store.restoreOnStart) return;
-        const last = readJson<{ id: string; name: string; } | null>(settings.store.lastGame || "null", null);
-        if (last?.id) setTimeout(() => playGame(last), 3000);
+        const last = readJson<{ id: string; name: string; exe?: string; } | null>(settings.store.lastGame || "null", null);
+        if (last?.id) setTimeout(() => void playGame(last), 3000);
     },
 
     stop() {

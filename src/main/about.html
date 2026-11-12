@@ -105,8 +105,10 @@
 <body>
     <header class="header">
         <svg width="72" height="72" viewBox="0 0 128 128" role="img" aria-label="MaltCord">
-            <path fill="#e7a5d2" d="M24 53 18 17 49 36Q64 30 79 36L110 17 104 53Q113 66 108 86Q99 111 64 111Q29 111 20 86Q15 66 24 53Z" />
-            <path fill="#232428" d="M42 64a6 8 0 1 0 0 16a6 8 0 1 0 0-16M86 64a6 8 0 1 0 0 16a6 8 0 1 0 0-16M57 85h14l-7 8Z" />
+            <defs><linearGradient id="malt" x1="20" y1="30" x2="108" y2="100" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#ffd37a"/><stop offset="1" stop-color="#ff8a4c"/></linearGradient></defs>
+            <rect width="128" height="128" rx="28" fill="#1e1b22"/>
+            <path d="M30 94V42L64 78L98 42V94" fill="none" stroke="url(#malt)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="109" cy="23" r="6" fill="#ffd37a"/>
         </svg>
         <div class="header-text">
             <div class="header-top">

@@ -4,7 +4,7 @@
   "description": "A KittenCord-based Discord client mod, in your browser.",
   "author": "xtufa7",
   "icons": {
-    "128": "kittycord.png"
+    "128": "maltcord.png"
   },
   "permissions": [
     "https://discord.com/*",

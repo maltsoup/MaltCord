@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="MaltCord">
+  <defs>
+    <linearGradient id="malt" x1="20" y1="30" x2="108" y2="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd37a"/>
+      <stop offset="1" stop-color="#ff8a4c"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#1e1b22"/>
+  <path d="M30 94V42L64 78L98 42V94" fill="none" stroke="url(#malt)" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="109" cy="23" r="6" fill="#ffd37a"/>
+</svg>

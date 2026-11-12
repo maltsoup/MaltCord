@@ -181,8 +181,8 @@ const appendCssRuntime = readFile("dist/Kittycord.user.css", "utf-8").then(conte
 if (!process.argv.includes("--skip-extension")) {
     await Promise.all([
         appendCssRuntime,
-        buildExtension("kittycord-chromium-unpacked", ["keybinds.js", "content.js", "manifest.json", "kittycord.png", "editor.html", "editor.css", "studio.html", "studio.css", "assistant.html", "assistant.css"]),
-        buildExtension("kittycord-firefox-unpacked", ["keybinds.js", "content.js", "manifestv2.json", "kittycord.png", "editor.html", "editor.css", "studio.html", "studio.css", "assistant.html", "assistant.css"]),
+        buildExtension("kittycord-chromium-unpacked", ["keybinds.js", "content.js", "manifest.json", "maltcord.png", "editor.html", "editor.css", "studio.html", "studio.css", "assistant.html", "assistant.css"]),
+        buildExtension("kittycord-firefox-unpacked", ["keybinds.js", "content.js", "manifestv2.json", "maltcord.png", "editor.html", "editor.css", "studio.html", "studio.css", "assistant.html", "assistant.css"]),
     ]);
 
     await Promise.all(["chrome", "firefox"].map(browser => new Promise((resolve, reject) => {

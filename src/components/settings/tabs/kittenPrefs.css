@@ -120,6 +120,7 @@
     overflow-x: auto;
     padding: 3px;
     border-radius: 8px;
+
     /* Opaque under the tint: the bar stays pinned while the list scrolls behind it. */
     background: linear-gradient(var(--kc-tint), var(--kc-tint)), var(--modal-background, var(--background-base-low, var(--background-primary)));
     box-shadow: 0 6px 12px -8px color-mix(in srgb, var(--background-tertiary, var(--background-primary)) 80%, transparent);

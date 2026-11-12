@@ -53,10 +53,9 @@
 
 .vc-kitten-layout-footer {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     justify-content: flex-end;
     gap: 8px;
-    flex-wrap: wrap;
     padding: 16px 20px;
     border-top: 1px solid var(--border-subtle);
     background: var(--background-surface-low, var(--background-primary));

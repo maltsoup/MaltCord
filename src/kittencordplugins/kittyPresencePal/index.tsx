@@ -1,10 +1,8 @@
 /*
- * MaltCord plugin: PresencePal (port)
- * Based on the idea of https://github.com/foxmanhwa/presencepal (MIT)
+ * Vencord, a Discord client mod
+ * Copyright (c) 2026 Vendicated and contributors
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
-import style from "./style.css?managed";
 
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
@@ -12,6 +10,8 @@ import { Devs } from "@utils/constants";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
 import { Button, FluxDispatcher, React, TextInput, useEffect, useMemo, useState } from "@webpack/common";
+
+import style from "./style.css?managed";
 
 interface DetectableGame {
     id: string;

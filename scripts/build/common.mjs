@@ -103,7 +103,7 @@ export const banner = {
 };
 
 export const buildIdentity = {
-    name: "Kittencord",
+    name: "MaltCord",
     version: VERSION,
     // "stable" for a release, "beta" while kittencordBeta counts the betas of this version.
     channel: PackageJSON.kittencordChannel ?? "beta",

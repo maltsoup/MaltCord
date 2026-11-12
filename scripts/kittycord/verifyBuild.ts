@@ -57,7 +57,7 @@ for (const target of ["desktop", "web"]) {
 for (const [target, version] of [["chromium", 3], ["firefox", 2]] as const) {
     const directory = join(root, `dist/browser/kittycord-${target}-unpacked`);
     const manifest = JSON.parse(readFileSync(join(directory, "manifest.json"), "utf8"));
-    assert.match(manifest.name, /^Kittencord/);
+    assert.match(manifest.name, /^MaltCord/);
     assert.equal(manifest.version, pkg.version);
     assert.equal(manifest.manifest_version, version);
     verifyBrowserManifest(manifest, target);

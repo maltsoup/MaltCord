@@ -1,17 +1,17 @@
 <div align="center">
 
-<img src=".github/assets/logo.png" width="160" alt="KittenCord logo">
+<img src=".github/assets/logo.png" width="160" alt="MaltCord logo">
 
-# KittenCord
+# MaltCord
 
-**The cutest Discord client mod.**
+**A KittenCord fork with extra plugins.**
 
 About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Discord you already use.
 
-[![Release](https://img.shields.io/github/v/release/xtufa7/KittenCord?include_prereleases&style=for-the-badge&color=b996ff&label=release)](https://github.com/xtufa7/KittenCord/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/xtufa7/KittenCord/total?style=for-the-badge&color=ff8fd8)](https://github.com/xtufa7/KittenCord/releases)
+[![Release](https://img.shields.io/github/v/release/maltsoup/MaltCord?include_prereleases&style=for-the-badge&color=b996ff&label=release)](https://github.com/maltsoup/MaltCord/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/maltsoup/MaltCord/total?style=for-the-badge&color=ff8fd8)](https://github.com/maltsoup/MaltCord/releases)
 [![Discord](https://img.shields.io/badge/Discord-Join_us-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/7bZ5qKdDR)
-[![License](https://img.shields.io/github/license/xtufa7/KittenCord?style=for-the-badge&color=9fb4ff)](LICENSE)
+[![License](https://img.shields.io/github/license/maltsoup/MaltCord?style=for-the-badge&color=9fb4ff)](LICENSE)
 
 [**Download for Windows**](https://github.com/xtufa7/KittenCord/releases/latest/download/KittencordSetup.exe) &nbsp;•&nbsp;
 [**Chrome / Edge**](https://github.com/xtufa7/KittenCord/releases/latest/download/KittenCord-Chrome-Edge.zip) &nbsp;•&nbsp;
@@ -20,6 +20,8 @@ About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Disc
 <img src=".github/assets/settings-plugins.jpg" width="720" alt="The KittenCord Plugins page inside Discord settings">
 
 </div>
+
+> **MaltCord is a fork of [KittenCord](https://github.com/xtufa7/KittenCord)**, which is itself built on TestCord, Equicord and Vencord. All credit for the original work goes to those projects and their authors. The download links below are KittenCord's official releases. This fork adds **KittyPresencePal**, a port of [PresencePal](https://github.com/foxmanhwa/presencepal) that sets a Discord game activity for any game.
 
 ## ✨ Features
 

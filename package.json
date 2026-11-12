@@ -109,9 +109,9 @@
     "engines": {
         "node": ">=22"
     },
-    "homepage": "https://github.com/xtufa7/KittenCord",
+    "homepage": "https://github.com/maltsoup/MaltCord",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/xtufa7/KittenCord.git"
+        "url": "git+https://github.com/maltsoup/MaltCord.git"
     }
 }

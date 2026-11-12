@@ -1,0 +1,51 @@
+.kmb-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-bottom: 16px;
+}
+
+.kmb-title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.kmb-note {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.kmb-error {
+    color: var(--text-danger);
+    font-size: 13px;
+}
+
+.kmb-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.kmb-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.kmb-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
+
+.kmb-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kmb-user {
+    color: var(--text-muted);
+    font-size: 12px;
+}

@@ -260,10 +260,10 @@ function openPresencePal() {
 export default definePlugin({
     name: "KittyPresencePal",
     description: "Set your Discord game activity for any game, including mobile titles Discord can't detect. Port of PresencePal.",
-    authors: [Devs.Kittencord],
+    authors: [Devs.Maltsoup],
     kittencordOrigin: "original",
     managedStyle: style,
-    tags: ["Activity", "Utility"],
+    tags: ["MaltCord", "Activity", "Utility"],
     settings,
 
     settingsAboutComponent: () => (

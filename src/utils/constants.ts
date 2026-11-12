@@ -73,6 +73,7 @@ export interface Dev {
  */
 export const Devs = /* #__PURE__*/ Object.freeze({
     Kittencord: { name: "xtufa7", id: 1502989016805408870n, github: "xtufa7" },
+    Maltsoup: { name: "maltsoup", id: 757734679687463022n, github: "maltsoup" },
     nobody: { name: "nobody", id: 0n },
     Ven: {
         name: "V",

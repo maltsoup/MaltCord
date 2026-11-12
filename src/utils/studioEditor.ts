@@ -18,7 +18,7 @@ function openPackagedTool(assistant: boolean): Promise<void> {
             try { data = readStudioTransport(event.data); } catch { return; }
             if (data?.type !== "kittycord:studio:result" || data.requestId !== requestId) return;
             if (data.ok === true) finish();
-            else if (data.ok === false) finish(new Error("The browser could not open Studio. Use the Kittycord button with a fresh user gesture."));
+            else if (data.ok === false) finish(new Error("The browser could not open Studio. Use the MaltCord button with a fresh user gesture."));
         }
         const timer = setTimeout(() => finish(new Error("The packaged Studio did not respond. Existing projects were preserved.")), 8000);
         window.addEventListener("message", receive);

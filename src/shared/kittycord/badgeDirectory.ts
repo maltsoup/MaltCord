@@ -13,7 +13,7 @@ export function nativeDirectoryBadge(badge: ProfileBadge, userId: string): Direc
         badge_id: `vc-${userId}-${badge.id}`,
         name: badge.name ?? badge.description ?? badge.id,
         description: badge.detail ?? badge.description ?? badge.name ?? "",
-        info_label: badge.infoLabel ?? (badge.id.startsWith("kittencord_") ? "KittenCord" : "Vencord"),
+        info_label: badge.infoLabel ?? (badge.id.startsWith("kittencord_") ? "MaltCord" : "Vencord"),
         rarity: badge.rarity ?? 1,
         simple_icon_url: badge.iconSrc,
         complex_icon_static_url: badge.largeIconSrc ?? badge.iconSrc,

@@ -44,6 +44,6 @@ export function useVerifiedNativeSource(id?: string) {
 }
 
 export function verifiedSourceLabel(item: CloudCatalogItem & { verification?: CloudSource["verification"]; }) {
-    const source = item.metadata.origin === "original" || item.metadata.origin === "edition" ? "KittenCord" : "KittenCord Cloud";
+    const source = item.metadata.origin === "original" || item.metadata.origin === "edition" ? "MaltCord" : "MaltCord Cloud";
     return item.verification === "cached" ? `${source} · cached` : source;
 }

@@ -45,8 +45,8 @@ export function createPortableDistribution(root: string, alive: (pid: number) =>
         if (!existsSync(file)) writeFileSync(file, artifact, { flag: "wx", mode: 0o600 });
         if (lstatSync(file).isSymbolicLink()) throw new Error("Verified release cannot be a link."); verifyArtifact(readFileSync(file), verified.artifact);
         const bytes = extractFile(file, "package.json"); if (bytes.byteLength > 4096) throw new Error("Core metadata exceeds its limit.");
-        const metadata = checkedObject(JSON.parse(bytes.toString("utf8")), ["name", "version", "main"], "Kittycord core");
-        if (!["kittycord", "kittencord"].includes(String(metadata.name)) || metadata.version !== verified.release.version || metadata.main !== "patcher.js" || !extractFile(file, "patcher.js").byteLength) throw new Error("Release does not contain the declared Kittencord desktop core.");
+        const metadata = checkedObject(JSON.parse(bytes.toString("utf8")), ["name", "version", "main"], "MaltCord core");
+        if (!["kittycord", "kittencord"].includes(String(metadata.name)) || metadata.version !== verified.release.version || metadata.main !== "patcher.js" || !extractFile(file, "patcher.js").byteLength) throw new Error("Release does not contain the declared MaltCord desktop core.");
     }
     function slots() {
         if (lstatSync(configFile).isSymbolicLink()) throw new Error("Portable configuration cannot be a link.");

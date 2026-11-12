@@ -208,7 +208,7 @@ function ProfilesTab() {
 
             const account = snapshot.context.accountId;
 
-            Alerts.show({ title: "Reset this Kittencord profile?", body: "Scoped overrides will be removed. Global preferences stay in place, and the current profile becomes the backup.", confirmText: "Reset profile", cancelText: "Cancel",
+            Alerts.show({ title: "Reset this MaltCord profile?", body: "Scoped overrides will be removed. Global preferences stay in place, and the current profile becomes the backup.", confirmText: "Reset profile", cancelText: "Cancel",
 
                 onConfirm: () => void run(async () => { if (account !== KittycordProfiles.snapshot().context.accountId) throw new Error("The account changed. Nothing was reset."); await KittycordProfiles.save(emptyProfile(), account); }) });
 
@@ -218,4 +218,4 @@ function ProfilesTab() {
 
 }
 
-export default wrapTab(ProfilesTab, "Kittencord Profiles");
+export default wrapTab(ProfilesTab, "MaltCord Profiles");

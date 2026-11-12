@@ -5,7 +5,7 @@
  */
 
 export const Kittycord = {
-    name: "Kittencord",
+    name: "MaltCord",
     id: "kittencord",
     channel: "beta",
     communityUrl: "https://discord.gg/7bZ5qKdDR",

@@ -24,7 +24,7 @@ let enabled = false;
 
 export default definePlugin({
     name: "KittyVoiceLab",
-    description: "Kittycord browser microphone effects with live presets. Reuses TestCord StreamEnhancer DSP with attribution.",
+    description: "MaltCord browser microphone effects with live presets. Reuses TestCord StreamEnhancer DSP with attribution.",
     authors: [EquicordDevs.omaw, TestcordDevs.DavidHiFi],
     tags: ["Voice"],
     settings,

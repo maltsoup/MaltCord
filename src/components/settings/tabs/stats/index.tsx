@@ -205,7 +205,7 @@ function StatsTab() {
             <StatCard title="By category (enabled)" rows={s.categories.map(([tag, n]) => [tag, n])} />
 
             <StatCard title="By source" rows={[
-                ["KittenCord Studio", fork("kittencord")],
+                ["MaltCord Studio", fork("kittencord")],
                 ["TestCord-exclusive", fork("testcord")],
                 ["Equicord", fork("equicord")],
                 ["Vencord", fork("vencord")],

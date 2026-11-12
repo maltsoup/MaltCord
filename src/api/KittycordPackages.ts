@@ -71,7 +71,7 @@ function getRegistry() {
         define: bundle => {
             if (bundle.manifest.entrypoints.desktop !== "plugin.js") return defineThemePackage(bundle, document);
             if (typeof VencordNative === "undefined" || !VencordNative.sandbox || typeof VencordNative.sandbox.open !== "function" || typeof VencordNative.sandbox.close !== "function")
-                throw new Error("This desktop host lacks the isolated runtime bridge. Update or rebuild a compatible Kittycord host before activating JavaScript.");
+                throw new Error("This desktop host lacks the isolated runtime bridge. Update or rebuild a compatible MaltCord host before activating JavaScript.");
             return defineIsolatedJavascript(bundle, document, () => {
             PluginHealth.recordRuntimeError(bundle.manifest.id, "isolated runtime", new Error("Isolated JavaScript failed or exceeded protocol limits. Open External Plugin Manager for recovery."));
             void getRegistry().runtimeFailure(bundle.manifest.id, { version: bundle.manifest.version, digest: bundle.manifest.integrity.digest }).catch(() => {

@@ -434,7 +434,7 @@
     color: var(--text-feedback-warning, var(--status-warning));
 }
 
-/* KittenCord Plugins list (UI_REDESIGN_SPEC_090 §5) */
+/* MaltCord Plugins list (UI_REDESIGN_SPEC_090 §5) */
 
 .kc-plugins {
     display: flex;

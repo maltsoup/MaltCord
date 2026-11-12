@@ -41,7 +41,7 @@ namespace KittencordSetup {
         }
 
         /// <summary>
-        /// Release setups do not carry the core: it is downloaded from the KittenCord GitHub release the setup belongs to
+        /// Release setups do not carry the core: it is downloaded from the MaltCord GitHub release the setup belongs to
         /// and must match the SHA-256 compiled into this setup before anything is installed.
         /// </summary>
         public static byte[] CoreBytes(Action<InstallProgress> progress) {
@@ -240,12 +240,12 @@ namespace KittencordSetup {
             using (var memory = new MemoryStream(Program.Resource("brand-logo.png"))) using (var image = Image.FromStream(memory)) brandLogo = new Bitmap(image);
             using (var outline = RoundedButton.Outline(new Rectangle(0, 0, Width, Height), 16)) Region = new Region(outline);
             // Left: brand over the background. Right: one card that holds every control.
-            AddLabel("KittenCord", BrandX, 30, 260, 34, 19, true);
+            AddLabel("MaltCord", BrandX, 30, 260, 34, 19, true);
             versionBadge = AddLabel("v" + Program.Metadata["version"] + "  ·  " + Program.ReleaseLabel(), BrandX + 2, 66, 220, 22, 9, true); versionBadge.ForeColor = Color.FromArgb(232, 220, 255);
             versionBadge.TextAlign = ContentAlignment.MiddleCenter; versionBadge.Width = TextRenderer.MeasureText(versionBadge.Text, versionBadge.Font).Width + 22;
             var tagline = AddLabel("Your Discord.\nYour way.", 34, 440, 420, 112, 30, true); tagline.ForeColor = Color.White;
             var pitch = AddLabel("About 800 plugins, themes and badges in the Discord you already use.", 37, 552, 410, 44, 10, false); pitch.ForeColor = Color.FromArgb(222, 212, 236);
-            title = AddLabel("Install KittenCord", CardX, 92, CardWidth, 44, 25, true);
+            title = AddLabel("Install MaltCord", CardX, 92, CardWidth, 44, 25, true);
             subtitle = AddLabel("Choose your Discord installation.", CardX + 2, 138, CardWidth, 26, 10.5f, false); subtitle.ForeColor = Color.FromArgb(190, 180, 206);
             setupControls.Add(AddLabel("Discord installation", CardX + 2, 182, CardWidth, 22, 9.5f, true));
             target.SetBounds(CardX, 208, CardWidth, 74); target.AccessibleName = "Discord installation"; target.Font = Font; target.BackColor = Color.FromArgb(33, 28, 44); target.FillAlpha = 150; target.ForeColor = ForeColor;
@@ -256,7 +256,7 @@ namespace KittencordSetup {
             target.SelectionChanged += delegate { install.Enabled = restore.Enabled = verify.Enabled = target.SelectedPath.Length > 0; };
             restart.Text = "Restart Discord after setup"; restart.Checked = true; restart.BackColor = Color.Transparent; restart.SetBounds(CardX, 338, CardWidth, 50); Controls.Add(restart);
             install = AddButton("Install / Repair", CardX, 404, CardWidth, true, async delegate { await Run(false); }); install.Height = 52; ((RoundedButton)install).Symbol = "arrow"; install.Enabled = target.SelectedPath.Length > 0;
-            restore = AddButton("Restore previous installation", CardX, 466, CardWidth, false, async delegate { if (MessageBox.Show(this, "Restore the loader used before KittenCord? KittenCord settings and backups will be kept.", "Restore", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) await Run(true); }); restore.Height = 40; ((RoundedButton)restore).Quiet = true; ((RoundedButton)restore).Symbol = "restore";
+            restore = AddButton("Restore previous installation", CardX, 466, CardWidth, false, async delegate { if (MessageBox.Show(this, "Restore the loader used before MaltCord? MaltCord settings and backups will be kept.", "Restore", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK) await Run(true); }); restore.Height = 40; ((RoundedButton)restore).Quiet = true; ((RoundedButton)restore).Symbol = "restore";
             restore.Enabled = target.SelectedPath.Length > 0;
             setupControls.AddRange(new Control[] { target, browse, verify, restart, install, restore });
             status.SetBounds(CardX + 2, 524, CardWidth, 40); status.BackColor = Color.Transparent; status.ForeColor = Color.FromArgb(160, 149, 180); status.Font = new Font("Segoe UI", 9); status.Text = "Your settings and a recovery copy are kept."; Controls.Add(status);
@@ -297,10 +297,10 @@ namespace KittencordSetup {
             done.Visible = retry.Visible = back.Visible = failure.Visible = false;
             title.Font = new Font("Segoe UI", 25, FontStyle.Bold);
             foreach (var control in setupControls) control.Visible = false;
-            title.Text = remove ? "Restoring Discord" : "Installing KittenCord";
+            title.Text = remove ? "Restoring Discord" : "Installing MaltCord";
             subtitle.Text = "Keep this window open until setup finishes.";
             stageIds = remove ? new[] { "verify", "close", "restore", "commit" } : new[] { "verify", "close", "core", "backup", "activate", "commit" };
-            var labels = remove ? new[] { "Verify installation & recovery copy", "Close selected Discord", "Restore previous loader", "Save restoration record" } : new[] { "Verify core & Discord installation", "Close selected Discord", "Copy versioned KittenCord core", "Preserve previous loader", "Inject & verify app.asar loader", "Save recovery record" };
+            var labels = remove ? new[] { "Verify installation & recovery copy", "Close selected Discord", "Restore previous loader", "Save restoration record" } : new[] { "Verify core & Discord installation", "Close selected Discord", "Copy versioned MaltCord core", "Preserve previous loader", "Inject & verify app.asar loader", "Save recovery record" };
             if (shouldRestart) { var ids = new List<string>(stageIds); ids.Add("restart"); stageIds = ids.ToArray(); var names = new List<string>(labels); names.Add("Request Discord restart"); labels = names.ToArray(); }
             for (var i = 0; i < steps.Length; i++) { steps[i].Visible = i < labels.Length; steps[i].Text = i < labels.Length ? "○  " + labels[i] : ""; steps[i].ForeColor = Color.FromArgb(164, 147, 173); }
             completedStages = 0; meter.Maximum = stageIds.Length; meter.Value = 0; meter.Visible = true;
@@ -322,7 +322,7 @@ namespace KittencordSetup {
             title.Text = remove ? "Previous loader restored" : "You're all set!";
             title.Font = new Font("Segoe UI", remove ? 21 : 25, FontStyle.Bold);
             subtitle.Text = "All done. You can close this window now.";
-            status.Text = remove ? "KittenCord settings and backups were kept." : restarted ? "Discord restart requested. Find KittenCord in Discord settings." : "Open Discord when you're ready. Find KittenCord in Discord settings.";
+            status.Text = remove ? "MaltCord settings and backups were kept." : restarted ? "Discord restart requested. Find MaltCord in Discord settings." : "Open Discord when you're ready. Find MaltCord in Discord settings.";
             done.Visible = true; AcceptButton = done;
         }
         void Failed(string message, bool operationCompleted) {
@@ -331,7 +331,7 @@ namespace KittencordSetup {
             retryRestart = operationCompleted;
             title.Font = new Font("Segoe UI", 23, FontStyle.Bold);
             title.Text = operationCompleted ? "Discord didn't restart" : "Setup needs attention";
-            subtitle.Text = operationCompleted ? (lastRemove ? "Restoration finished. Retry only restarts Discord." : "KittenCord is installed. Retry only restarts Discord.") : "Fix the issue, then try again or change your options.";
+            subtitle.Text = operationCompleted ? (lastRemove ? "Restoration finished. Retry only restarts Discord." : "MaltCord is installed. Retry only restarts Discord.") : "Fix the issue, then try again or change your options.";
             failure.Text = message; failure.Visible = true;
             retry.Text = operationCompleted ? "Restart Discord" : "Try again"; retry.Visible = back.Visible = true;
             status.SetBounds(CardX + 2, 524, CardWidth, 40); status.Text = "Your selected folder and options are kept.";
@@ -343,7 +343,7 @@ namespace KittencordSetup {
             meter.Visible = done.Visible = retry.Visible = back.Visible = failure.Visible = false;
             foreach (var control in setupControls) control.Visible = true;
             SetStage(0);
-            title.Font = new Font("Segoe UI", 25, FontStyle.Bold); title.Text = "Install KittenCord"; subtitle.Text = "Choose your Discord installation.";
+            title.Font = new Font("Segoe UI", 25, FontStyle.Bold); title.Text = "Install MaltCord"; subtitle.Text = "Choose your Discord installation.";
             status.SetBounds(CardX + 2, 524, CardWidth, 40); status.Text = "Your settings and a recovery copy are kept.";
             AcceptButton = install; ActiveControl = install;
         }
@@ -371,7 +371,7 @@ namespace KittencordSetup {
                 if (Program.RecordEvent("check-failed", directory, problem) != null) status.Text = "Details saved beside setup in setup-diagnostics.jsonl";
                 retryVerify = diagnosis.Code != "CORE_CHANGED" && diagnosis.Code != "DISCORD_RESET";
                 if (!retryVerify) retry.Text = "Install / Repair";
-                if (diagnosis.Code == "DISCORD_RESET") { title.Text = "KittenCord needs reinstalling"; subtitle.Text = "Discord restored its own files."; }
+                if (diagnosis.Code == "DISCORD_RESET") { title.Text = "MaltCord needs reinstalling"; subtitle.Text = "Discord restored its own files."; }
             } finally { busy = false; browse.Enabled = target.Enabled = restart.Enabled = true; install.Enabled = restore.Enabled = verify.Enabled = target.SelectedPath.Length > 0; }
         }
         public void Preview(string state) {

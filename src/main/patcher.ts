@@ -25,7 +25,7 @@ import { patchTrayMenu } from "./trayMenu";
 import { DATA_DIR, IS_VANILLA } from "./utils/constants";
 import { patchWebRequestMultiplexer } from "./utils/webRequestMultiplexer";
 
-console.log("[Kittencord] Starting up...");
+console.log("[MaltCord] Starting up...");
 
 // Electron replaces the previous listener on every webRequest registration, which lets
 // Discord's own development-only onHeadersReceived listener (allowDevHosts) clobber our
@@ -59,7 +59,7 @@ if (!IS_VANILLA) {
         try {
             require("./hostUpdateHook").installHostUpdateHook();
         } catch (err) {
-            console.error("[Kittencord] Failed to install host update hook", err);
+            console.error("[MaltCord] Failed to install host update hook", err);
         }
     }
 
@@ -154,12 +154,12 @@ if (!IS_VANILLA) {
 
             this.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
                 if (isMainFrame) {
-                    console.error(`[Kittencord] Main frame failed to load (${errorCode}): ${errorDescription} - ${validatedURL}`);
+                    console.error(`[MaltCord] Main frame failed to load (${errorCode}): ${errorDescription} - ${validatedURL}`);
                 }
             });
 
             this.webContents.on("preload-error", (_event, preloadPath, error) => {
-                console.error(`[Kittencord] Preload failed to load (${preloadPath}):`, error);
+                console.error(`[MaltCord] Preload failed to load (${preloadPath}):`, error);
             });
 
             if (disableMinSize) {
@@ -196,8 +196,8 @@ if (!IS_VANILLA) {
     // the renderer only materialises the default via getDefaultValue.
     if (settings.plugins?.NoTrack?.disableStackDumping === true) process.env.ELECTRON_ENABLE_STACK_DUMPING = "true";
 } else {
-    console.log("[Kittencord] Running in vanilla mode. Not loading Kittencord");
+    console.log("[MaltCord] Running in vanilla mode. Not loading MaltCord");
 }
 
-console.log("[Kittencord] Loading original Discord app.asar");
+console.log("[MaltCord] Loading original Discord app.asar");
 require(require.main!.filename);

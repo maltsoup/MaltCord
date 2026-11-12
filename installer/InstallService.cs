@@ -67,14 +67,14 @@ namespace KittencordSetup {
         public static InstallDiagnosis Diagnose(Exception problem) {
             var message = problem.Message;
             if (problem is UnauthorizedAccessException) return new InstallDiagnosis("ACCESS_DENIED", "Setup cannot access the selected files. Close other setup windows and check this account's folder permissions, then try again.");
-            if ((problem.HResult & 65535) == 112 || (problem.HResult & 65535) == 39) return new InstallDiagnosis("DISK_FULL", "There is not enough disk space. Free space on the Discord and KittenCord drives, then try again.");
+            if ((problem.HResult & 65535) == 112 || (problem.HResult & 65535) == 39) return new InstallDiagnosis("DISK_FULL", "There is not enough disk space. Free space on the Discord and MaltCord drives, then try again.");
             if (message.Contains("Another Kittencord installer")) return new InstallDiagnosis("SETUP_BUSY", "Another setup is active. Close the other installer, then try again.");
             if (message.Contains("Discord is running") || message.Contains("Discord is still running") || message.Contains("Close this Discord instance") || message.Contains("Windows could not close")) return new InstallDiagnosis("DISCORD_RUNNING", "Discord is still running. Enable Restart Discord after setup, or quit Discord from its tray icon, then try again.");
             if (message.Contains("original Discord") || message.Contains("original archive") || message.Contains("restore point") || message.Contains("loader backup")) return new InstallDiagnosis("RESTORE_BASELINE_CHANGED", "The original Discord files or recovery copy are missing or changed. Reinstall Discord into a clean app folder, then select it here. Existing files and settings were preserved.");
-            if (message.Contains("core") && (message.Contains("missing") || message.Contains("changed") || message.Contains("modified"))) return new InstallDiagnosis("CORE_CHANGED", "The KittenCord core is missing or changed. Choose Back to setup, then Install / Repair. An altered retained core is preserved for inspection.");
-            if (message.Contains("Discord replaced KittenCord")) return new InstallDiagnosis("DISCORD_RESET", problem.Message);
-            if (message.Contains("loader does not match") || message.Contains("active Discord loader changed")) return new InstallDiagnosis("LOADER_CHANGED", "The loader could not be matched to KittenCord's verified files. Known stale records are repaired automatically. These files need inspection; nothing was overwritten. Details are saved beside setup.");
-            if (message.Contains("No Kittencord installation journal")) return new InstallDiagnosis("NOT_INSTALLED", "No KittenCord installation is recorded for this Discord folder. Choose Back to setup, then Install / Repair.");
+            if (message.Contains("core") && (message.Contains("missing") || message.Contains("changed") || message.Contains("modified"))) return new InstallDiagnosis("CORE_CHANGED", "The MaltCord core is missing or changed. Choose Back to setup, then Install / Repair. An altered retained core is preserved for inspection.");
+            if (message.Contains("Discord replaced MaltCord")) return new InstallDiagnosis("DISCORD_RESET", problem.Message);
+            if (message.Contains("loader does not match") || message.Contains("active Discord loader changed")) return new InstallDiagnosis("LOADER_CHANGED", "The loader could not be matched to MaltCord's verified files. Known stale records are repaired automatically. These files need inspection; nothing was overwritten. Details are saved beside setup.");
+            if (message.Contains("No Kittencord installation journal")) return new InstallDiagnosis("NOT_INSTALLED", "No MaltCord installation is recorded for this Discord folder. Choose Back to setup, then Install / Repair.");
             if (message.Contains("Select the Discord") || problem is DirectoryNotFoundException) return new InstallDiagnosis("DISCORD_PATH", "Select the current Discord app-VERSION folder containing Discord.exe. Discord may have moved to a newer app folder after an update.");
             return new InstallDiagnosis("SETUP_FAILED", message + "\n\nDetails are saved beside setup. Your selected folder and settings are kept.");
         }
@@ -201,7 +201,7 @@ namespace KittencordSetup {
             return File.Exists(core) && FileHash(core) == digest && source == Loader(core, digest);
         }
         /// <summary>
-        /// True when Discord's own app.asar archive is back in place and KittenCord's loader and the moved original are gone:
+        /// True when Discord's own app.asar archive is back in place and MaltCord's loader and the moved original are gone:
         /// Discord updated or repaired itself. Nothing is overwritten by installing again, because the archive is only moved aside.
         /// </summary>
         public static bool DiscordReset(string resources) {
@@ -212,7 +212,7 @@ namespace KittencordSetup {
             var target = Full(directory); var resources = ValidateTarget(target); var root = Full(dataRoot); NoLinks(root);
             var stateFile = StatePath(root, target);
             if (!File.Exists(stateFile)) throw new IOException("No Kittencord installation journal exists for the selected Discord folder.");
-            if (DiscordReset(resources)) throw new IOException("Discord replaced KittenCord with its own files, usually after a Discord update or repair. Your settings are kept. Choose Install / Repair to install KittenCord again.");
+            if (DiscordReset(resources)) throw new IOException("Discord replaced MaltCord with its own files, usually after a Discord update or repair. Your settings are kept. Choose Install / Repair to install MaltCord again.");
             var state = ReadState(stateFile, target, resources, root);
             var active = Child(resources, "app.asar");
             var actualLoaderHash = Directory.Exists(active) ? TreeHash(active) : "missing";
@@ -318,11 +318,11 @@ namespace KittencordSetup {
             Recover(target, root, close, progress);
             var existing = File.Exists(stateFile) ? ReadState(stateFile, target, resources, root) : null;
             if (existing != null && DiscordReset(resources)) {
-                // Discord put its own app.asar back (an update or repair) and KittenCord's files are gone, so there is
+                // Discord put its own app.asar back (an update or repair) and MaltCord's files are gone, so there is
                 // nothing of ours to protect. Keep the old record for reference and install as on a clean Discord.
                 File.Move(stateFile, stateFile + ".previous-" + Guid.NewGuid().ToString("N"));
                 existing = null;
-                progress(new InstallProgress("verify", "Discord restored its own files. Installing KittenCord again...", false));
+                progress(new InstallProgress("verify", "Discord restored its own files. Installing MaltCord again...", false));
             }
             if (existing != null && (!Directory.Exists(active) || TreeHash(active) != existing.LoaderHash)) {
                 try { existing = Verify(target, root); }

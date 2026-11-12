@@ -11,7 +11,7 @@ let hide: ReturnType<typeof setTimeout> | undefined;
 function paint() {
     if (!root) return;
     root.dataset.state = local;
-    localLabel.textContent = local === "loading" ? "Loading core modules…" : local === "running" ? "KittenCord is running" : "Running with startup issues";
+    localLabel.textContent = local === "loading" ? "Loading core modules…" : local === "running" ? "MaltCord is running" : "Running with startup issues";
     cloudLabel.textContent = cloud === "connecting" ? "Connecting to Cloud…" : cloud === "online" ? "Cloud connected" : cloud === "offline" ? "Cloud unavailable · local features remain available" : "Local client";
     if (local === "loading") progress.removeAttribute("value"); else progress.value = 1;
     clearTimeout(hide);

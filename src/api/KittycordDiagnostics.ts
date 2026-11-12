@@ -14,7 +14,7 @@ import { redactDiagnosticString } from "@utils/diagnosticRedaction";
 import { Logger } from "@utils/Logger";
 
 let metadata: DiagnosticResult = {};
-const logger = new Logger("KittenCord diagnostics");
+const logger = new Logger("MaltCord diagnostics");
 function pluginVersion(name: string) { return NativeStudio.snapshot().find(item => item.name === name)?.version ?? KittycordPackages.snapshot().entries.find(item => item.manifest.name === name)?.manifest.version ?? VERSION; }
 export const KittycordDiagnostics = {
     async command(action: DiagnosticCommand, input?: unknown) {
@@ -28,7 +28,7 @@ export const KittycordDiagnostics = {
     report(input: Partial<DiagnosticReport> = {}) {
         const native = NativeStudio.snapshot(), local = KittycordPackages.snapshot().entries;
         const enabled = Object.values(plugins).filter(plugin => isPluginEnabled(plugin.name)).map(plugin => ({ id: plugin.id ?? plugin.name, version: native.find(item => item.name === plugin.name)?.version ?? VERSION }));
-        return parseDiagnosticReport({ kind: "bug", category: "other", severity: "info", version: VERSION, os: metadata.platform ?? "Browser host", electron: metadata.electron ?? "", title: "KittenCord issue", description: "", steps: "", stack: "", plugins: [...enabled, ...local.filter(item => item.enabled).map(item => ({ id: item.manifest.id, version: item.manifest.version }))].slice(0, 1500), logs: [], at: Date.now(), ...input });
+        return parseDiagnosticReport({ kind: "bug", category: "other", severity: "info", version: VERSION, os: metadata.platform ?? "Browser host", electron: metadata.electron ?? "", title: "MaltCord issue", description: "", steps: "", stack: "", plugins: [...enabled, ...local.filter(item => item.enabled).map(item => ({ id: item.manifest.id, version: item.manifest.version }))].slice(0, 1500), logs: [], at: Date.now(), ...input });
     },
     logs() { return [...PluginHealth.getAll()].flatMap(([name, health]) => health.runtimeErrors.slice(-3).map(error => `${name} · ${error.source}\n${error.error}`)).slice(-20).map(line => redactDiagnosticString(line.slice(0, 2000))); },
     start() {

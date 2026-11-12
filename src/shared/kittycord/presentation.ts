@@ -11,7 +11,7 @@ export const CONTENT_TYPES = ["plugin", "theme", "css-snippet", "ui-customizatio
 export type ContentType = typeof CONTENT_TYPES[number];
 export const contentLabels: Record<ContentType, string> = { plugin: "Functional plugin", theme: "Theme", "css-snippet": "CSS snippet", "ui-customization": "UI customization", "animation-pack": "Animation pack", "icon-pack": "Icon pack", "visual-effect": "Visual effect", "layout-preset": "Layout preset", "appearance-enhancement": "Appearance enhancement", "interface-component": "Interface component" };
 export const ORIGINS = ["original", "edition", "ported-testcord", "ported-other"] as const;
-export const originLabels = { original: "KittenCord Original", edition: "KittenCord Edition", "ported-testcord": "Ported from TestCord", "ported-other": "Ported from another client" } as const;
+export const originLabels = { original: "MaltCord Original", edition: "MaltCord Edition", "ported-testcord": "Ported from TestCord", "ported-other": "Ported from another client" } as const;
 export interface PluginPresentation {
     contentType: ContentType;
     category: string;

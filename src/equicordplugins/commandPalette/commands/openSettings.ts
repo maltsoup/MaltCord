@@ -30,12 +30,12 @@ export const DISCORD_SETTINGS_ROUTES: SettingsRoute[] = [
     { route: "authorized_apps", label: "Authorized Apps", keywords: ["oauth", "apps"] },
     { route: "family_center", label: "Family Center", keywords: ["family", "safety"] },
     { route: "advanced", label: "Advanced", keywords: ["developer"] },
-    { route: "testcord_main", label: "KittenCord", keywords: ["kittencord", "vencord", "equicord", "testcord"] },
-    { route: "testcord_plugins", label: "KittenCord Plugins", keywords: ["plugins", "discover"] },
-    { route: "testcord_themes", label: "KittenCord Customize", keywords: ["themes", "css", "quickcss", "gallery", "presets"] },
-    { route: "kittycord_account", label: "KittenCord Account & Sync", keywords: ["profiles", "backup", "cloud", "privacy"] },
-    { route: "kittycord_doctor", label: "KittenCord Health", keywords: ["health", "performance", "safe start"] },
-    { route: "kittycord_system", label: "KittenCord About & Updates", keywords: ["update", "changelog", "news", "about"] }
+    { route: "testcord_main", label: "MaltCord", keywords: ["kittencord", "vencord", "equicord", "testcord"] },
+    { route: "testcord_plugins", label: "MaltCord Plugins", keywords: ["plugins", "discover"] },
+    { route: "testcord_themes", label: "MaltCord Customize", keywords: ["themes", "css", "quickcss", "gallery", "presets"] },
+    { route: "kittycord_account", label: "MaltCord Account & Sync", keywords: ["profiles", "backup", "cloud", "privacy"] },
+    { route: "kittycord_doctor", label: "MaltCord Health", keywords: ["health", "performance", "safe start"] },
+    { route: "kittycord_system", label: "MaltCord About & Updates", keywords: ["update", "changelog", "news", "about"] }
 ];
 
 const ROUTE_ALIASES = new Map<string, string[]>([

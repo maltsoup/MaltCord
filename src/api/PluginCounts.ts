@@ -10,7 +10,7 @@ import type { Plugin } from "@utils/types";
 import Plugins, { PluginMeta } from "~plugins";
 
 /**
- * The one definition of plugin numbers shown in KittenCord (spec §5). Optional plugins exclude required
+ * The one definition of plugin numbers shown in MaltCord (spec §5). Optional plugins exclude required
  * core plugins, hidden plugins and API helpers. "enabled" is the saved selection; "running" means started
  * in this session.
  */

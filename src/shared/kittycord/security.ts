@@ -8,7 +8,7 @@ import type { PluginManifest } from "./manifest";
 
 export interface SecurityIndicator { code: string; severity: "review" | "blocked"; line: number; message: string; }
 export interface SecurityReport {
-    engine: "KittenCord Security Engine";
+    engine: "MaltCord Security Engine";
     policyVersion: 1;
     analyzedAt: number;
     status: "Passed Scan" | "Needs Review" | "Blocked";

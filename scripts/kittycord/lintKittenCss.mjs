@@ -5,7 +5,7 @@
  */
 
 /**
- * Guards KittenCord settings CSS (UI_REDESIGN_SPEC_090 §7):
+ * Guards MaltCord settings CSS (UI_REDESIGN_SPEC_090 §7):
  *   colors     no hardcoded colors; use Discord variables and color-mix so every theme applies
  *   motion     only the ten spec motions: transitions/animations timed with --kc-t1..t3, the
  *              kc-rise/kc-pop/kc-fade/kc-ping keyframes, and no hover transforms except the chevron nudge
@@ -137,4 +137,4 @@ if (update) {
 }
 if (failed) process.exit(1);
 const total = Object.values(next).reduce((sum, entry) => sum + entry.colors + entry.motion + entry.selectors, 0);
-console.log(`KittenCord CSS ok. Remaining baseline findings: ${total} in ${Object.keys(next).length} files.`);
+console.log(`MaltCord CSS ok. Remaining baseline findings: ${total} in ${Object.keys(next).length} files.`);

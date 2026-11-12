@@ -38,7 +38,7 @@ export function createSourceScanner(trustedPackagedWorker: string) {
         if (active || stopping || disposed) return;
         if (idle) clearTimeout(idle);
         const job = queue.shift();
-        if (!job) { worker?.unref(); idle = setTimeout(() => { void stop().catch(() => console.warn("Kittencord scanner idle cleanup failed.")); }, 10000); idle.unref(); return; }
+        if (!job) { worker?.unref(); idle = setTimeout(() => { void stop().catch(() => console.warn("MaltCord scanner idle cleanup failed.")); }, 10000); idle.unref(); return; }
         active = job;
         try {
             if (!worker) {

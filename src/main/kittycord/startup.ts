@@ -13,7 +13,7 @@ import { beginStartup, blameStartupPlugin, checkedPluginIds, finishStartup, mark
 import { atomicWriteJson, readBoundedJson } from "./files";
 
 export function createDesktopStartupRecovery(directory: string, readSettings: () => Record<string, unknown>, writeSettings: (settings: Record<string, unknown>) => void) {
-    if (!isAbsolute(directory)) throw new Error("Recovery requires an absolute Kittycord settings directory.");
+    if (!isAbsolute(directory)) throw new Error("Recovery requires an absolute MaltCord settings directory.");
     mkdirSync(directory, { recursive: true });
     const file = join(directory, "kittycord-startup.json");
     let previous;

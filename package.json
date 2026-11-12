@@ -4,7 +4,7 @@
     "version": "0.9.1",
     "kittencordChannel": "stable",
     "kittencordBeta": 2,
-    "description": "A cute Discord client mod",
+    "description": "A KittenCord-based Discord client mod",
     "license": "GPL-3.0-or-later",
     "author": "xtufa7",
     "scripts": {

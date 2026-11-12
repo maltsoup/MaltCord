@@ -127,21 +127,21 @@ function PresetsPage() {
 /** While the badge service has not answered yet, the page says so instead of claiming there are no badges. */
 function BadgesEmpty({ userId }: { userId: string; }) {
     const state = cloudBadges.enabled ? cloudBadges.state(userId) : "disabled";
-    if (state === "disabled") return <PrefRow icon="badge" label="Badges are not available" description="This build is not connected to KittenCord Cloud." />;
+    if (state === "disabled") return <PrefRow icon="badge" label="Badges are not available" description="This build is not connected to MaltCord Cloud." />;
     if (state === "offline") return <PrefRow icon="warning" label="Badge service unavailable" description="Your badges could not be loaded. Your saved order is kept." control={<KcButton level="secondary" onClick={() => void cloudBadges.load(userId, true)}>Retry</KcButton>} />;
-    if (state !== "verified") return <PrefRow icon="clock" label="Loading your badges…" description="Asking KittenCord Cloud for the badges on your account." />;
+    if (state !== "verified") return <PrefRow icon="clock" label="Loading your badges…" description="Asking MaltCord Cloud for the badges on your account." />;
     return <PrefRow icon="badge" label="No badges yet" description="Badges assigned to your account appear here." />;
 }
 
 function Badges() {
     const user = useStateFromStores([UserStore], () => UserStore.getCurrentUser());
     const own = useCloudBadges(user?.id ?? "");
-    if (!user) return <EmptyState title="Not signed in">Sign in to Discord to see your KittenCord badges.</EmptyState>;
+    if (!user) return <EmptyState title="Not signed in">Sign in to Discord to see your MaltCord badges.</EmptyState>;
     const assigned = cloudBadges.assigned(user.id);
     return <>
-        <PrefGroup title="Your badges" footer="KittenCord badges show on your Discord profile for other KittenCord users. They are separate from Discord's official badges and Nitro.">
+        <PrefGroup title="Your badges" footer="MaltCord badges show on your Discord profile for other MaltCord users. They are separate from Discord's official badges and Nitro.">
             {assigned.length || own.length
-                ? assigned.map(badge => <PrefRow key={badge.id} icon={<img className="kc-badge-image" src={kittenCloudBadgeImage(badge)} alt="" />} label={badge.label} description={badge.description ?? "KittenCord badge"} />)
+                ? assigned.map(badge => <PrefRow key={badge.id} icon={<img className="kc-badge-image" src={kittenCloudBadgeImage(badge)} alt="" />} label={badge.label} description={badge.description ?? "MaltCord badge"} />)
                 : <BadgesEmpty userId={user.id} />}
         </PrefGroup>
     </>;
@@ -151,7 +151,7 @@ function BadgesPage() {
     const user = useStateFromStores([UserStore], () => UserStore.getCurrentUser());
     useCloudBadges(user?.id ?? "");
     const assigned = user ? cloudBadges.assigned(user.id) : [];
-    return <SimplePage page="badges" description="The KittenCord badges on your profile, their order and how they look." Component={Badges}
+    return <SimplePage page="badges" description="The MaltCord badges on your profile, their order and how they look." Component={Badges}
         primary={user && assigned.length ? <KcButton level="primary" onClick={() => openOwnerBadgeLayout(user.id, assigned.map(badge => ({ id: `kittencord_cloud_${badge.id}`, description: badge.label, iconSrc: kittenCloudBadgeImage(badge) })))}>Arrange badges</KcButton> : undefined} />;
 }
 
@@ -160,14 +160,14 @@ function ProfilesPage() {
 }
 
 function BackupPage() {
-    return <SegmentedPage page="backup" description="Back up and restore your settings, and connect KittenCord Cloud." segments={[
+    return <SegmentedPage page="backup" description="Back up and restore your settings, and connect MaltCord Cloud." segments={[
         { id: "backup", label: "Backup", Component: Backups },
         { id: "cloud", label: "Cloud", Component: CloudConnection },
     ]} />;
 }
 
 function PrivacyPage() {
-    return <SegmentedPage page="privacy" description="What KittenCord connects to, and what each plugin is allowed to do." segments={[
+    return <SegmentedPage page="privacy" description="What MaltCord connects to, and what each plugin is allowed to do." segments={[
         { id: "privacy", label: "Privacy", Component: PrivacySecurityPanel },
         { id: "security", label: "Plugin security", Component: PluginSecurity },
     ]} />;
@@ -192,7 +192,7 @@ function AboutSegment() {
 }
 
 function AboutPage() {
-    return <SimplePage page="about" description="Who makes KittenCord, credits, licenses and links." Component={AboutSegment} />;
+    return <SimplePage page="about" description="Who makes MaltCord, credits, licenses and links." Component={AboutSegment} />;
 }
 
 export const kittenPageComponents: Record<Exclude<KittenPageId, "home">, ComponentType> = {

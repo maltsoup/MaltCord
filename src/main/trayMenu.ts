@@ -76,10 +76,10 @@ function openAboutWindow() {
 function createVencordMenuItems(): MenuItemConstructorOptions[] {
     return [
         {
-            label: "Kittencord",
+            label: "MaltCord",
             submenu: [
                 {
-                    label: "About Kittencord",
+                    label: "About MaltCord",
                     click: () => openAboutWindow()
                 },
                 { type: "separator" },
@@ -100,7 +100,7 @@ export function patchTrayMenu(): void {
     const originalBuildFromTemplate = Menu.buildFromTemplate;
 
     Menu.buildFromTemplate = function (template: MenuItemConstructorOptions[]) {
-        const alreadyPatched = template.some(item => item.label === "Kittencord");
+        const alreadyPatched = template.some(item => item.label === "MaltCord");
         if (isTrayMenu(template) && !alreadyPatched) {
             const insertIndex = findInsertIndex(template);
             const vencordItems = createVencordMenuItems();

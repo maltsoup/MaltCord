@@ -23,7 +23,7 @@ export function initializeKittycordHelp() {
             discovery: components.KittycordDiscoveryTab, security: components.KittycordSafetyTab, updates: components.KittycordUpdatesTab };
         components.openSettingsTabModal(tabs[feature]);
     }
-    const listener = (event: MessageEvent) => { void receive(event).catch(() => console.error("Kittycord could not open the requested feature. Open it from settings.")); };
+    const listener = (event: MessageEvent) => { void receive(event).catch(() => console.error("MaltCord could not open the requested feature. Open it from settings.")); };
     window.addEventListener("message", listener);
     window.addEventListener("pagehide", () => window.removeEventListener("message", listener), { once: true });
 }

@@ -128,14 +128,14 @@ function EquicordSettings({ navigationEditor }: { navigationEditor?: ReactNode; 
                 <PrefGroup title="Jump to">
                     <PrefLinkRow icon="plugin" brand label="Plugins" description={`${counts.enabled} enabled · ${counts.available} available`} onClick={() => openKittenPage("plugins")} />
                     <PrefLinkRow icon="customize" brand label="Themes" description="Local and online themes, snippets and QuickCSS" onClick={() => openKittenPage("themes")} />
-                    <PrefLinkRow icon="sync" brand label="Backup & Sync" description="Backups, restore and KittenCord Cloud" onClick={() => openKittenPage("backup")} />
+                    <PrefLinkRow icon="sync" brand label="Backup & Sync" description="Backups, restore and MaltCord Cloud" onClick={() => openKittenPage("backup")} />
                     <PrefLinkRow icon="health" brand label="Health" description={failing ? `${failing} ${failing === 1 ? "plugin needs" : "plugins need"} attention` : "No startup failures this session"} onClick={() => openKittenPage("health")} />
                 </PrefGroup>
 
                 <PrefGroup title="General">
                     <SettingSwitches items={[
                         !IS_WEB && { key: "safeStart", icon: "shield", title: "Safe Start", description: "If Discord fails to start twice in a row, the plugin that caused it stays off for one launch and you see which one it was. If the cause is unknown, optional plugins pause for one launch. A clean start turns it off again." },
-                        { key: "useTestcordIcon", icon: "image", title: "Use the KittenCord icon", description: "Show the KittenCord icon instead of the Discord logo." },
+                        { key: "useTestcordIcon", icon: "image", title: "Use the MaltCord icon", description: "Show the MaltCord icon instead of the Discord logo." },
                     ]} />
                 </PrefGroup>
 
@@ -150,7 +150,7 @@ function EquicordSettings({ navigationEditor }: { navigationEditor?: ReactNode; 
     );
 }
 
-export default wrapTab(EquicordSettings, "Kittencord Settings");
+export default wrapTab(EquicordSettings, "MaltCord Settings");
 
 export function isEquicordDonor(userId: string): boolean {
     const donorBadges = BadgeAPI.getEquicordDonorBadges(userId);

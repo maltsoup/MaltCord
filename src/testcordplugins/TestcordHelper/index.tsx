@@ -683,7 +683,7 @@ export const settings = definePluginSettings({
     },
     pronounsBadge: {
         type: OptionType.BOOLEAN,
-        description: "Show your local Kittencord user badge without changing your Discord profile.",
+        description: "Show your local MaltCord user badge without changing your Discord profile.",
         default: true,
     },
     CarefulNetwork: {

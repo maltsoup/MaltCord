@@ -303,7 +303,7 @@ async function completeKittycordStartup() {
         }
     } catch {
         completeLocalStartup(true);
-        PMLogger.error("Kittycord could not save startup history.");
+        PMLogger.error("MaltCord could not save startup history.");
     } finally {
         stopStartupTracking();
         stopStartupBlame();

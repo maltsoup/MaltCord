@@ -39,6 +39,6 @@ export function LocalSettings({ id }: { id: string; }) {
         {surface.panel.settings.length > 0 && <div className="kc-tools-actions"><Button disabled={busy} onClick={() => {
             setBusy(true); setError(""); void KittycordUtility.save(id, draft).catch(problem => setError(problem instanceof Error ? problem.message : "Local settings were not saved.")).finally(() => setBusy(false));
         }}>Save local settings</Button></div>}
-        <Paragraph>These local preferences are global to this Kittencord installation. Do not enter passwords or Discord credentials.</Paragraph>
+        <Paragraph>These local preferences are global to this MaltCord installation. Do not enter passwords or Discord credentials.</Paragraph>
     </section>;
 }

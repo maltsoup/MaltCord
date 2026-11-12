@@ -1,5 +1,5 @@
 /*
- * KittenCord plugin: PresencePal (port)
+ * MaltCord plugin: PresencePal (port)
  * Based on the idea of https://github.com/foxmanhwa/presencepal (MIT)
  * SPDX-License-Identifier: GPL-3.0-or-later
  */

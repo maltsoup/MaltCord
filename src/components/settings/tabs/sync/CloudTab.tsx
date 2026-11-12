@@ -95,11 +95,11 @@ function CloudTab() {
 
     return (
         <SettingsTab>
-            <section className="kc-tools-card"><Heading>KittenCord Cloud</Heading><Paragraph>Connect your Discord account for KittenCord badges and announcements.</Paragraph><div className="kc-tools-actions"><Button disabled={!cloudConfiguration.enabled} onClick={() => openSettingsTabModal(NotificationsTab)}>Manage connected account</Button>{cloudConfiguration.enabled && <Link href={cloudConfiguration.origin}>Open dashboard</Link>}</div></section>
+            <section className="kc-tools-card"><Heading>MaltCord Cloud</Heading><Paragraph>Connect your Discord account for MaltCord badges and announcements.</Paragraph><div className="kc-tools-actions"><Button disabled={!cloudConfiguration.enabled} onClick={() => openSettingsTabModal(NotificationsTab)}>Manage connected account</Button>{cloudConfiguration.enabled && <Link href={cloudConfiguration.origin}>Open dashboard</Link>}</div></section>
             <details className="kc-tool-details"><summary>Settings sync with Vencord or Equicord</summary><div>
             <Heading className={Margins.top16}>Cloud Integration</Heading>
             <Paragraph className={Margins.bottom16}>
-                Sync settings through your selected provider. This connection is separate from KittenCord Cloud.
+                Sync settings through your selected provider. This connection is separate from MaltCord Cloud.
             </Paragraph>
 
             <Notice.Info className={Margins.bottom16}>

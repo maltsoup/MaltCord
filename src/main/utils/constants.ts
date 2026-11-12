@@ -65,7 +65,7 @@ if (IS_DEV && !process.env.KITTYCORD_USER_DATA_DIR) {
             if (existsSync(quickCss)) copyFileSync(quickCss, QUICK_CSS_PATH);
             writeFileSync(DEV_MIGRATED, "migrated");
         } catch (err) {
-            console.error("[Kittencord] Failed to copy prod data:", err);
+            console.error("[MaltCord] Failed to copy prod data:", err);
         }
     }
 }

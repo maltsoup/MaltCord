@@ -289,13 +289,13 @@
     border-color: var(--kc-line);
     background-color: var(--kc-raised) !important;
 
-    /* Replace inherited global button fills only inside KittenCord settings. */
+    /* Replace inherited global button fills only inside MaltCord settings. */
 }
 
 .kc-premium-settings .vc-btn-primary {
     background-color: var(--kc-accent) !important;
 
-    /* Replace inherited global primary fills only inside KittenCord settings. */
+    /* Replace inherited global primary fills only inside MaltCord settings. */
     color: var(--control-primary-text-default, var(--white-500)) !important;
 
     /* Preserve the active theme primary-button text color. */

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
-  "name": "KittenCord",
-  "description": "The cutest Discord client mod, in your browser.",
+  "name": "MaltCord",
+  "description": "A KittenCord-based Discord client mod, in your browser.",
   "author": "xtufa7",
   "icons": {
     "128": "kittycord.png"

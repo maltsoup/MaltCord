@@ -228,7 +228,7 @@ export const devBannerPatches: any[] = [];
 export const devBannerModule: Omit<UserAreaModule, "order" | "enabled"> = {
     id: "dev-banner",
     name: "Developer Banner",
-    description: "Displays Discord and Kittencord build information.",
+    description: "Displays Discord and MaltCord build information.",
     authors: [EquicordDevs.KrystalSkull, Devs.thororen, TestcordDevs.sirphantom89],
     version: "1.0.0",
     tags: ["Developers", "Appearance"],

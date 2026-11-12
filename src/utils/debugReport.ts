@@ -215,7 +215,7 @@ export function generateGitHubIssueBody(options: DebugReportOptions = {}): strin
  * @param labels Optional labels to apply.
  */
 export function buildIssueUrl(title: string, body: string, labels: string[] = []): string {
-    if (!gitRemote) throw new Error("No public Kittycord issue tracker is configured. Copy the diagnostic report locally instead.");
+    if (!gitRemote) throw new Error("No public MaltCord issue tracker is configured. Copy the diagnostic report locally instead.");
     const params = new URLSearchParams();
     params.set("title", title);
     params.set("body", body);

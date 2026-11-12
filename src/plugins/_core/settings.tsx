@@ -550,7 +550,7 @@ export const settings = definePluginSettings({
     pluginsView: { type: OptionType.STRING, description: "Plugins page layout: list or cards.", default: "list", hidden: true },
     settingsLocation: {
         type: OptionType.SELECT,
-        description: "Where to put the KittenCord settings section",
+        description: "Where to put the MaltCord settings section",
         options: [
             { label: "At the very top", value: "top" },
             { label: "Above Billing section", value: "aboveNitro", default: true },
@@ -562,30 +562,30 @@ export const settings = definePluginSettings({
     },
     includeVencordInfoWhenCopying: {
         type: OptionType.BOOLEAN,
-        description: "Also copy Kittencord info (Kittencord, Electron, Chromium) when clicking the version info in the bottom left area of the Settings page",
+        description: "Also copy MaltCord info (MaltCord, Electron, Chromium) when clicking the version info in the bottom left area of the Settings page",
         default: true
     },
     visibleSettingsTabs: {
         type: OptionType.CUSTOM,
-        description: "Visible Kittencord settings tabs",
+        description: "Visible MaltCord settings tabs",
         hidden: true,
         default: [] as string[]
     },
     knownSettingsTabs: {
         type: OptionType.CUSTOM,
-        description: "Kittencord settings tabs the editor has already seen",
+        description: "MaltCord settings tabs the editor has already seen",
         hidden: true,
         default: [] as string[]
     },
     settingsTabOrder: {
         type: OptionType.CUSTOM,
-        description: "Kittencord settings tab order",
+        description: "MaltCord settings tab order",
         hidden: true,
         default: [] as string[]
     },
     pinnedSettingsTabs: {
         type: OptionType.CUSTOM,
-        description: "Pinned Kittencord settings tabs",
+        description: "Pinned MaltCord settings tabs",
         hidden: true,
         default: [] as string[]
     },
@@ -735,7 +735,7 @@ export default definePlugin({
         const testcordSection: SettingsLayoutNode = {
             key: "testcord_section",
             type: LayoutTypes.SECTION,
-            useTitle: () => "KittenCord",
+            useTitle: () => "MaltCord",
             buildLayout: () => orderedTestcordEntries
         };
 
@@ -801,7 +801,7 @@ export default definePlugin({
     getInfoRows() {
         const { electronVersion, chromiumVersion, getVersionInfo } = this;
 
-        const rows = [`Kittencord ${VERSION} (${gitHashShort})${getVersionInfo()}`];
+        const rows = [`MaltCord ${VERSION} (${gitHashShort})${getVersionInfo()}`];
 
         if (electronVersion) rows.push(`Electron ${electronVersion}`);
         if (chromiumVersion) rows.push(`Chromium ${chromiumVersion}`);

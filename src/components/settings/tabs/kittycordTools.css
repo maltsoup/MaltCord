@@ -356,8 +356,8 @@
 .kc-tools-actions .vc-btn-base {
     min-height: 36px;
     border-radius: var(--radius-sm, 8px);
-    background-color: var(--control-secondary-background-default) !important; /* Override inherited global button colors within Kittycord tools. */
-    color: var(--text-default) !important; /* Override inherited global button colors within Kittycord tools. */
+    background-color: var(--control-secondary-background-default) !important; /* Override inherited global button colors within MaltCord tools. */
+    color: var(--text-default) !important; /* Override inherited global button colors within MaltCord tools. */
     gap: 8px;
 }
 

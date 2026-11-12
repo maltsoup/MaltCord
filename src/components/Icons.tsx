@@ -40,7 +40,7 @@ export const DiscordIconSizes = {
 
 export function KittycordIcon(props: IconProps) {
     return (
-        <svg width={24} height={24} viewBox="0 0 128 128" role="img" aria-label="Kittencord" {...props}>
+        <svg width={24} height={24} viewBox="0 0 128 128" role="img" aria-label="MaltCord" {...props}>
             <image href={`data:image/png;base64,${kittenArtwork}`} width="128" height="128" preserveAspectRatio="xMidYMid meet" />
         </svg>
     );

@@ -42,7 +42,7 @@ export function ActionIcon({ label, children, onClick, disabled = false }: Props
     return <Tooltip text={label}>{props => <button type="button" {...props} className="kc-icon-btn" aria-label={label} disabled={disabled} onClick={onClick}>{children}</button>}</Tooltip>;
 }
 
-export function PublisherIdentity({ author, github, avatar, source = "KittenCord Local" }: { author: string; github?: string; avatar?: string; source?: string; }) {
+export function PublisherIdentity({ author, github, avatar, source = "MaltCord Local" }: { author: string; github?: string; avatar?: string; source?: string; }) {
     const account = github && /^[a-z0-9](?:[a-z0-9-]{0,37}[a-z0-9])?$/i.test(github) ? github : undefined;
     return <span className="kc-publisher">{(avatar || account) && <span className="kc-publisher-avatar"><img src={account ? `https://github.com/${account}.png?size=64` : avatar} alt="" loading="lazy" referrerPolicy="no-referrer" onError={event => { event.currentTarget.hidden = true; }} /></span>}<span className="kc-publisher-author">{author}</span>{account && <Link href={`https://github.com/${account}`} aria-label={`${author} on GitHub`}><GithubIcon width={17} height={17} /></Link>}{source && <span className="kc-source-badge">{source}</span>}</span>;
 }

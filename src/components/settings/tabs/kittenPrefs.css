@@ -5,7 +5,7 @@
  */
 
 /*
- * KittenCord settings foundation (UI_REDESIGN_SPEC_090 §3, §4, §7).
+ * MaltCord settings foundation (UI_REDESIGN_SPEC_090 §3, §4, §7).
  * Colors come only from Discord variables and color-mix, so every theme applies.
  * Motion is limited to the ten motions listed in §7; reduced motion turns all of it off.
  */
@@ -462,7 +462,7 @@
     transform: scale(.97);
 }
 
-/* 5. Switch: the knob slides and stretches slightly while pressed (KittenCord pages only) */
+/* 5. Switch: the knob slides and stretches slightly while pressed (MaltCord pages only) */
 .kc-premium-settings .vc-switch-thumb {
     transition: left var(--kc-t2) var(--kc-e-out), transform var(--kc-t1) var(--kc-e-io);
     transform-origin: center;

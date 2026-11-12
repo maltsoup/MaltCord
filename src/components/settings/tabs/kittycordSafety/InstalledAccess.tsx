@@ -40,7 +40,7 @@ export function InstalledAccess() {
         {native.slice(0, limit).map(plugin => {
             const meta = PluginMeta[plugin.name], path = meta?.folderName ?? "";
             const state = getPluginRuntimeState(plugin.name);
-            const origin = path.startsWith("src/userplugins/.studio/") ? "KittenCord Studio" : path.startsWith("src/testcordplugins/") ? "TestCord" : path.startsWith("src/equicordplugins/") ? "Equicord" : path.startsWith("src/plugins/") ? "Vencord" : "Local";
+            const origin = path.startsWith("src/userplugins/.studio/") ? "MaltCord Studio" : path.startsWith("src/testcordplugins/") ? "TestCord" : path.startsWith("src/equicordplugins/") ? "Equicord" : path.startsWith("src/plugins/") ? "Vencord" : "Local";
             const declared = [...new Set([...(plugin.dependencies ?? []), ...getPluginApiDependencies(plugin)])];
             return <article className="kc-tools-card" key={plugin.name}><div className="kc-package-footer"><Heading>{plugin.name}</Heading><span>{state?.quarantined ? "Quarantined" : state?.failed ? "Needs attention" : state?.paused ? "Paused" : state?.running ? "Running" : state?.selected ? "Selected" : "Disabled"}</span></div>
                 {(Array.isArray(plugin.authors) && plugin.authors.length ? plugin.authors : [undefined]).map((author, index) => <PublisherIdentity key={index} author={author?.name ?? "Unlisted contributor"} github={author?.github} avatar={author?.id ? UserStore.getUser(String(author.id))?.getAvatarURL() : undefined} source={index ? "" : origin} />)}

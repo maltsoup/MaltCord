@@ -164,4 +164,4 @@ function PerformanceTab() {
 
 }
 
-export default wrapTab(PerformanceTab, "Kittencord Performance");
+export default wrapTab(PerformanceTab, "MaltCord Performance");

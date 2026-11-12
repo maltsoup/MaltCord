@@ -186,7 +186,7 @@ details {
     white-space: pre-wrap;
 }
 
-/* Native Studio workbench: KittenCord accent, quiet secondary actions and an editor-first layout. */
+/* Native Studio workbench: MaltCord accent, quiet secondary actions and an editor-first layout. */
 
 /* The generic button rules above still style the legacy Studio window, which shares this file; these are scoped to the native workbench. */
 /* stylelint-disable no-descending-specificity */

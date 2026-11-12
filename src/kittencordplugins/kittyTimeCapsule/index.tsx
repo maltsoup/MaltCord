@@ -20,8 +20,8 @@ import type { ComponentProps } from "react";
 import style from "./style.css?managed";
 
 const capsule = createTimeCapsule({
-    read: account => get(`KittenCord:TimeCapsule:${account}`),
-    write: (account, reminders) => set(`KittenCord:TimeCapsule:${account}`, reminders),
+    read: account => get(`MaltCord:TimeCapsule:${account}`),
+    write: (account, reminders) => set(`MaltCord:TimeCapsule:${account}`, reminders),
     notify: reminder => showNotification({ title: "Kitty Time Capsule", body: reminder.title || "Your message reminder is ready.", onClick: () => openDashboard(), noPersist: true })
 });
 let timer: ReturnType<typeof setInterval> | undefined;

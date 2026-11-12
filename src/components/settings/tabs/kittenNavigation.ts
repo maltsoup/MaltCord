@@ -10,7 +10,7 @@ import { SettingsRouter, useEffect, useState } from "@webpack/common";
 const pending = new Map<KittenPageId, string>();
 const listeners = new Set<(page: KittenPageId, segment: string) => void>();
 
-/** Opens a KittenCord page in Discord's settings, optionally on a segment. */
+/** Opens a MaltCord page in Discord's settings, optionally on a segment. */
 export function openKittenPage<P extends KittenPageId>(page: P, segment?: KittenSegment<P>) {
     if (segment) {
         pending.set(page, segment);
@@ -19,7 +19,7 @@ export function openKittenPage<P extends KittenPageId>(page: P, segment?: Kitten
     SettingsRouter.openUserSettings(`${kittenPages[page].key}_panel`);
 }
 
-/** Opens any current or retired KittenCord settings key; returns false for keys that are not KittenCord's. */
+/** Opens any current or retired MaltCord settings key; returns false for keys that are not MaltCord's. */
 export function openSettingsRoute(key: string) {
     const route = resolveSettingsRoute(key);
     if (!route) return false;

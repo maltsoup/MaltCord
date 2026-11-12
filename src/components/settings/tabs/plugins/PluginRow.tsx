@@ -17,7 +17,7 @@ import { ActionIcon, IconTile, type OverflowItem, OverflowMenu } from "../Kitten
 import { openPluginModal } from "./PluginModal";
 import { pluginDisplayName, usePluginState } from "./usePluginState";
 
-const sourceChip: Record<string, string> = { kittencord: "KittenCord", studio: "Studio", local: "Local", cloud: "Cloud", testcord: "TestCord", equicord: "Equicord", vencord: "Vencord", betterdiscord: "BetterDiscord", imported: "Imported" };
+const sourceChip: Record<string, string> = { kittencord: "MaltCord", studio: "Studio", local: "Local", cloud: "Cloud", testcord: "TestCord", equicord: "Equicord", vencord: "Vencord", betterdiscord: "BetterDiscord", imported: "Imported" };
 
 function Chip({ tone, title, children }: React.PropsWithChildren<{ tone?: "brand" | "warning" | "danger"; title?: string; }>) {
     return <span className="kc-chip-label" data-tone={tone} title={title}>{children}</span>;

@@ -1963,7 +1963,7 @@ function HealthTab() {
                 <div className="vc-health-tab-content">
                     <Paragraph color="text-subtle" className={Margins.bottom20}>
                         Discord's frequent updates can break individual plugins. Copy a diagnostic report locally and review it before sharing.
-                        {gitRemote && <> Use <em>Report</em> to prepare an issue in the configured Kittencord repository.</>}
+                        {gitRemote && <> Use <em>Report</em> to prepare an issue in the configured MaltCord repository.</>}
                     </Paragraph>
 
                     <DiscordUpdateBanner
@@ -2786,7 +2786,7 @@ function HealthTab() {
                         <Card className="vc-health-guide-card">
                             <HeadingSecondary>Safe Mode & Crash Recovery</HeadingSecondary>
                             <Paragraph color="text-subtle">
-                                Safe Mode boots Kittencord with optional plugins disabled to help isolate client stutter and crashes. A plugin that crashes three or more times within 24 hours is quarantined automatically and kept disabled at startup; you can restore it from the recovery controls under Advanced.
+                                Safe Mode boots MaltCord with optional plugins disabled to help isolate client stutter and crashes. A plugin that crashes three or more times within 24 hours is quarantined automatically and kept disabled at startup; you can restore it from the recovery controls under Advanced.
                             </Paragraph>
                         </Card>
                     </div>

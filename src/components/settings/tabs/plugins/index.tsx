@@ -146,8 +146,8 @@ export const ExcludedReasons: Record<PluginTarget, string> = {
     vesktop: "Vesktop/Equibop apps",
     equibop: "Vesktop/Equibop apps",
     web: "Vesktop/Equibop apps & Discord web",
-    dev: "Developer version of Kittencord",
-    browser: "Web Browser version of Kittencord"
+    dev: "Developer version of MaltCord",
+    browser: "Web Browser version of MaltCord"
 };
 
 function ExcludedPluginsList({ search }: { search: string; }) {
@@ -499,7 +499,7 @@ function PluginSettings() {
     const chips = [
         { status: SearchStatus.ALL, label: "All" },
         { status: SearchStatus.ENABLED, label: "Enabled" },
-        { status: SearchStatus.KITTENCORD, label: "KittenCord" },
+        { status: SearchStatus.KITTENCORD, label: "MaltCord" },
         { status: SearchStatus.NEEDS_RESTART, label: "Needs restart" },
         { status: SearchStatus.ISSUES, label: "Issues" },
     ];
@@ -523,8 +523,8 @@ function PluginSettings() {
     const unfiltered = searchValue.status === SearchStatus.ALL && !searchValue.value && !searchValue.tags.length && !searchValue.author;
     const shown = filteredPlugins.slice(0, visibleCount);
     const sections = unfiltered
-        // The KittenCord group is small, so it always shows in full instead of only what the first page reached.
-        ? [{ title: "KittenCord", plugins: filteredPlugins.filter(isKittenCordPlugin) }, { title: "All plugins", plugins: shown.filter(p => !isKittenCordPlugin(p)) }]
+        // The MaltCord group is small, so it always shows in full instead of only what the first page reached.
+        ? [{ title: "MaltCord", plugins: filteredPlugins.filter(isKittenCordPlugin) }, { title: "All plugins", plugins: shown.filter(p => !isKittenCordPlugin(p)) }]
         : [{ title: `${filteredPlugins.length} ${filteredPlugins.length === 1 ? "plugin" : "plugins"}`, plugins: shown }];
     const cards = kittenSettings.store.pluginsView === "cards";
     const renderRows = (list: Plugin[]) => {
@@ -607,7 +607,7 @@ function PluginSettings() {
 
                 {searchValue.status !== SearchStatus.LOCAL && requiredPluginDefs.length > 0 && <PrefGroup>
                     <button type="button" className="kc-pref-row kc-pref-link" aria-expanded={showRequired} onClick={() => setShowRequired(value => !value)}>
-                        <span className="kc-pref-main"><IconTile icon="shield" /><span className="kc-pref-text"><span className="kc-pref-label">{requiredPluginDefs.length} core plugins are always on</span><span className="kc-pref-description">Required by KittenCord or by plugins you enabled. {showRequired ? "Hide them" : "Show them to open their settings"}.</span></span><KcIcon name="chevron" size={16} className="kc-pref-chevron" /></span>
+                        <span className="kc-pref-main"><IconTile icon="shield" /><span className="kc-pref-text"><span className="kc-pref-label">{requiredPluginDefs.length} core plugins are always on</span><span className="kc-pref-description">Required by MaltCord or by plugins you enabled. {showRequired ? "Hide them" : "Show them to open their settings"}.</span></span><KcIcon name="chevron" size={16} className="kc-pref-chevron" /></span>
                     </button>
                     {showRequired && renderRequiredRows(requiredPluginDefs)}
                 </PrefGroup>}
@@ -616,7 +616,7 @@ function PluginSettings() {
     );
 
     function renderRequiredRows(list: Plugin[]) {
-        return list.map(p => <PluginRow key={p.name} plugin={p} onRestartNeeded={handleRestartNeeded} locked={p.required || !depMap[p.name] ? "Required for KittenCord to work." : `Required by ${depMap[p.name].filter(d => settings.plugins[d]?.enabled).join(", ")}.`} />);
+        return list.map(p => <PluginRow key={p.name} plugin={p} onRestartNeeded={handleRestartNeeded} locked={p.required || !depMap[p.name] ? "Required for MaltCord to work." : `Required by ${depMap[p.name].filter(d => settings.plugins[d]?.enabled).join(", ")}.`} />);
     }
 }
 

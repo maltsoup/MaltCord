@@ -81,6 +81,6 @@ export async function analyzePluginSource(source: string, permissions: readonly 
     walk(tree);
     const syntax = compiler.transpileModule(source, { compilerOptions: { target: compiler.ScriptTarget.ESNext, module: compiler.ModuleKind.ESNext, allowJs: true }, reportDiagnostics: true, fileName: "plugin.js" }).diagnostics ?? [];
     if (syntax.some(item => item.category === compiler.DiagnosticCategory.Error)) add(tree, "invalid-syntax", "Source contains JavaScript syntax errors.");
-    return { engine: "KittenCord Security Engine", policyVersion: 1, analyzedAt: now, status: indicators.some(item => item.severity === "blocked") ? "Blocked" : indicators.length ? "Needs Review" : "Passed Scan", indicators,
+    return { engine: "MaltCord Security Engine", policyVersion: 1, analyzedAt: now, status: indicators.some(item => item.severity === "blocked") ? "Blocked" : indicators.length ? "Needs Review" : "Passed Scan", indicators,
         limitations: "AST indicators are heuristic, can miss obfuscation and can flag innocent code. Passed Scan is not publisher verification or a safety guarantee. Runtime isolation and the capability boundary remain mandatory." };
 }

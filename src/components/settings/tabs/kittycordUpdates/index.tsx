@@ -36,15 +36,15 @@ function Updates() {
         catch { setResult(previous => ({ ...previous, error: "The update request failed. Your current installation was retained." })); }
         finally { setBusy(false); }
     }
-    return <SettingsTab><div className="kc-tool-page"><KittyToolHeader Icon={CloudDownloadIcon} title="Kittencord Updates" description="Signed releases, readable changes and a controlled restart." />
+    return <SettingsTab><div className="kc-tool-page"><KittyToolHeader Icon={CloudDownloadIcon} title="MaltCord Updates" description="Signed releases, readable changes and a controlled restart." />
         <div className="kc-tools-card"><Heading>Current version · {VERSION}</Heading><Paragraph>Updates are verified before installation. Restarting always asks for confirmation.</Paragraph>
         {!supported && <Notice.Info>This host cannot run the Windows installer update flow. Browser extensions follow browser update and signing rules.</Notice.Info>}
         {result.error && <Notice.Warning>{result.error}</Notice.Warning>}
         {result.checked && !result.offer && !result.error && <Paragraph>No newer signed version was returned by the configured channel.</Paragraph>}
         {supported && result.configured && <div className="kc-tools-actions"><Button disabled={busy} onClick={() => void command("check")}><ClockIcon />Check for updates</Button></div>}</div>
-        {result.offer && <div className="kc-tools-card"><Heading>Kittencord {result.offer.version}</Heading><Paragraph>{new Date(result.offer.issuedAt).toLocaleString()} · {(result.offer.size / 1048576).toFixed(1)} MiB · Ed25519 signature verified</Paragraph><Heading>Changelog</Heading><pre className="kc-catalog-source">{result.offer.notes}</pre><Paragraph>SHA-256: {result.offer.sha256}</Paragraph><div className="kc-tools-actions"><Button disabled={busy || result.offer.staged} onClick={() => void command("stage")}><CloudDownloadIcon />{result.offer.staged ? "Downloaded and verified" : "Download verified update"}</Button><Button variant="secondary" disabled={busy || !result.offer.staged} onClick={() => void command("apply")}>Restart &amp; Update…</Button></div></div>}
+        {result.offer && <div className="kc-tools-card"><Heading>MaltCord {result.offer.version}</Heading><Paragraph>{new Date(result.offer.issuedAt).toLocaleString()} · {(result.offer.size / 1048576).toFixed(1)} MiB · Ed25519 signature verified</Paragraph><Heading>Changelog</Heading><pre className="kc-catalog-source">{result.offer.notes}</pre><Paragraph>SHA-256: {result.offer.sha256}</Paragraph><div className="kc-tools-actions"><Button disabled={busy || result.offer.staged} onClick={() => void command("stage")}><CloudDownloadIcon />{result.offer.staged ? "Downloaded and verified" : "Download verified update"}</Button><Button variant="secondary" disabled={busy || !result.offer.staged} onClick={() => void command("apply")}>Restart &amp; Update…</Button></div></div>}
         {busy && <Paragraph role="status">Verifying signed release data. Please wait…</Paragraph>}
         {result.progress && <div className="kc-cloud-download" role="status"><progress aria-label="Verified update download" value={result.progress.received} max={result.progress.total} /><Paragraph>{Math.round(result.progress.received / result.progress.total * 100)}% downloaded · SHA-256 is checked before installation.</Paragraph></div>}
     </div></SettingsTab>;
 }
-export default wrapTab(Updates, "Kittencord Updates");
+export default wrapTab(Updates, "MaltCord Updates");

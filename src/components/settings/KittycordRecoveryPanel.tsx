@@ -113,7 +113,7 @@ export function KittycordRecoveryPanel() {
                 <Button size="small" variant="secondary" disabled={busy} onClick={() => void leaveSafeStart()}>Restart normally</Button>
             </div>
         </Notice.Warning>}
-        {!Settings.safeStart && <Paragraph>Safe Start is off. Turn it on in KittenCord settings to recover automatically from repeated startup crashes.</Paragraph>}
+        {!Settings.safeStart && <Paragraph>Safe Start is off. Turn it on in MaltCord settings to recover automatically from repeated startup crashes.</Paragraph>}
         {status.failedPlugins.length > 0 && <Paragraph>Startup failures: {status.failedPlugins.join(", ")}</Paragraph>}
         <div className="kc-tools-actions">{status.lastGoodAvailable && <Button variant="secondary" disabled={busy || !status.persistent} onClick={() => Alerts.show({
             title: "Restore successful plugin selection?",

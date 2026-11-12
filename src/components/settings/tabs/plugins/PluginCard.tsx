@@ -53,7 +53,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
     const testcordModDetails = isTestcordMod ? getTestcordModifiedDetails(plugin, pluginMeta.folderName) : null;
 
     const pluginInfo = [
-        { condition: !!plugin.kittencordOrigin && !studio, src: `data:image/png;base64,${KittenLogo}`, alt: "KittenCord", title: plugin.kittencordOrigin === "original" ? "KittenCord Original" : "KittenCord Edition" },
+        { condition: !!plugin.kittencordOrigin && !studio, src: `data:image/png;base64,${KittenLogo}`, alt: "MaltCord", title: plugin.kittencordOrigin === "original" ? "MaltCord Original" : "MaltCord Edition" },
         {
             condition: Boolean(testcordModDetails),
             src: testcordModDetails?.src ?? "",
@@ -125,7 +125,7 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
             {runtime?.quarantined && <span>Quarantined</span>}
             {runtime?.failed && <span>Needs attention</span>}
             <span className={cl("card-source")}>
-                {plugin.name === "KittyVoiceLab" ? <span>Kittencord exclusive</span> : pluginDetails && (
+                {plugin.name === "KittyVoiceLab" ? <span>MaltCord exclusive</span> : pluginDetails && (
                     <img
                         src={pluginDetails.src}
                         alt={pluginDetails.alt}

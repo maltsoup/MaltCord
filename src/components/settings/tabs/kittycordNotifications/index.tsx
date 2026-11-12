@@ -64,7 +64,7 @@ export function CloudConnection() {
     if (!cloud.enabled || !cloud.supported) return <CloudUnavailable />;
     return <>
         {(failure || error) && <CompactNotice>{failure || error}</CompactNotice>}
-        <PrefGroup title="KittenCord Cloud" footer="Public announcements and read controls work on this device. Connecting syncs your choices and adds account or team announcements.">
+        <PrefGroup title="MaltCord Cloud" footer="Public announcements and read controls work on this device. Connecting syncs your choices and adds account or team announcements.">
             <PrefRow icon="cloud" brand={!!account.user} label={account.user ? `Connected as ${account.user.username}` : "Not connected"} description={account.user ? account.user.id : "Connect your Discord account"} control={<>
                 <Button size="small" variant="secondary" className="kc-btn kc-btn-row" disabled={busy} onClick={() => void action(() => cloud.refresh())}>Refresh</Button>
                 <Button size="small" variant={account.authenticated ? "secondary" : "primary"} className="kc-btn kc-btn-row" disabled={busy || account.pending} onClick={() => void action(async () => { const value = await cloud.command(account.authenticated ? "logout" : "start"); if (UserStore.getCurrentUser()?.id === accountId) setAccount(value); await cloud.refresh(); })}>{account.authenticated ? "Disconnect" : "Connect"}</Button>
@@ -136,7 +136,7 @@ export function NotificationBell() {
         <Popover open={open} onClose={close} label="Notifications">
             <div className="kc-popover-head"><Heading tag="h3" className="kc-pref-group-title">Notifications</Heading>
                 {available && <Button size="small" variant="secondary" className="kc-btn kc-btn-row" disabled={busy || !unread} onClick={() => void action(() => cloud.mark())}>Mark all read</Button>}</div>
-            {!available ? <Paragraph className="kc-popover-note">KittenCord announcements need the desktop client with the Cloud service configured.</Paragraph>
+            {!available ? <Paragraph className="kc-popover-note">MaltCord announcements need the desktop client with the Cloud service configured.</Paragraph>
                 : feed.items.length ? <div className="kc-popover-list">{feed.items.slice(0, 5).map(item => <NotificationItem key={item.id} item={item} action={action} />)}</div>
                     : <Paragraph className="kc-popover-note">You’re up to date.</Paragraph>}
             <div className="kc-popover-foot">

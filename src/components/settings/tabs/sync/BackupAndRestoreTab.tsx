@@ -61,7 +61,7 @@ function BackupAndRestoreTab() {
 
             <Heading>Import Settings</Heading>
             <Paragraph className={Margins.bottom16}>
-                Choose a Kittencord, TestCord, Equicord or Vencord JSON backup, then review its contents. Imported values replace matching settings; other settings are kept. Export your current setup before restoring an older backup.
+                Choose a MaltCord, TestCord, Equicord or Vencord JSON backup, then review its contents. Imported values replace matching settings; other settings are kept. Export your current setup before restoring an older backup.
             </Paragraph>
 
             <Flex gap="8px" className={Margins.bottom20} style={{ flexWrap: "wrap" }}>

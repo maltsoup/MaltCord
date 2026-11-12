@@ -40,7 +40,7 @@ import { cloudProfileBadgeItems, CloudProfileDetails } from "./CloudProfileBadge
 import { KittenNameCrown } from "./KittenProfileBadge";
 import { EquicordTranslatorModal, TestCordDonorModal, VencordDonorModal } from "./modals";
 
-// TestCord badges stay visible in KittenCord (owner, 2026-11-04). KittenCord only shows them; unlike TestCord it
+// TestCord badges stay visible in MaltCord (owner, 2026-11-04). MaltCord only shows them; unlike TestCord it
 // does not write a marker into the user's own Discord pronouns.
 const TESTCORD_CONTRIBUTOR_BADGE = "https://raw.githubusercontent.com/TestcordDev/TestCord/main/browser/icon.png";
 const TESTCORD_ADMIN_BADGE = "https://raw.githubusercontent.com/TestcordDev/tbadges/main/admnew.png";

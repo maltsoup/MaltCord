@@ -11,7 +11,7 @@ import type { packageCompatibility } from "@shared/kittycord/compatibility";
 import { React } from "@webpack/common";
 
 export function KittyCompatibilityCard({ report }: { report: ReturnType<typeof packageCompatibility>; }) {
-    return <Card className="kc-tools-card" aria-label="Kittencord compatibility report">
+    return <Card className="kc-tools-card" aria-label="MaltCord compatibility report">
         <Heading>Compatibility: {report.classification}</Heading>
         <Paragraph>{report.loading}</Paragraph>
         <Paragraph>Permissions: {report.permissions.join(", ") || "None"}. Publisher unverified.</Paragraph>

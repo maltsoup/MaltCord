@@ -46,7 +46,7 @@ ipcMain.handle(IpcEvents.KITTYCORD_SANDBOX_OPEN, async (event, token: unknown) =
         window.destroy(); throw new Error("The host changed or cannot confirm isolated runtime security settings. Activation was blocked.");
     }
     windows.set(id, { owner: event.sender, window });
-    window.setTitle("Kittycord isolated plugin runtime");
+    window.setTitle("MaltCord isolated plugin runtime");
     window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
     window.webContents.on("will-navigate", navigation => navigation.preventDefault());
     let expectedClose = false;

@@ -109,8 +109,8 @@ if (!IS_VANILLA && !IS_EXTENSION) {
         try {
             if (RendererSettings.store.enableReactDevtools)
                 installExt("fmkadmapgofadopljbjfkapdkoienihi")
-                    .then(() => console.info("[Kittencord] Installed React Developer Tools"))
-                    .catch(err => console.error("[Kittencord] Failed to install React Developer Tools", err));
+                    .then(() => console.info("[MaltCord] Installed React Developer Tools"))
+                    .catch(err => console.error("[MaltCord] Failed to install React Developer Tools", err));
         } catch { }
 
         initCsp();

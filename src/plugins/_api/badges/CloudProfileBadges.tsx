@@ -22,7 +22,7 @@ export function cloudProfileBadgeItems(userId: string, badges: readonly CloudBad
         name: badge.label,
         description: badge.label,
         detail: badge.description,
-        infoLabel: "KittenCord",
+        infoLabel: "MaltCord",
         rarity: badge.id === "opal" ? BadgeRarity.MYTHIC : BadgeRarity.COMMON,
         iconSrc: kittenCloudBadgeImage(badge),
         largeIconSrc: kittenCloudBadgeImage(badge),
@@ -37,9 +37,9 @@ export const CloudProfileDetails = ErrorBoundary.wrap(function CloudProfileDetai
     const assigned=useCloudBadges(userId);
     if(!/^\d{17,20}$/.test(userId))return null;
     const own=UserStore.getCurrentUser()?.id===userId;
-    if (!assigned.length && !cloudBadges.assigned(userId).length && cloudBadges.state(userId) !== "verified") return own && cloudBadges.state(userId) === "offline" ? <section className="vc-kitten-profile-details" aria-label="KittenCord badges"><Paragraph>The badge service is unavailable. Your saved preferences are kept.</Paragraph><Button size="small" variant="secondary" onClick={() => void cloudBadges.load(userId, true)}>Retry</Button></section> : null;
-    if (!assigned.length && !cloudBadges.assigned(userId).length) return own && cloudBadges.enabled ? <section className="vc-kitten-profile-details" aria-label="KittenCord badges"><Paragraph>{IS_WEB ? "Connect your account from KittenCord desktop to save badge preferences." : "Connect your KittenCord account to sync badges and their visibility."}</Paragraph><Button disabled={IS_WEB} size="small" variant="secondary" onClick={() => void import("@components/settings/tabs/kittenNavigation").then(({ openKittenPage }) => openKittenPage("backup", "cloud"))}>Connect account</Button></section> : null;
+    if (!assigned.length && !cloudBadges.assigned(userId).length && cloudBadges.state(userId) !== "verified") return own && cloudBadges.state(userId) === "offline" ? <section className="vc-kitten-profile-details" aria-label="MaltCord badges"><Paragraph>The badge service is unavailable. Your saved preferences are kept.</Paragraph><Button size="small" variant="secondary" onClick={() => void cloudBadges.load(userId, true)}>Retry</Button></section> : null;
+    if (!assigned.length && !cloudBadges.assigned(userId).length) return own && cloudBadges.enabled ? <section className="vc-kitten-profile-details" aria-label="MaltCord badges"><Paragraph>{IS_WEB ? "Connect your account from MaltCord desktop to save badge preferences." : "Connect your MaltCord account to sync badges and their visibility."}</Paragraph><Button disabled={IS_WEB} size="small" variant="secondary" onClick={() => void import("@components/settings/tabs/kittenNavigation").then(({ openKittenPage }) => openKittenPage("backup", "cloud"))}>Connect account</Button></section> : null;
     // Only your own badge controls are shown here; the account date and display year were removed (owner, 2026-11-04).
     if (!own) return null;
-    return <section className="vc-kitten-profile-details" aria-label="KittenCord badges">{IS_WEB && <Paragraph>Badge editing is available in KittenCord desktop.</Paragraph>}<Button disabled={IS_WEB} size="small" variant="secondary" onClick={()=>openOwnerBadgeLayout(userId,cloudBadges.assigned(userId).map(badge=>({ id:`kittencord_cloud_${badge.id}`,description:badge.label,iconSrc:kittenCloudBadgeImage(badge) })))}>Badge appearance</Button></section>;
+    return <section className="vc-kitten-profile-details" aria-label="MaltCord badges">{IS_WEB && <Paragraph>Badge editing is available in MaltCord desktop.</Paragraph>}<Button disabled={IS_WEB} size="small" variant="secondary" onClick={()=>openOwnerBadgeLayout(userId,cloudBadges.assigned(userId).map(badge=>({ id:`kittencord_cloud_${badge.id}`,description:badge.label,iconSrc:kittenCloudBadgeImage(badge) })))}>Badge appearance</Button></section>;
 },{ noop:true });

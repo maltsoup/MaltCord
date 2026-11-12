@@ -14,7 +14,7 @@ export default definePlugin({
     description: "A library of themes for Vencord.",
     tags: ["Appearance", "Customisation"],
     authors: [EquicordDevs.Fafa],
-    // KittenCord shows the library as a tab in Settings > Themes instead of a separate sidebar entry.
+    // MaltCord shows the library as a tab in Settings > Themes instead of a separate sidebar entry.
     required: true,
     settings,
     toolboxActions: {

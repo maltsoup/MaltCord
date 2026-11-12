@@ -27,7 +27,7 @@ export async function createAuthoredPackage(input: { id: string; name: string; v
     const capabilities = tokens.map(token => `theme.${token.slice(2)}`);
     return verifyExternalPackage({ schemaVersion: 1, artifact: input.source, manifest: {
         schemaVersion: 1, id: input.id, name: input.name, version: input.version,
-        author: input.author, publisher: input.author, description: "Locally authored isolated Kittycord plugin.",
+        author: input.author, publisher: input.author, description: "Locally authored isolated MaltCord plugin.",
         minApiVersion: "1.0.0", platforms: ["windows", "linux", "macos"], loadingMode: "runtime",
         dependencies: [], optionalDependencies: [], capabilities: ["kittycord.isolated-js.v1", ...capabilities],
         exclusiveCapabilities: capabilities, permissions: ["styles"], requiredPatches: [], incompatibleWith: [],
@@ -46,7 +46,7 @@ export async function createDesktopPackage(input: { id: string; name: string; ve
     const digest = Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", bytes)), byte => byte.toString(16).padStart(2, "0")).join("");
     return verifyExternalPackage({ schemaVersion: 1, artifact: input.source, manifest: {
         schemaVersion: 1, id: input.id, name: input.name, version: input.version, author: input.author, publisher: input.author,
-        description: "A Kittencord desktop plugin with reviewed Discord and interface capabilities.", minApiVersion: "1.1.0",
+        description: "A MaltCord desktop plugin with reviewed Discord and interface capabilities.", minApiVersion: "1.1.0",
         platforms: ["windows", "linux", "macos"], loadingMode: "runtime", dependencies: [], optionalDependencies: [],
         capabilities: [DESKTOP_PLUGIN_API], exclusiveCapabilities: [], permissions: input.permissions, networkOrigins: input.networkOrigins,
         requiredPatches: [], incompatibleWith: [], entrypoints: { desktop: "plugin.js" },

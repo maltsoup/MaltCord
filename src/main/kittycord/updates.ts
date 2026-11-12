@@ -28,11 +28,11 @@ let timer: ReturnType<typeof setInterval> | undefined;
 async function check() {
     if (!client) return null;
     const offer = await client.check().catch(error => { recordUpdateFailure(error); throw error; });
-    if (offer && offer.version !== lastNotice && Notification.isSupported()) { lastNotice = offer.version; const notification = new Notification({ title: `Kittencord ${offer.version} is available`, body: "Open Settings → About & System → Updates to read the changelog and install the verified release." }); notification.show(); }
+    if (offer && offer.version !== lastNotice && Notification.isSupported()) { lastNotice = offer.version; const notification = new Notification({ title: `MaltCord ${offer.version} is available`, body: "Open Settings → About & System → Updates to read the changelog and install the verified release." }); notification.show(); }
     return offer;
 }
 ipcMain.handle(IpcEvents.KITTYCORD_UPDATES, async (event, action: unknown) => {
-    if (event.senderFrame !== event.sender.mainFrame || !["https://discord.com", "https://ptb.discord.com", "https://canary.discord.com"].includes(new URL(event.sender.getURL()).origin)) return { error: "Open updates from Kittencord settings." };
+    if (event.senderFrame !== event.sender.mainFrame || !["https://discord.com", "https://ptb.discord.com", "https://canary.discord.com"].includes(new URL(event.sender.getURL()).origin)) return { error: "Open updates from MaltCord settings." };
     if (!client) return { configured: false, error: "This build has no configured signed update channel. Browser extensions update through the browser. Configure a real release URL and pinned signing key before distributing automatic desktop updates." };
     try {
         if (action === "status") return { configured: true, offer: client.offer(), progress: client.progress() };
@@ -41,13 +41,13 @@ ipcMain.handle(IpcEvents.KITTYCORD_UPDATES, async (event, action: unknown) => {
         if (action !== "apply") return { error: "Unsupported update action." };
         const window = BrowserWindow.fromWebContents(event.sender);
         if (!window) return { error: "The settings window closed." };
-        const confirmation = await dialog.showMessageBox(window, { type: "question", title: "Install Kittencord update?", message: "The signed installer will close this Discord installation and restart it. Calls will disconnect. Your settings remain local.", buttons: ["Cancel", "Install and restart"], defaultId: 0, cancelId: 0, noLink: true });
+        const confirmation = await dialog.showMessageBox(window, { type: "question", title: "Install MaltCord update?", message: "The signed installer will close this Discord installation and restart it. Calls will disconnect. Your settings remain local.", buttons: ["Cancel", "Install and restart"], defaultId: 0, cancelId: 0, noLink: true });
         if (confirmation.response !== 1) return { cancelled: true };
         return await client.apply();
     } catch (error) { recordUpdateFailure(error); return { error: "Update verification or installation failed. The current client was retained. Recheck the signed channel and try again." }; }
 });
 if (client) app.whenReady().then(() => {
-    timer = setInterval(() => { void check().catch(() => console.warn("[Kittencord] Update check failed. The current release is retained.")); }, 3600000);
-    const initial = setTimeout(() => { void check().catch(() => console.warn("[Kittencord] Initial update check failed.")); }, 15000);
+    timer = setInterval(() => { void check().catch(() => console.warn("[MaltCord] Update check failed. The current release is retained.")); }, 3600000);
+    const initial = setTimeout(() => { void check().catch(() => console.warn("[MaltCord] Initial update check failed.")); }, 15000);
     app.once("before-quit", () => { clearTimeout(initial); if (timer) clearInterval(timer); });
 });

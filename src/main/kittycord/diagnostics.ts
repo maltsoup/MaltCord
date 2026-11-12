@@ -41,7 +41,7 @@ function save() {
 function capture(input: unknown) { load(); if (!enabled) return; const report = parseDiagnosticReport(input); if (reports.some(previous => previous.title === report.title && previous.stack === report.stack && report.at - previous.at < 60000)) return; reports = [...reports.slice(-29), report]; save(); }
 function nativeReporter() {
     if (!nativeCapture || !nativeCaptureSupported) return;
-    crashReporter.start({ uploadToServer: false, productName: "KittenCord", rateLimit: true, globalExtra: { kittencordVersion: VERSION } });
+    crashReporter.start({ uploadToServer: false, productName: "MaltCord", rateLimit: true, globalExtra: { kittencordVersion: VERSION } });
 }
 async function submit(report: DiagnosticReport) { const value = await cloudRequest("/api/v1/reports", { report, consent: true }); if (typeof value.id !== "string" || !/^KC-[A-F0-9]{16}$/.test(value.id)) throw new Error("The service returned an invalid report receipt."); if (typeof value.uploadToken === "string" && /^[a-f0-9]{64}$/.test(value.uploadToken)) { if (uploadTokens.size >= 30) { const oldest = uploadTokens.keys().next().value; if (oldest) uploadTokens.delete(oldest); } uploadTokens.set(value.id, value.uploadToken); } lastReport = value.id; return value.id; }
 function flush() {
@@ -76,13 +76,13 @@ export async function diagnosticCommand(action: DiagnosticCommand, input?: unkno
 }
 ipcMain.handle(IpcEvents.KITTYCORD_DIAGNOSTICS, async (event, action: DiagnosticCommand, input: unknown) => {
     try {
-        const address = new URL(event.sender.getURL()); if (event.senderFrame !== event.sender.mainFrame || !["https://discord.com", "https://ptb.discord.com", "https://canary.discord.com"].includes(address.origin)) return { error: "Open diagnostics from KittenCord settings." };
+        const address = new URL(event.sender.getURL()); if (event.senderFrame !== event.sender.mainFrame || !["https://discord.com", "https://ptb.discord.com", "https://canary.discord.com"].includes(address.origin)) return { error: "Open diagnostics from MaltCord settings." };
         if (action !== "nativeFile") return await diagnosticCommand(action, input);
         if (!input || typeof input !== "object" || !("reportId" in input) || typeof input.reportId !== "string" || !/^KC-[A-F0-9]{16}$/.test(input.reportId)) throw new Error("Submit a report before attaching a minidump.");
         const window = BrowserWindow.fromWebContents(event.sender); if (!window) throw new Error("The settings window closed.");
         const chosen = await dialog.showOpenDialog(window, { title: "Choose a native crash minidump", defaultPath: app.getPath("crashDumps"), properties: ["openFile"], filters: [{ name: "Minidumps", extensions: ["dmp"] }] }); if (chosen.canceled || !chosen.filePaths[0]) return { cancelled: true };
         const info = lstatSync(chosen.filePaths[0]); if (!info.isFile() || info.isSymbolicLink() || info.size > 16777216) throw new Error("Choose a minidump up to 16 MiB.");
-        const confirmation = await dialog.showMessageBox(window, { type: "warning", title: "Send native crash artifact?", message: `${basename(chosen.filePaths[0])} (${(info.size / 1048576).toFixed(2)} MiB) can contain process memory, including private data. Binary minidumps cannot be reliably redacted. Only send it if you consent to the KittenCord team receiving it.`, buttons: ["Cancel", "Send this artifact"], defaultId: 0, cancelId: 0 }); if (confirmation.response !== 1) return { cancelled: true };
+        const confirmation = await dialog.showMessageBox(window, { type: "warning", title: "Send native crash artifact?", message: `${basename(chosen.filePaths[0])} (${(info.size / 1048576).toFixed(2)} MiB) can contain process memory, including private data. Binary minidumps cannot be reliably redacted. Only send it if you consent to the MaltCord team receiving it.`, buttons: ["Cancel", "Send this artifact"], defaultId: 0, cancelId: 0 }); if (confirmation.response !== 1) return { cancelled: true };
         const value = await cloudRequest(`/api/v1/reports/${input.reportId}/attachments?kind=dump`, undefined, readFileSync(chosen.filePaths[0]), uploadTokens.get(input.reportId)); return { attachmentId: String(value.id) };
     } catch { return { error: "The diagnostic action failed. Check the service connection, report receipt and file limits. Existing diagnostics were retained." }; }
 });

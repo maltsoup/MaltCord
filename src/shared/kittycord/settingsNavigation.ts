@@ -5,12 +5,12 @@
  */
 
 /**
- * KittenCord settings navigation. The owner asked for a detailed sidebar (2026-11-04): every area has its own
+ * MaltCord settings navigation. The owner asked for a detailed sidebar (2026-11-04): every area has its own
  * entry and page, ordered by how often it is used. Pages keep the sidebar keys they had before the redesign,
  * so older deep links and saved sidebar choices land on the same content.
  */
 export const kittenPages = {
-    home: { key: "testcord_main", title: "KittenCord", segments: [] },
+    home: { key: "testcord_main", title: "MaltCord", segments: [] },
     plugins: { key: "testcord_plugins", title: "Plugins", segments: ["installed", "local", "studio"] },
     themes: { key: "testcord_themes", title: "Themes", segments: ["installed", "library", "snippets"] },
     quickcss: { key: "kittycord_quickcss", title: "QuickCSS", segments: [] },

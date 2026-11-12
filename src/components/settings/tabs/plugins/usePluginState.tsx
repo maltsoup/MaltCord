@@ -178,9 +178,9 @@ export function usePluginState(plugin: Plugin, onRestartNeeded: (name: string, k
                     : pluginMeta.folderName.startsWith("src/testcordplugins/") ? "testcord"
                         : pluginMeta.folderName.startsWith("src/equicordplugins/") ? "equicord"
                             : pluginMeta.folderName.startsWith("src/plugins/") ? "vencord" : "imported";
-    const sourceLabel = source === "kittencord" ? plugin.kittencordOrigin === "original" ? "KittenCord Original" : "KittenCord Edition"
+    const sourceLabel = source === "kittencord" ? plugin.kittencordOrigin === "original" ? "MaltCord Original" : "MaltCord Edition"
         : source === "cloud" && cloudSource ? verifiedSourceLabel(cloudSource)
-            : ({ studio: "KittenCord Studio", local: "Local Plugin", testcord: "TestCord", equicord: "Equicord", vencord: "Vencord", betterdiscord: "BetterDiscord", imported: "Imported Plugin" } as Record<string, string>)[source] ?? "Plugin";
+            : ({ studio: "MaltCord Studio", local: "Local Plugin", testcord: "TestCord", equicord: "Equicord", vencord: "Vencord", betterdiscord: "BetterDiscord", imported: "Imported Plugin" } as Record<string, string>)[source] ?? "Plugin";
 
     const tags = React.useMemo(() => {
         const list = [...(plugin.tags ?? [])];
@@ -189,7 +189,7 @@ export function usePluginState(plugin: Plugin, onRestartNeeded: (name: string, k
     }, [plugin.tags, isTestcordMod]);
 
     const sourceIcon: { src: string; alt: string; } | undefined =
-        source === "kittencord" ? { src: `data:image/png;base64,${KittenLogo}`, alt: "KittenCord" }
+        source === "kittencord" ? { src: `data:image/png;base64,${KittenLogo}`, alt: "MaltCord" }
             : testcordModDetails ? { src: testcordModDetails.src, alt: testcordModDetails.alt }
                 : plugin.isModified ? { src: "https://equicord.org/assets/icons/equicord/modified.png", alt: "Modified" }
                     : source === "local" || source === "studio" || source === "cloud" ? { src: "https://equicord.org/assets/icons/misc/userplugin.png", alt: "Local" }

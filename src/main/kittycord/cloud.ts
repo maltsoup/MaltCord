@@ -47,7 +47,7 @@ export async function cloudCommand(action:CloudClientCommand,envelope?:unknown):
     }
     if(action==="session")return verified?session(await cloudRequest("/api/v1/auth/device/session")):{ configured:true,authenticated:false,user:null };
     if(action==="start"){
-        const result=await cloudRequest("/api/v1/auth/device/start",{ label:`KittenCord ${VERSION} desktop` });
+        const result=await cloudRequest("/api/v1/auth/device/start",{ label:`MaltCord ${VERSION} desktop` });
         if(typeof result.deviceToken!=="string"||!/^[a-f0-9]{64}$/.test(result.deviceToken)||typeof result.code!=="string"||!/^[A-F0-9]{6}-[A-F0-9]{6}$/.test(result.code)||typeof result.verificationUri!=="string"||typeof result.expiresAt!=="number")throw new Error("Invalid client authorization response.");
         const destination=new URL(result.verificationUri);if(destination.origin!==config.origin||destination.pathname!=="/"||destination.searchParams.get("connect")!==result.code.replace("-",""))throw new Error("The verification link does not match this service.");deviceToken=result.deviceToken;await shell.openExternal(destination.href);return{ configured:true,pending:true,code:result.code,verificationUri:destination.href,expiresAt:result.expiresAt };
     }
@@ -60,6 +60,6 @@ export async function cloudCommand(action:CloudClientCommand,envelope?:unknown):
 }
 let commandQueue:Promise<unknown>=Promise.resolve();
 ipcMain.handle(IpcEvents.KITTYCORD_CLOUD,async(event,action:CloudClientCommand,input:unknown)=>{
-    if(event.senderFrame!==event.sender.mainFrame||!["https://discord.com","https://ptb.discord.com","https://canary.discord.com"].includes(new URL(event.sender.getURL()).origin))return{ error:"Open Cloud features from KittenCord settings." };
+    if(event.senderFrame!==event.sender.mainFrame||!["https://discord.com","https://ptb.discord.com","https://canary.discord.com"].includes(new URL(event.sender.getURL()).origin))return{ error:"Open Cloud features from MaltCord settings." };
     try{ const operation=commandQueue.then(()=>cloudCommand(action,input));commandQueue=operation.catch(()=>undefined);return await operation; }catch(error){ return{ error:error instanceof Error?error.message:"The Cloud request failed." }; }
 });

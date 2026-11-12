@@ -44,7 +44,7 @@ function commit(next: VoiceSession[]) {
     listeners.forEach(listener => listener());
     if (!loaded || !account) return;
     clearTimeout(saveTimer);
-    const key = `KittenCord:VoiceLog:${account}`, value = sessions;
+    const key = `MaltCord:VoiceLog:${account}`, value = sessions;
     saveTimer = setTimeout(() => void set(key, value).catch(() => { }), 800);
 }
 
@@ -80,7 +80,7 @@ async function load() {
     const id = UserStore.getCurrentUser()?.id ?? "";
     if (!id || id === account && loaded) return;
     account = id; loaded = false;
-    const stored = parseSessions(await get(`KittenCord:VoiceLog:${id}`).catch(() => undefined));
+    const stored = parseSessions(await get(`MaltCord:VoiceLog:${id}`).catch(() => undefined));
     if (account !== id) return;
     // A call still open in storage ended when Discord closed; end it at its last recorded moment.
     sessions = stored.map(session => session.endedAt === undefined ? endSession(session, session.events.at(-1)?.at ?? session.startedAt) : session);
@@ -174,7 +174,7 @@ export default definePlugin({
     stop() {
         closeOpen();
         clearTimeout(saveTimer);
-        if (loaded && account) void set(`KittenCord:VoiceLog:${account}`, sessions).catch(() => { });
+        if (loaded && account) void set(`MaltCord:VoiceLog:${account}`, sessions).catch(() => { });
         loaded = false; account = ""; sessions = [];
     },
 });

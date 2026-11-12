@@ -43,7 +43,7 @@ ipcMain.handle(IpcEvents.KITTYCORD_STUDIO_COMMAND, (event, command: unknown) => 
     return preview.command(command);
 });
 ipcMain.handle(IpcEvents.KITTYCORD_STUDIO_OPEN, async (event, input: unknown) => {
-    if (event.senderFrame !== event.sender.mainFrame || !["https://discord.com", "https://canary.discord.com", "https://ptb.discord.com", "https://discordapp.com", "https://canary.discordapp.com", "https://ptb.discordapp.com"].includes(new URL(event.sender.getURL()).origin)) throw new Error("Open Studio from Kittycord settings.");
+    if (event.senderFrame !== event.sender.mainFrame || !["https://discord.com", "https://canary.discord.com", "https://ptb.discord.com", "https://discordapp.com", "https://canary.discordapp.com", "https://ptb.discordapp.com"].includes(new URL(event.sender.getURL()).origin)) throw new Error("Open Studio from MaltCord settings.");
     const project = input === undefined ? newNativeProject() : isNativeProject(input) ? nativeProject(input) : parseStudioProject(input);
     if (studio && !studio.isDestroyed()) {
         studio.show(); studio.focus();
@@ -57,7 +57,7 @@ ipcMain.handle(IpcEvents.KITTYCORD_STUDIO_OPEN, async (event, input: unknown) =>
     isolated.webRequest.onBeforeRequest({ urls: ["<all_urls>"] }, (request, callback) => callback({ cancel: !request.url.startsWith(assetBase) && !request.url.startsWith("blob:") && !request.url.startsWith("data:") }));
     const local = createStudioPreview(); preview = local;
     const candidate = new BrowserWindow({ width: 1100, height: 820, autoHideMenuBar: true, backgroundColor: "#1e1e1e", webPreferences: { session: isolated, preload: join(__dirname, "studio-preload.js"), sandbox: true, contextIsolation: true, nodeIntegration: false, nodeIntegrationInWorker: false, nodeIntegrationInSubFrames: false, webSecurity: true } });
-    candidate.setTitle("KittenCord Plugin Studio"); studio = candidate; connectNativeStudio(candidate.webContents, event.sender); candidate.webContents.setWindowOpenHandler(() => ({ action: "deny" })); candidate.webContents.on("will-navigate", event => event.preventDefault());
+    candidate.setTitle("MaltCord Plugin Studio"); studio = candidate; connectNativeStudio(candidate.webContents, event.sender); candidate.webContents.setWindowOpenHandler(() => ({ action: "deny" })); candidate.webContents.on("will-navigate", event => event.preventDefault());
     const ownerClosed = () => { if (!candidate.isDestroyed()) candidate.destroy(); }; event.sender.once("destroyed", ownerClosed);
     candidate.once("closed", () => { local.stop(); event.sender.removeListener("destroyed", ownerClosed); if (studio === candidate) { studio = undefined; studioOwner = undefined; preview = undefined; } });
     try { await candidate.loadFile(join(__dirname, "studio", isNativeProject(project) ? "native-studio.html" : "studio.html")); } catch (problem) { candidate.destroy(); throw problem; }

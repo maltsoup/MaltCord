@@ -9,7 +9,7 @@ import { checkedObject, checkedPluginIdentifier, checkedText } from "./manifest"
 import { githubRepository, githubUsername } from "./presentation";
 import { checkedVersion } from "./validation";
 
-export const CLOUD_ORIGINS = { original: "KittenCord Original", edition: "KittenCord Edition", "ported-testcord": "Ported from TestCord", "ported-vencord": "Ported from Vencord", "ported-equicord": "Ported from Equicord", community: "Community Plugin" } as const;
+export const CLOUD_ORIGINS = { original: "MaltCord Original", edition: "MaltCord Edition", "ported-testcord": "Ported from TestCord", "ported-vencord": "Ported from Vencord", "ported-equicord": "Ported from Equicord", community: "Community Plugin" } as const;
 export const MARKET_CATEGORIES = ["theme", "css-snippet", "icon-pack", "animation-pack", "ui-customization", "visual-effect", "layout-preset", "appearance-enhancement", "interface-component"] as const;
 export interface CloudListing {
     id: string; name: string; description: string; readme: string; author: string;

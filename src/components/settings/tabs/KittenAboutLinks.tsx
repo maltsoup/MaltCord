@@ -12,10 +12,10 @@ import { gitRemote } from "@shared/vencordUserAgent";
 
 import { PrefGroup, PrefLinkRow } from "./KittenUI";
 
-/** Community, source and maintainer links plus KittenCord credits (moved here from Home). */
+/** Community, source and maintainer links plus MaltCord credits (moved here from Home). */
 export function KittenAboutLinks() {
     return <PrefGroup title="Links and credits">
-        <PrefLinkRow icon="discord" label="KittenCord community" onClick={() => VencordNative.native.openExternal(Kittycord.communityUrl)} />
+        <PrefLinkRow icon="discord" label="MaltCord community" onClick={() => VencordNative.native.openExternal(Kittycord.communityUrl)} />
         {gitRemote && <PrefLinkRow icon="github" label="Source code" detail={gitRemote} onClick={() => VencordNative.native.openExternal("https://github.com/" + gitRemote)} />}
         <PrefLinkRow icon="github" label="Maintainer" detail={Kittycord.maintainer.name} onClick={() => VencordNative.native.openExternal(Kittycord.maintainer.url)} />
         <div className="kc-pref-row kc-pref-block">

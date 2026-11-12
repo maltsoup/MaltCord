@@ -1,4 +1,4 @@
-# KittenCord plugins
+# MaltCord plugins
 
 Plugins written for KittenCord itself. Inherited plugins stay in their upstream folders:
 `src/plugins` (Vencord), `src/equicordplugins` (Equicord) and `src/testcordplugins` (TestCord).
@@ -12,5 +12,5 @@ Plugins written for KittenCord itself. Inherited plugins stay in their upstream 
 | `kittyVoiceLab.web` | Voice Lab: browser microphone effects with live presets | Web only |
 
 Each plugin sets `authors: [Devs.Kittencord]`. Plugins marked `kittencordOrigin: "original"` show under the
-KittenCord filter in Plugins. Core KittenCord plugins that must always run (`kittycordCloud`, `nativeThemePreviews`)
+MaltCord filter in Plugins. Core MaltCord plugins that must always run (`kittycordCloud`, `nativeThemePreviews`)
 stay in `src/plugins/_core`.

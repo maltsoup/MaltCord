@@ -10,7 +10,7 @@ export const exclusiveProjects: { description: string; project: StudioProject; }
     {
         description: "Inspect links without opening them. Remove common tracking parameters, reveal the hostname and flag credentials or disguised domains.",
         project: {
-            ...newUtilityProject(), metadata: { id: "local.link-lens", name: "Link Lens", version: "1.0.0", author: "Kittencord contributors" },
+            ...newUtilityProject(), metadata: { id: "local.link-lens", name: "Link Lens", version: "1.0.0", author: "MaltCord contributors" },
             source: `globalThis.kittycordPlugin = /** @type {KittyPlugin} */ ({
     start(api) {
         let result = "Paste a public HTTP(S) link in settings. Nothing is opened or fetched.";
@@ -41,11 +41,11 @@ export const exclusiveProjects: { description: string; project: StudioProject; }
     {
         description: "Validate, format, minify and inspect JSON using JSON Pointer. No eval, code execution or external service.",
         project: {
-            ...newUtilityProject(), metadata: { id: "local.json-workbench", name: "JSON Workbench", version: "1.0.0", author: "Kittencord contributors" },
+            ...newUtilityProject(), metadata: { id: "local.json-workbench", name: "JSON Workbench", version: "1.0.0", author: "MaltCord contributors" },
             source: `globalThis.kittycordPlugin = /** @type {KittyPlugin} */ ({
     start(api) {
         let result = "Save JSON in settings, then format, minify or inspect a JSON Pointer.";
-        const show = () => api.publishPanel({title:"JSON Workbench",text:result,actions:[{id:"format",label:"Format JSON"},{id:"minify",label:"Minify JSON"},{id:"pointer",label:"Read pointer"}],settings:[{id:"json",label:"JSON input",type:"text",default:'{"hello":"Kittencord"}'},{id:"pointer",label:"JSON Pointer (e.g. /items/0)",type:"text",default:""}]});
+        const show = () => api.publishPanel({title:"JSON Workbench",text:result,actions:[{id:"format",label:"Format JSON"},{id:"minify",label:"Minify JSON"},{id:"pointer",label:"Read pointer"}],settings:[{id:"json",label:"JSON input",type:"text",default:'{"hello":"MaltCord"}'},{id:"pointer",label:"JSON Pointer (e.g. /items/0)",type:"text",default:""}]});
         api.onAction(id => {
             try {
                 let value = JSON.parse(String(api.settings.json ?? ""));
@@ -71,7 +71,7 @@ export const exclusiveProjects: { description: string; project: StudioProject; }
     {
         description: "Turn an explicit date and timezone offset into Discord timestamps. Generate every display style for events across timezones.",
         project: {
-            ...newUtilityProject(), metadata: { id: "local.timestamp-studio", name: "Timestamp Studio", version: "1.0.0", author: "Kittencord contributors" },
+            ...newUtilityProject(), metadata: { id: "local.timestamp-studio", name: "Timestamp Studio", version: "1.0.0", author: "MaltCord contributors" },
             source: `globalThis.kittycordPlugin = /** @type {KittyPlugin} */ ({
     start(api) {
         let result = "Use YYYY-MM-DDTHH:mm:ssZ or an explicit offset such as +03:00. Discord renders the result in each reader's timezone.";

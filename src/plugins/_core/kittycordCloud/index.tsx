@@ -19,18 +19,18 @@ import definePlugin from "@utils/types";
 import { React } from "@webpack/common";
 
 let timer: ReturnType<typeof setInterval> | undefined, healthy: ReturnType<typeof setTimeout> | undefined;
-const logger = new Logger("KittenCord Cloud");
+const logger = new Logger("MaltCord Cloud");
 let stopDiagnostics: (() => void) | undefined;
 function Bell() {
     const { feed } = useCloudNotifications();
     if (!cloud.enabled || !cloud.supported) return null;
     const count = feed.unreadCount ?? feed.items.filter(item => !item.read).length;
-    return <UserAreaButton aria-label={`KittenCord notifications, ${count} unread in the loaded list`} tooltipText="KittenCord notifications" onClick={() => openSettingsTabModal(Notifications)} icon={<span className="kc-cloud-bell"><NotificationsIcon />{count > 0 && <span className="kc-cloud-unread-count">{count > 9 ? "9+" : count}</span>}</span>} />;
+    return <UserAreaButton aria-label={`MaltCord notifications, ${count} unread in the loaded list`} tooltipText="MaltCord notifications" onClick={() => openSettingsTabModal(Notifications)} icon={<span className="kc-cloud-bell"><NotificationsIcon />{count > 0 && <span className="kc-cloud-unread-count">{count > 9 ? "9+" : count}</span>}</span>} />;
 }
 export default definePlugin({
     name: "KittycordCloud",
     kittencordOrigin: "original",
-    description: "KittenCord announcements and release history.",
+    description: "MaltCord announcements and release history.",
     authors: [Devs.Kittencord],
     required: true,
     userAreaButton: { icon: NotificationsIcon, render: () => <ErrorBoundary noop><Bell /></ErrorBoundary> },

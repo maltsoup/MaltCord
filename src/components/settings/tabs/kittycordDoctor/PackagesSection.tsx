@@ -74,7 +74,7 @@ function PackagesSection({ showRecovery = true }: { showRecovery?: boolean; }) {
             {!IS_WEB && showRecovery && <Card className="kc-tools-card"><KittycordRecoveryPanel /></Card>}
             <KittyToolDetails title="Checks, privacy & credits">
             <Paragraph>Scans check local integrity, declared dependencies and capability conflicts without executing code or uploading reports. Static checks do not prove safety. Browser extensions cannot load external JavaScript or use native startup recovery.</Paragraph>
-            <Paragraph>Health uses TestCord diagnostics alongside KittenCord package auditing and recovery. Source credits are preserved.</Paragraph>
+            <Paragraph>Health uses TestCord diagnostics alongside MaltCord package auditing and recovery. Source credits are preserved.</Paragraph>
             </KittyToolDetails>
         </div>
     </SettingsTab>;

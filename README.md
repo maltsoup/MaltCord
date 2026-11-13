@@ -8,8 +8,8 @@
 
 About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Discord you already use.
 
-[![Release](https://img.shields.io/github/v/release/maltsoup/MaltCord?include_prereleases&style=for-the-badge&color=b996ff&label=release)](https://github.com/maltsoup/MaltCord/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/maltsoup/MaltCord/total?style=for-the-badge&color=ff8fd8)](https://github.com/maltsoup/MaltCord/releases)
+[![Release](https://img.shields.io/github/v/release/maltsoup/MaltCord?include_prereleases&style=for-the-badge&color=b996ff&label=release&cacheSeconds=300)](https://github.com/maltsoup/MaltCord/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/maltsoup/MaltCord/total?style=for-the-badge&color=ff8fd8&label=downloads&cacheSeconds=300)](https://github.com/maltsoup/MaltCord/releases)
 [![Discord](https://img.shields.io/badge/Discord-Join_us-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/XfyH3Qcwgp)
 [![License](https://img.shields.io/github/license/maltsoup/MaltCord?style=for-the-badge&color=9fb4ff)](LICENSE)
 

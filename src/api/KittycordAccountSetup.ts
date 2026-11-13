@@ -10,12 +10,11 @@ import { isPluginSelected } from "@api/PluginManager";
 import { PlainSettings, Settings } from "@api/Settings";
 import { reapplyThemes } from "@api/Themes";
 import { type AccountSetup,accountSetup, accountSetupKey } from "@shared/kittycord/accountSetup";
-import { Alerts, UserStore } from "@webpack/common";
+import { UserStore } from "@webpack/common";
 
 import Plugins from "~plugins";
 
 let activeAccount: string | undefined, revision=0;
-let deferredSelection:Record<string,boolean>|undefined;
 export function captureAccountSetup(id:string) {
     const preferences: NonNullable<AccountSetup["preferences"]>={};
     for(const definition of getProfileSettings()){
@@ -65,8 +64,7 @@ export async function switchAccountSetup(id?:string){
     if (id === activeAccount) return;
     const request=++revision;
     const previous=activeAccount?captureAccountSetup(activeAccount):undefined;
-    if(previous&&deferredSelection)previous.plugins={ ...deferredSelection };
-    activeAccount=undefined;deferredSelection=undefined;
+    activeAccount=undefined;
     if(previous)await DataStore.set(accountSetupKey(previous.accountId),previous);
     if(!id||request!==revision)return;
     const stored=await DataStore.get<unknown>(accountSetupKey(id));
@@ -76,30 +74,8 @@ export async function switchAccountSetup(id?:string){
     applyAccountPreferences(value);activeAccount=id;
     const changed=Object.entries(value.plugins).filter(([name,enabled])=>Plugins[name]&&!Plugins[name].required&&isPluginSelected(name)!==enabled);
     if (!changed.length) return;
-    deferredSelection = { ...value.plugins };
-    const signature = JSON.stringify(changed.sort(([a], [b]) => a.localeCompare(b)).map(([name, desired]) => [name, desired, isPluginSelected(name)]));
-    const deferredKey = accountSetupKey(id) + ":deferred";
-    if (await DataStore.get(deferredKey) === signature || request !== revision || UserStore.getCurrentUser()?.id !== id) return;
-    function review() {
-        Alerts.show({
-            title: "Apply this account's plugin selection?",
-            body: `${changed.length} plugin selections differ. Save unfinished Studio edits before restarting. Calls and screen shares will disconnect.`,
-            confirmText: "Apply & restart", cancelText: "Later", secondaryConfirmText: "View details",
-            onCancel: () => { void DataStore.set(deferredKey, signature).catch(() => Alerts.show({ title: "Preference was not saved", body: "The account setup remains unchanged. Later could not be remembered." })); },
-            onConfirmSecondary: () => Alerts.show({ title: "Plugin changes", body: changed.map(([name, enabled]) => `${name}: ${enabled ? "enable" : "disable"}`).join("\n"), confirmText: "Back", onConfirm: review }),
-            onConfirm: async () => {
-                if (request !== revision || UserStore.getCurrentUser()?.id !== id) return;
-                try {
-                    await commitAccountSetup(value);
-                    await DataStore.set(deferredKey, null);
-                    if (request !== revision || UserStore.getCurrentUser()?.id !== id) return;
-                    deferredSelection = undefined;
-                    location.reload();
-                } catch {
-                    Alerts.show({ title: "Account setup was not applied", body: "The saved selection remains available. Your previous selection was restored where storage permitted. Restart was cancelled." });
-                }
-            }
-        });
-    }
-    review();
+    // MaltCord keeps the plugins that are on right now instead of asking to restart into an older saved
+    // selection. The account's saved setup is updated to match, so there is no prompt on the next start.
+    if (request !== revision || UserStore.getCurrentUser()?.id !== id) return;
+    await DataStore.set(accountSetupKey(id), captureAccountSetup(id));
 }

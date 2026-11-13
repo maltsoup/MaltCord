@@ -8,7 +8,8 @@ import { THEMES_DIR } from "@main/utils/constants";
 import { ensureSafePath } from "@main/utils/ensureSafePath";
 import { app, BrowserWindow, nativeImage, net, session, shell } from "electron";
 import iconData from "file://../../../browser/icon.png?base64";
-import { join } from "path";
+import { copyFile, mkdir, readdir, readFile, rename, writeFile } from "fs/promises";
+import { dirname, join } from "path";
 import { pathToFileURL } from "url";
 
 export interface NativeResult {
@@ -589,4 +590,146 @@ export async function clearSavedSession(
     } catch (error) {
         return { ok: false, error: getErrorMessage(error) };
     }
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Profile store
+//
+// The list of instance profiles used to live in the shared settings file. Every Discord window keeps its own copy
+// of the settings and saves the WHOLE file when anything changes, so a window that started earlier could overwrite
+// the profile list with an old copy, and profiles seemed to delete themselves. The list now lives here, in the main
+// process, which all windows share. Windows only ask to add, change or remove one profile at a time.
+// ---------------------------------------------------------------------------------------------------------------
+
+export interface InstanceProfile {
+    id: string;
+    name: string;
+    saveSession?: boolean;
+    domain: DiscordDomain;
+    mode: InstanceMode;
+    user?: InstanceUser;
+    token?: string;
+}
+
+interface ProfileStore {
+    recovered: boolean;
+    profiles: InstanceProfile[];
+}
+
+const PROFILES_FILE = () => join(app.getPath("userData"), "MultiInstance", "profiles.json");
+const SESSION_PARTITION_PREFIX = "testcord-mi-";
+let profileStore: ProfileStore | null = null;
+let profileQueue: Promise<unknown> = Promise.resolve();
+
+/** Runs profile changes one after another, so two quick changes can never write over each other. */
+function enqueue<T>(job: () => Promise<T>): Promise<T> {
+    const run = profileQueue.then(job, job);
+    profileQueue = run.catch(() => undefined);
+    return run;
+}
+
+function normalizeProfile(value: unknown): InstanceProfile | null {
+    if (!isRecord(value)) return null;
+    const id = normalizeProfileId(value.id);
+    const name = typeof value.name === "string" ? normalizeDisplayName(value.name, "") : "";
+    if (!id || !name) return null;
+
+    return {
+        id,
+        name,
+        saveSession: typeof value.saveSession === "boolean" ? value.saveSession : undefined,
+        domain: normalizeDomain(value.domain),
+        mode: normalizeInstanceMode(value.mode),
+        user: normalizeInstanceUser(value.user),
+        token: typeof value.token === "string" && value.token.trim() ? value.token.trim() : undefined
+    };
+}
+
+function normalizeProfiles(value: unknown): InstanceProfile[] {
+    if (!Array.isArray(value)) return [];
+    const seen = new Set<string>();
+    return value.flatMap(item => {
+        const profile = normalizeProfile(item);
+        if (!profile || seen.has(profile.id)) return [];
+        seen.add(profile.id);
+        return [profile];
+    });
+}
+
+async function writeProfileStore() {
+    if (!profileStore) return;
+    const file = PROFILES_FILE();
+    await mkdir(dirname(file), { recursive: true });
+    // Keep the previous copy, then replace the file in one step so a crash can never leave half a file.
+    await copyFile(file, `${file}.bak`).catch(() => undefined);
+    await writeFile(`${file}.tmp`, JSON.stringify({ version: 1, recovered: profileStore.recovered, profiles: profileStore.profiles }, null, 2));
+    await rename(`${file}.tmp`, file);
+}
+
+/** Profiles whose saved login still exists on disk but that are missing from the list get their profile back. */
+async function recoverOrphanedProfiles(profiles: InstanceProfile[]) {
+    try {
+        const entries = await readdir(join(app.getPath("userData"), "Partitions"), { withFileTypes: true });
+        const known = new Set(profiles.map(p => p.id));
+        for (const entry of entries) {
+            if (!entry.isDirectory() || !entry.name.startsWith(SESSION_PARTITION_PREFIX)) continue;
+            const id = normalizeProfileId(entry.name.slice(SESSION_PARTITION_PREFIX.length));
+            if (!id || known.has(id)) continue;
+            // Ids are made as "<name>-<4 random characters>"; "secondary" is the built-in default profile.
+            const name = id === "secondary" ? "Secondary Discord" : id.replace(/-[a-z0-9]{4}$/, "") || id;
+            profiles.push({ id, name, saveSession: true, domain: "discord.com", mode: "detached" });
+            known.add(id);
+        }
+    } catch {
+        // No saved sessions yet.
+    }
+}
+
+async function loadProfileStore(legacy?: unknown): Promise<ProfileStore> {
+    if (profileStore) return profileStore;
+
+    let raw: any = null;
+    for (const file of [PROFILES_FILE(), `${PROFILES_FILE()}.bak`]) {
+        try { raw = JSON.parse(await readFile(file, "utf8")); break; } catch { /* try the backup, then start fresh */ }
+    }
+
+    const profiles = normalizeProfiles(raw ? raw.profiles : legacy);
+    profileStore = { recovered: raw?.recovered === true, profiles };
+
+    if (!profileStore.recovered) {
+        await recoverOrphanedProfiles(profileStore.profiles);
+        profileStore.recovered = true;
+        await writeProfileStore();
+    } else if (!raw) {
+        await writeProfileStore();
+    }
+    return profileStore;
+}
+
+/** Returns the saved profiles. The first call imports the old list from the settings file and recovers lost ones. */
+export function listProfiles(_event: Electron.IpcMainInvokeEvent, legacy?: unknown): Promise<InstanceProfile[]> {
+    return enqueue(async () => structuredClone((await loadProfileStore(legacy)).profiles));
+}
+
+export function upsertProfile(_event: Electron.IpcMainInvokeEvent, rawProfile: unknown): Promise<NativeResult> {
+    return enqueue(async () => {
+        const profile = normalizeProfile(rawProfile);
+        if (!profile) return { ok: false, error: "Invalid instance profile." };
+        const store = await loadProfileStore();
+        const index = store.profiles.findIndex(p => p.id === profile.id);
+        if (index === -1) store.profiles.push(profile); else store.profiles[index] = profile;
+        await writeProfileStore();
+        return { ok: true };
+    });
+}
+
+export function removeProfile(_event: Electron.IpcMainInvokeEvent, rawId: unknown): Promise<NativeResult> {
+    return enqueue(async () => {
+        const id = normalizeProfileId(rawId);
+        if (!id) return { ok: false, error: "Invalid instance profile." };
+        const store = await loadProfileStore();
+        store.profiles = store.profiles.filter(p => p.id !== id);
+        await writeProfileStore();
+        return { ok: true };
+    });
 }

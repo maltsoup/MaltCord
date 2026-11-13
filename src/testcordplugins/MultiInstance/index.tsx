@@ -253,8 +253,22 @@ async function reportCurrentInstanceUser() {
     } : null);
 }
 
-function saveProfiles(profiles: InstanceProfile[]) {
-    settings.store.instances = profiles;
+/** Saves only the profiles that changed, so another window can never have its changes overwritten. */
+function saveProfiles(previous: InstanceProfile[], next: InstanceProfile[]) {
+    if (!Native) {
+        settings.store.instances = next;
+        return;
+    }
+
+    const before = new Map(previous.map(profile => [profile.id, JSON.stringify(profile)]));
+    const nextIds = new Set(next.map(profile => profile.id));
+
+    for (const profile of previous) {
+        if (!nextIds.has(profile.id)) void Native.removeProfile(profile.id).catch(() => undefined);
+    }
+    for (const profile of next) {
+        if (before.get(profile.id) !== JSON.stringify(profile)) void Native.upsertProfile(profile).catch(() => undefined);
+    }
 }
 
 function MultiInstanceSettingsButton() {
@@ -409,8 +423,27 @@ function TokenModal({
 function MultiInstanceModal({ rootProps }: { rootProps: RenderModalProps; }) {
     const currentUser = useStateFromStores([UserStore], () => UserStore.getCurrentUser());
     const { blockExternalTokenAccess, performanceMode } = settings.use(SESSION_SETTING_KEYS);
-    const [profiles, setProfiles] = React.useState(() => getProfiles(settings.plain.instances));
+    const [profiles, setProfiles] = React.useState<InstanceProfile[]>(() => Native ? [] : getProfiles(settings.plain.instances));
     const profilesRef = React.useRef(profiles);
+    const loadedRef = React.useRef(!Native);
+    const [loaded, setLoaded] = React.useState(!Native);
+
+    React.useEffect(() => {
+        if (!Native) return;
+        let alive = true;
+        // The first call also imports the old list from the settings and brings back profiles that were lost.
+        void Native.listProfiles(settings.plain.instances)
+            .then(list => {
+                if (!alive) return;
+                const next = getProfiles(list);
+                profilesRef.current = next;
+                loadedRef.current = true;
+                setProfiles(next);
+                setLoaded(true);
+            })
+            .catch(() => { if (alive) setLoaded(true); });
+        return () => { alive = false; };
+    }, []);
     const [instances, setInstances] = React.useState<InstanceStatus[]>([]);
     const [busyId, setBusyId] = React.useState<string | null>(null);
     const [newName, setNewName] = React.useState("");
@@ -425,6 +458,9 @@ function MultiInstanceModal({ rootProps }: { rootProps: RenderModalProps; }) {
         const openInstances = await Native.getOpenInstances().catch((): InstanceStatus[] => []);
         setInstances(openInstances);
 
+        if (!loadedRef.current) return;
+
+        const previousProfiles = profilesRef.current;
         let changed = false;
         const nextProfiles = profilesRef.current.map(profile => {
             const user = openInstances.find(instance => instance.id === profile.id)?.user;
@@ -443,7 +479,7 @@ function MultiInstanceModal({ rootProps }: { rootProps: RenderModalProps; }) {
         if (changed) {
             profilesRef.current = nextProfiles;
             setProfiles(nextProfiles);
-            saveProfiles(nextProfiles);
+            saveProfiles(previousProfiles, nextProfiles);
         }
     }, []);
 
@@ -452,10 +488,13 @@ function MultiInstanceModal({ rootProps }: { rootProps: RenderModalProps; }) {
     }, [refreshInstances, refreshTick]);
 
     function changeProfiles(change: (profiles: InstanceProfile[]) => InstanceProfile[]) {
-        const nextProfiles = change(profilesRef.current);
+        if (!loaded) return;
+
+        const previousProfiles = profilesRef.current;
+        const nextProfiles = change(previousProfiles);
         profilesRef.current = nextProfiles;
         setProfiles(nextProfiles);
-        saveProfiles(nextProfiles);
+        saveProfiles(previousProfiles, nextProfiles);
     }
 
     function updateProfile(profileId: string, patch: Partial<Pick<InstanceProfile, "name" | "saveSession" | "domain" | "mode" | "user" | "token">>) {

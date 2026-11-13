@@ -80,3 +80,10 @@
     align-items: center;
 }
 .kpp-custom > :first-child, .kpp-custom > :nth-child(2) { flex: 1; }
+
+.kpp-status {
+    display: block;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 400;
+}

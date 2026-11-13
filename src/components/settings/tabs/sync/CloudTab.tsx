@@ -30,15 +30,12 @@ import { Link } from "@components/Link";
 import { Notice } from "@components/Notice";
 import { Paragraph } from "@components/Paragraph";
 import { KittenSearchableSelect as SearchableSelect, KittenSelect as Select } from "@components/settings/KittenSelect";
-import { openSettingsTabModal, SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
-import cloudConfiguration from "@shared/kittycord/cloudConfig.json";
+import { SettingsTab, wrapTab } from "@components/settings/tabs/BaseTab";
 import { localStorage } from "@utils/localStorage";
 import { Margins } from "@utils/margins";
 import { useForceUpdater } from "@utils/react";
 import { findComponentByCodeLazy } from "@webpack";
 import { Alerts, useState } from "@webpack/common";
-
-import NotificationsTab from "../kittycordNotifications";
 
 const ICON_STYLE: React.CSSProperties = { width: 20, height: 20, borderRadius: 4, verticalAlign: "middle" };
 
@@ -95,7 +92,7 @@ function CloudTab() {
 
     return (
         <SettingsTab>
-            <section className="kc-tools-card"><Heading>MaltCord Cloud</Heading><Paragraph>Connect your Discord account for MaltCord badges and announcements.</Paragraph><div className="kc-tools-actions"><Button disabled={!cloudConfiguration.enabled} onClick={() => openSettingsTabModal(NotificationsTab)}>Manage connected account</Button>{cloudConfiguration.enabled && <Link href={cloudConfiguration.origin}>Open dashboard</Link>}</div></section>
+            <section className="kc-tools-card"><Heading>MaltCord Cloud</Heading><Paragraph>MaltCord badges and announcements load automatically from MaltCord's own service. No account is needed to receive them.</Paragraph></section>
             <details className="kc-tool-details"><summary>Settings sync with Vencord or Equicord</summary><div>
             <Heading className={Margins.top16}>Cloud Integration</Heading>
             <Paragraph className={Margins.bottom16}>

@@ -6,8 +6,8 @@
 
 .kc-startup-progress {
     position: fixed;
+    top: 52px; /* below the window title bar */
     right: 20px;
-    bottom: 20px;
     z-index: 1000;
     width: min(300px, calc(100vw - 40px));
     padding: 14px;

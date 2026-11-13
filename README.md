@@ -13,15 +13,15 @@ About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Disc
 [![Discord](https://img.shields.io/badge/Discord-Join_us-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/7bZ5qKdDR)
 [![License](https://img.shields.io/github/license/maltsoup/MaltCord?style=for-the-badge&color=9fb4ff)](LICENSE)
 
-[**Download for Windows**](https://github.com/xtufa7/KittenCord/releases/latest/download/KittencordSetup.exe) &nbsp;•&nbsp;
-[**Chrome / Edge**](https://github.com/xtufa7/KittenCord/releases/latest/download/KittenCord-Chrome-Edge.zip) &nbsp;•&nbsp;
-[**Firefox**](https://github.com/xtufa7/KittenCord/releases/latest/download/KittenCord-Firefox.zip)
+[**Download for Windows**](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCordSetup.exe) &nbsp;•&nbsp;
+[**Chrome / Edge**](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCord-Chrome-Edge.zip) &nbsp;•&nbsp;
+[**Firefox**](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCord-Firefox.zip)
 
 <img src=".github/assets/settings-plugins.jpg" width="720" alt="The KittenCord Plugins page inside Discord settings">
 
 </div>
 
-> **MaltCord is a fork of [KittenCord](https://github.com/xtufa7/KittenCord)**, which is itself built on TestCord, Equicord and Vencord. All credit for the original work goes to those projects and their authors. The download links below are KittenCord's official releases. This fork adds **StaffVoiceAlert**, which plays a sound when a moderator, admin or other staff member joins your voice channel, and **MaltCordBadges**, custom profile badges with an owner-only editor.
+> **MaltCord is a fork of [KittenCord](https://github.com/xtufa7/KittenCord)**, which is itself built on TestCord, Equicord and Vencord. All credit for the original work goes to those projects and their authors. The downloads below are MaltCord releases built from this repository. This fork adds **PresencePal** (shows you as playing any game, detected like a real one, Windows desktop), **StaffVoiceAlert** (plays a sound when a moderator, admin or other staff member joins your voice channel) and **MaltCordBadges** (custom profile badges with an owner-only editor).
 
 ## ✨ Features
 
@@ -33,6 +33,14 @@ About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Disc
 - 🛟 **Safe Start**: if a plugin stops Discord from starting, only that plugin is turned off and you are told why
 - 🪟 **See-through windows** that you can still move from the top bar
 - 🐾 **KittenCord's own settings section** that follows your Discord theme
+
+### MaltCord plugins
+
+| Plugin | What it does |
+| --- | --- |
+| **PresencePal** | Show your Discord status as playing any game. Runs a small stub named after the game so Discord detects it. Windows desktop only |
+| **StaffVoiceAlert** | Plays a sound when a member with staff permissions joins your voice channel. Off by default |
+| **MaltCordBadges** | Custom profile badges, with an editor only the MaltCord owner can open |
 
 ### KittenCord originals
 
@@ -47,18 +55,18 @@ About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Disc
 
 ### 🪟 Windows
 
-1. Download [`KittencordSetup.exe`](https://github.com/xtufa7/KittenCord/releases/latest/download/KittencordSetup.exe).
+1. Download [`MaltCordSetup.exe`](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCordSetup.exe).
 2. Run it, choose your Discord installation and click **Install / Repair**.
 3. Open Discord settings. KittenCord has its own section in the sidebar.
 
-Setup is small because it downloads KittenCord from the release and checks its SHA-256. It is not code-signed yet, so Windows SmartScreen may warn you.
+Setup includes MaltCord, so it needs no download while installing. It is not code-signed yet, so Windows SmartScreen may warn you. Choose **More info**, then **Run anyway**.
 
 ### 🌐 Browser
 
 <details>
 <summary><b>Chrome, Edge, Brave, Opera</b></summary>
 
-1. Download [`KittenCord-Chrome-Edge.zip`](https://github.com/xtufa7/KittenCord/releases/latest/download/KittenCord-Chrome-Edge.zip) and unzip it.
+1. Download [`MaltCord-Chrome-Edge.zip`](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCord-Chrome-Edge.zip) and unzip it.
 2. Open `chrome://extensions` and turn on **Developer mode**.
 3. Click **Load unpacked**, pick the unzipped folder and open [discord.com](https://discord.com/app).
 
@@ -67,7 +75,7 @@ Setup is small because it downloads KittenCord from the release and checks its S
 <details>
 <summary><b>Firefox</b></summary>
 
-1. Download [`KittenCord-Firefox.zip`](https://github.com/xtufa7/KittenCord/releases/latest/download/KittenCord-Firefox.zip).
+1. Download [`MaltCord-Firefox.zip`](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCord-Firefox.zip).
 2. Open `about:debugging#/runtime/this-firefox` and click **Load Temporary Add-on**.
 3. Pick the zip and open [discord.com](https://discord.com/app). Firefox removes temporary add-ons when it closes.
 
@@ -75,15 +83,15 @@ Setup is small because it downloads KittenCord from the release and checks its S
 
 ### 🗑️ Uninstalling
 
-Run `KittencordSetup.exe` again and choose **Restore**. Your KittenCord settings are kept in case you come back. In the browser, remove the extension.
+Run `MaltCordSetup.exe` again and choose **Restore**. Your KittenCord settings are kept in case you come back. In the browser, remove the extension.
 
 ## 🧑‍💻 Building from source
 
 You need [Node.js](https://nodejs.org) 22 or newer and [pnpm](https://pnpm.io).
 
 ```sh
-git clone https://github.com/xtufa7/KittenCord
-cd KittenCord
+git clone https://github.com/maltsoup/MaltCord
+cd MaltCord
 pnpm install --frozen-lockfile
 pnpm build        # desktop
 pnpm inject       # install your build into Discord
@@ -94,11 +102,11 @@ Want to help? Read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 💜 Community
 
-Questions, ideas and bug reports are welcome in the [Discord server](https://discord.gg/7bZ5qKdDR) or in [GitHub issues](https://github.com/xtufa7/KittenCord/issues).
+Questions, ideas and bug reports are welcome in the [Discord server](https://discord.gg/7bZ5qKdDR) or in [GitHub issues](https://github.com/maltsoup/MaltCord/issues).
 
 ## 🙏 Credits
 
-KittenCord is built on [TestCord](https://github.com/TestcordDev/TestCord), [Equicord](https://github.com/Equicord/Equicord) and [Vencord](https://github.com/Vendicated/Vencord). Thank you to everyone who made them and their plugins.
+MaltCord is a fork of [KittenCord](https://github.com/xtufa7/KittenCord), which is built on [TestCord](https://github.com/TestcordDev/TestCord), [Equicord](https://github.com/Equicord/Equicord) and [Vencord](https://github.com/Vendicated/Vencord). Thank you to everyone who made them and their plugins.
 
 ## ⚖️ Disclaimer
 
@@ -117,6 +125,6 @@ Regardless, if your account is very important to you and it getting disabled wou
 
 <div align="center">
 
-Made with 💜 by [xtufa7](https://github.com/xtufa7) · Licensed under [GPL-3.0-or-later](LICENSE)
+MaltCord by [maltsoup](https://github.com/maltsoup), based on KittenCord by [xtufa7](https://github.com/xtufa7) · Licensed under [GPL-3.0-or-later](LICENSE)
 
 </div>

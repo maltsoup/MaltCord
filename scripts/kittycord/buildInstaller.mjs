@@ -25,7 +25,7 @@ for (let index = 0; index < args.length; index++) {
 // Release setups download the core from the GitHub release they are attached to.
 // --embed-core keeps the core inside the setup for local testing and offline use.
 const embedCore = options.get("--embed-core") === true;
-const releaseBase = String(options.get("--release-base") ?? "https://github.com/xtufa7/KittenCord/releases/download").replace(/\/+$/, "");
+const releaseBase = String(options.get("--release-base") ?? "https://github.com/maltsoup/MaltCord/releases/download").replace(/\/+$/, "");
 if (!releaseBase.startsWith("https://github.com/")) throw new Error("--release-base must be a GitHub release download address.");
 const localArtwork = existsSync("mambo.mp4") ? "mambo.mp4" : "work/installer-mekaiime-user-supplied.png";
 const artworkOption = options.get("--artwork");

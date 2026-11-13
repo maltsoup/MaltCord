@@ -52,6 +52,7 @@ Not code-signed yet, so Windows SmartScreen may warn. Choose **More info**, then
 | --- | --- |
 | **PresencePal** | Show your Discord status as playing any game. Runs a small stub named after the game so Discord detects it. Windows desktop only |
 | **MaltCordAnnouncements** | A bell in the top bar with MaltCord announcements and a notification when a new one arrives |
+| **VoiceAlts** | Right-click a voice channel to make your other Multi-instance accounts join it, starting closed ones for you, all using the same microphone. Windows desktop, off by default |
 | **StreamingStatus** | Shows the purple Streaming status instead of green online, only while you stream in a voice call. Off by default |
 | **StaffVoiceAlert** | Plays a sound when a member with staff permissions joins your voice channel. Off by default |
 | **MaltCordBadges** | A MaltCord badge that other MaltCord users see on your profile, plus custom badges with an editor only the MaltCord owner can open. The badge keeps an invisible mark in your profile pronouns; turn it off in the plugin settings |

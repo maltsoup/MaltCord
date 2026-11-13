@@ -1,7 +1,7 @@
 .kmb-content {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
     padding-bottom: 16px;
 }
 
@@ -20,22 +20,84 @@
     font-size: 13px;
 }
 
-.kmb-form {
+.kmb-card {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--background-secondary);
+}
+
+.kmb-card-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--header-secondary);
+}
+
+.kmb-preview-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.kmb-preview {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: var(--background-tertiary);
+    color: var(--text-muted);
+    font-size: 20px;
+}
+
+.kmb-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.kmb-fields {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     gap: 8px;
+    min-width: 0;
+}
+
+.kmb-inline {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.kmb-inline > :first-child {
+    flex: 1;
 }
 
 .kmb-row {
     display: flex;
-    align-items: center;
     gap: 10px;
+    align-items: center;
+    padding: 6px 8px;
+    border-radius: 6px;
+}
+
+.kmb-row[data-editing] {
+    background: var(--background-modifier-selected);
 }
 
 .kmb-icon {
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
+    object-fit: cover;
 }
 
 .kmb-name {
@@ -46,6 +108,22 @@
 }
 
 .kmb-user {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: var(--text-muted);
+    font-size: 12px;
+}
+
+.kmb-textarea {
+    width: 100%;
+    resize: vertical;
+    padding: 8px;
+    border: 0;
+    border-radius: 4px;
+    background: var(--input-background);
+    color: var(--text-normal);
+    font-family: var(--font-code);
     font-size: 12px;
 }

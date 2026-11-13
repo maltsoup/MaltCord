@@ -17,7 +17,7 @@ import { ActionIcon, IconTile, type OverflowItem, OverflowMenu } from "../Kitten
 import { openPluginModal } from "./PluginModal";
 import { pluginDisplayName, usePluginState } from "./usePluginState";
 
-const sourceChip: Record<string, string> = { kittencord: "MaltCord", studio: "Studio", local: "Local", cloud: "Cloud", testcord: "TestCord", equicord: "Equicord", vencord: "Vencord", betterdiscord: "BetterDiscord", imported: "Imported" };
+const sourceChip: Record<string, string> = { maltcord: "MaltCord", kittencord: "KittenCord", studio: "Studio", local: "Local", cloud: "Cloud", testcord: "TestCord", equicord: "Equicord", vencord: "Vencord", betterdiscord: "BetterDiscord", imported: "Imported" };
 
 function Chip({ tone, title, children }: React.PropsWithChildren<{ tone?: "brand" | "warning" | "danger"; title?: string; }>) {
     return <span className="kc-chip-label" data-tone={tone} title={title}>{children}</span>;
@@ -26,8 +26,9 @@ function Chip({ tone, title, children }: React.PropsWithChildren<{ tone?: "brand
 /** The project the plugin comes from, as its logo. Falls back to the plugin glyph if the image cannot load. */
 function SourceTile({ state }: { state: ReturnType<typeof usePluginState>; }) {
     const [failed, setFailed] = React.useState(false);
-    if (!state.sourceIcon || failed) return <IconTile icon={state.source === "kittencord" || state.studio ? "zap" : "plugin"} brand={state.source === "kittencord"} />;
-    return <span className="kc-tile kc-plugin-source-tile" data-brand={state.source === "kittencord" || undefined} aria-hidden="true" title={state.sourceLabel}>
+    const brand = state.source === "kittencord" || state.source === "maltcord";
+    if (!state.sourceIcon || failed) return <IconTile icon={brand || state.studio ? "zap" : "plugin"} brand={brand} />;
+    return <span className="kc-tile kc-plugin-source-tile" data-brand={brand || undefined} aria-hidden="true" title={state.sourceLabel}>
         <img src={state.sourceIcon.src} alt="" loading="lazy" onError={() => setFailed(true)} />
     </span>;
 }
@@ -52,7 +53,7 @@ export function PluginRow({ plugin, onRestartNeeded, restartPending, isNew, lock
                 <span className="kc-pref-label kc-plugin-name">
                     <span className="kc-plugin-title">{name}</span>
                     {favorite && <KcIcon name="badge" size={13} className="kc-plugin-favorite" />}
-                    <Chip tone={state.source === "kittencord" ? "brand" : undefined} title={state.modifiedTitle ?? state.sourceLabel}>{sourceChip[state.source]}</Chip>
+                    <Chip tone={state.source === "kittencord" || state.source === "maltcord" ? "brand" : undefined} title={state.modifiedTitle ?? state.sourceLabel}>{sourceChip[state.source]}</Chip>
                     {isNew && <Chip tone="brand">New</Chip>}
                     {restartPending && <Chip tone="warning">Restart</Chip>}
                     {issue && <Chip tone="danger">{issue}</Chip>}

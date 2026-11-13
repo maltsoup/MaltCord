@@ -57,6 +57,7 @@ export interface PluginData {
     testcordModified?: boolean;
     aliases?: string[];
     kittencordOrigin?: "original" | "edition";
+    maltcordOrigin?: boolean;
 }
 
 export const devs = {} as Record<string, Dev>;
@@ -247,6 +248,10 @@ export async function parseFile(fileName: string) {
             case "kittencordOrigin":
                 if (!isStringLiteral(value) || value.text !== "original" && value.text !== "edition") throw fail("kittencordOrigin must be original or edition");
                 data.kittencordOrigin = value.text;
+                break;
+            case "maltcordOrigin":
+                if (value.kind !== SyntaxKind.TrueKeyword) throw fail("maltcordOrigin must be true");
+                data.maltcordOrigin = true;
                 break;
             case "name":
             case "description":

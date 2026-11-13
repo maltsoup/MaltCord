@@ -11,7 +11,7 @@ import { Devs } from "@utils/constants";
 import { copyWithToast } from "@utils/discord";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
-import { Button, TextInput, UserStore, useState } from "@webpack/common";
+import { Button, React, TextInput, UserStore, useState } from "@webpack/common";
 
 import style from "./style.css?managed";
 
@@ -27,6 +27,7 @@ interface MaltBadge {
 const REMOTE_URL = "https://raw.githubusercontent.com/maltsoup/MaltCord/main/maltcord-badges.json";
 const OWNER_ID = String(Devs.Maltsoup.id);
 const MAX_BADGES = 200;
+const ICON_SIZE = 64;
 
 const settings = definePluginSettings({
     badges: { type: OptionType.STRING, description: "Local badges (JSON)", default: "[]", hidden: true }
@@ -86,25 +87,84 @@ function badgesFor(userId: string): ProfileBadge[] {
         }));
 }
 
+/** Scales a picked image down to a small square PNG so it can be stored and published without hosting. */
+async function fileToIcon(file: File): Promise<string> {
+    const bitmap = await createImageBitmap(file);
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = ICON_SIZE;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Could not read the image.");
+    const side = Math.min(bitmap.width, bitmap.height);
+    ctx.drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, ICON_SIZE, ICON_SIZE);
+    bitmap.close();
+    return canvas.toDataURL("image/png");
+}
+
+const userName = (id: string) => {
+    const user = /^\d{15,22}$/.test(id) ? UserStore.getUser(id) : undefined;
+    return user ? user.globalName || user.username : "";
+};
+
 function BadgeEditor({ modalProps }: { modalProps: any; }) {
     const [badges, setBadges] = useState<MaltBadge[]>(localBadges);
+    const [editingId, setEditingId] = useState<string | null>(null);
     const [userId, setUserId] = useState("");
     const [tooltip, setTooltip] = useState("");
     const [icon, setIcon] = useState("");
     const [error, setError] = useState("");
+    const [importing, setImporting] = useState(false);
+    const [importText, setImportText] = useState("");
+    const fileInput = React.useRef<HTMLInputElement>(null);
 
     const update = (next: MaltBadge[]) => { setBadges(next); saveLocal(next); };
 
-    const add = () => {
+    const reset = () => { setEditingId(null); setUserId(""); setTooltip(""); setIcon(""); setError(""); };
+
+    const startEdit = (b: MaltBadge) => {
+        setEditingId(b.id);
+        setUserId(b.userId);
+        setTooltip(b.tooltip);
+        setIcon(b.icon);
+        setError("");
+    };
+
+    const save = () => {
         if (!/^\d{15,22}$/.test(userId.trim())) return setError("Enter a Discord user ID (numbers only).");
         if (!tooltip.trim()) return setError("Enter a badge name.");
-        if (!safeIcon(icon.trim())) return setError("The icon must be an https:// image link or a PNG, JPEG, GIF or WebP data URL.");
-        if (badges.length >= MAX_BADGES) return setError(`At most ${MAX_BADGES} badges.`);
-        setError("");
-        update([...badges, { id: crypto.randomUUID().slice(0, 8), userId: userId.trim(), tooltip: tooltip.trim().slice(0, 80), icon: icon.trim() }]);
-        setTooltip("");
-        setIcon("");
+        if (!safeIcon(icon.trim())) return setError("Pick an image, or paste an https:// image link.");
+        const entry: MaltBadge = { id: editingId ?? crypto.randomUUID().slice(0, 8), userId: userId.trim(), tooltip: tooltip.trim().slice(0, 80), icon: icon.trim() };
+        if (editingId) update(badges.map(b => b.id === editingId ? entry : b));
+        else if (badges.length >= MAX_BADGES) return setError(`At most ${MAX_BADGES} badges.`);
+        else update([...badges, entry]);
+        reset();
     };
+
+    const pickFile = async (file?: File) => {
+        if (!file) return;
+        try {
+            setIcon(await fileToIcon(file));
+            setError("");
+        } catch (e) {
+            setError(e instanceof Error ? e.message : "Could not read that image.");
+        }
+    };
+
+    const runImport = () => {
+        try {
+            const incoming = sanitize(JSON.parse(importText));
+            if (!incoming.length) return setError("No valid badges found in that JSON.");
+            const ids = new Set(incoming.map(b => b.id));
+            update([...badges.filter(b => !ids.has(b.id)), ...incoming].slice(0, MAX_BADGES));
+            setImporting(false);
+            setImportText("");
+            setError("");
+        } catch {
+            setError("That is not valid JSON.");
+        }
+    };
+
+    const previewOk = safeIcon(icon.trim());
+    const who = userName(userId.trim());
 
     return (
         <ModalRoot {...modalProps} size={ModalSize.MEDIUM}>
@@ -117,31 +177,63 @@ function BadgeEditor({ modalProps }: { modalProps: any; }) {
                     <div className="kmb-note">The badge editor is only available to the MaltCord owner.</div>
                 ) : (
                     <>
-                        <div className="kmb-note">
-                            Badges you add show on your own client right away. To show them to every MaltCord user, copy the JSON
-                            and save it as <code>maltcord-badges.json</code> in the MaltCord repository.
-                        </div>
-                        <div className="kmb-form">
-                            <TextInput placeholder="User ID" value={userId} onChange={setUserId} />
-                            <TextInput placeholder="Badge name" value={tooltip} onChange={setTooltip} />
-                            <TextInput placeholder="Icon link (https://…)" value={icon} onChange={setIcon} />
-                            <Button size={Button.Sizes.SMALL} onClick={add}>Add badge</Button>
-                        </div>
-                        {error && <div className="kmb-error">{error}</div>}
-                        {badges.length === 0 && <div className="kmb-note">No badges yet.</div>}
+                        <section className="kmb-card">
+                            <div className="kmb-card-title">{editingId ? "Edit badge" : "New badge"}</div>
+                            <div className="kmb-preview-row">
+                                <div className="kmb-preview" title="Preview">
+                                    {previewOk ? <img src={icon.trim()} alt="" /> : <span>?</span>}
+                                </div>
+                                <div className="kmb-fields">
+                                    <TextInput placeholder="Badge name (shown on hover)" value={tooltip} onChange={setTooltip} />
+                                    <div className="kmb-inline">
+                                        <TextInput placeholder="User ID" value={userId} onChange={setUserId} />
+                                        <Button size={Button.Sizes.SMALL} look={Button.Looks.LINK} onClick={() => setUserId(UserStore.getCurrentUser().id)}>Use my ID</Button>
+                                    </div>
+                                    {who && <div className="kmb-note">User: {who}</div>}
+                                    <div className="kmb-inline">
+                                        <TextInput placeholder="Icon link (https://â€¦) or pick an image" value={icon.startsWith("data:") ? "Picked image" : icon} onChange={setIcon} disabled={icon.startsWith("data:")} />
+                                        <Button size={Button.Sizes.SMALL} look={Button.Looks.LINK} onClick={() => fileInput.current?.click()}>Pick image</Button>
+                                        {icon && <Button size={Button.Sizes.SMALL} look={Button.Looks.LINK} onClick={() => setIcon("")}>Clear</Button>}
+                                    </div>
+                                    <input ref={fileInput} type="file" accept="image/*" hidden onChange={e => { void pickFile(e.target.files?.[0]); e.target.value = ""; }} />
+                                </div>
+                            </div>
+                            {error && <div className="kmb-error">{error}</div>}
+                            <div className="kmb-inline">
+                                <Button size={Button.Sizes.SMALL} onClick={save}>{editingId ? "Save changes" : "Add badge"}</Button>
+                                {(editingId || userId || tooltip || icon) && <Button size={Button.Sizes.SMALL} look={Button.Looks.LINK} onClick={reset}>{editingId ? "Cancel" : "Clear"}</Button>}
+                            </div>
+                        </section>
+
+                        <div className="kmb-card-title">Your badges ({badges.length})</div>
+                        {badges.length === 0 && <div className="kmb-note">No badges yet. Add one above.</div>}
                         {badges.map(b => (
-                            <div className="kmb-row" key={b.id}>
+                            <div className="kmb-row" data-editing={b.id === editingId || undefined} key={b.id}>
                                 <img className="kmb-icon" src={b.icon} alt="" />
                                 <span className="kmb-name">{b.tooltip}</span>
-                                <code className="kmb-user">{b.userId}</code>
-                                <Button size={Button.Sizes.SMALL} color={Button.Colors.RED} onClick={() => update(badges.filter(x => x.id !== b.id))}>Remove</Button>
+                                <span className="kmb-user">{userName(b.userId) || b.userId}</span>
+                                <Button size={Button.Sizes.SMALL} look={Button.Looks.LINK} onClick={() => startEdit(b)}>Edit</Button>
+                                <Button size={Button.Sizes.SMALL} color={Button.Colors.RED} onClick={() => { update(badges.filter(x => x.id !== b.id)); if (b.id === editingId) reset(); }}>Remove</Button>
                             </div>
                         ))}
-                        {badges.length > 0 && (
-                            <Button size={Button.Sizes.SMALL} onClick={() => copyWithToast(JSON.stringify(badges, null, 2), "Badge JSON copied.")}>
-                                Copy JSON to publish
-                            </Button>
-                        )}
+
+                        <section className="kmb-card">
+                            <div className="kmb-card-title">Publish to everyone</div>
+                            <div className="kmb-note">
+                                Your badges show on your own client right away. To show them to every MaltCord user, copy the JSON and save it
+                                as <code>maltcord-badges.json</code> in the MaltCord repository.
+                            </div>
+                            <div className="kmb-inline">
+                                <Button size={Button.Sizes.SMALL} disabled={!badges.length} onClick={() => copyWithToast(JSON.stringify(badges, null, 2), "Badge JSON copied.")}>Copy JSON</Button>
+                                <Button size={Button.Sizes.SMALL} look={Button.Looks.LINK} onClick={() => setImporting(v => !v)}>{importing ? "Cancel import" : "Import JSON"}</Button>
+                            </div>
+                            {importing && (
+                                <>
+                                    <textarea className="kmb-textarea" rows={6} placeholder="Paste badge JSON here" value={importText} onChange={e => setImportText(e.target.value)} />
+                                    <Button size={Button.Sizes.SMALL} onClick={runImport}>Import</Button>
+                                </>
+                            )}
+                        </section>
                     </>
                 )}
             </ModalContent>
@@ -161,7 +253,7 @@ export default definePlugin({
     name: "MaltCordBadges",
     description: "Custom MaltCord profile badges, with an owner-only badge editor.",
     authors: [Devs.Maltsoup],
-    kittencordOrigin: "original",
+    maltcordOrigin: true,
     managedStyle: style,
     tags: ["MaltCord", "Customisation"],
     enabledByDefault: true,

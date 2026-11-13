@@ -102,12 +102,17 @@ const SearchStatus = {
     KITTENCORD: 15,
     NEEDS_RESTART: 16,
     ISSUES: 17,
+    MALTCORD: 18,
 } as const;
 
 const RowChunkSize = 24;
 
+function isMaltCordPlugin(plugin: Plugin) {
+    return !!plugin.maltcordOrigin;
+}
+
 function isKittenCordPlugin(plugin: Plugin) {
-    return !!plugin.kittencordOrigin || !!PluginMeta[plugin.name]?.folderName.startsWith("src/userplugins/.studio/");
+    return (!!plugin.kittencordOrigin && !plugin.maltcordOrigin) ||!!PluginMeta[plugin.name]?.folderName.startsWith("src/userplugins/.studio/");
 }
 
 function hasIssue(plugin: Plugin) {
@@ -315,6 +320,9 @@ function PluginSettings() {
         if (plugin.id === "local.native.patch" && status !== SearchStatus.LOCAL) return false;
 
         switch (status) {
+            case SearchStatus.MALTCORD:
+                if (!isMaltCordPlugin(plugin)) return false;
+                break;
             case SearchStatus.KITTENCORD:
                 if (!isKittenCordPlugin(plugin)) return false;
                 break;
@@ -396,7 +404,8 @@ function PluginSettings() {
             plugin.name.match(/[A-Z]/g)?.join("").toLowerCase().includes(pluginSearchValue) || // acronyms like BF for BetterFolders
             plugin.description.toLowerCase().includes(pluginSearchValue) ||
             plugin.authors?.some(author => author.name?.toLowerCase().includes(pluginSearchValue) || author.github?.toLowerCase().includes(pluginSearchValue)) ||
-            !!plugin.kittencordOrigin && "kittencord".includes(normSearch) ||
+            !!plugin.kittencordOrigin && !plugin.maltcordOrigin && "kittencord".includes(normSearch) ||
+            !!plugin.maltcordOrigin && "maltcord".includes(normSearch) ||
             plugin.searchTerms?.some(t => t.toLowerCase().includes(pluginSearchValue))
         );
     }, [searchValue, search, searchPrefixMatch, restartPending]);
@@ -492,6 +501,7 @@ function PluginSettings() {
     const chipCounts: Record<number, number> = {
         [SearchStatus.ALL]: optional.length,
         [SearchStatus.ENABLED]: optional.filter(p => isPluginSelected(p.name)).length,
+        [SearchStatus.MALTCORD]: optional.filter(isMaltCordPlugin).length,
         [SearchStatus.KITTENCORD]: optional.filter(isKittenCordPlugin).length,
         [SearchStatus.NEEDS_RESTART]: restartPending.size,
         [SearchStatus.ISSUES]: optional.filter(hasIssue).length,
@@ -499,7 +509,8 @@ function PluginSettings() {
     const chips = [
         { status: SearchStatus.ALL, label: "All" },
         { status: SearchStatus.ENABLED, label: "Enabled" },
-        { status: SearchStatus.KITTENCORD, label: "MaltCord" },
+        { status: SearchStatus.MALTCORD, label: "MaltCord" },
+        { status: SearchStatus.KITTENCORD, label: "KittenCord" },
         { status: SearchStatus.NEEDS_RESTART, label: "Needs restart" },
         { status: SearchStatus.ISSUES, label: "Issues" },
     ];
@@ -523,8 +534,12 @@ function PluginSettings() {
     const unfiltered = searchValue.status === SearchStatus.ALL && !searchValue.value && !searchValue.tags.length && !searchValue.author;
     const shown = filteredPlugins.slice(0, visibleCount);
     const sections = unfiltered
-        // The MaltCord group is small, so it always shows in full instead of only what the first page reached.
-        ? [{ title: "MaltCord", plugins: filteredPlugins.filter(isKittenCordPlugin) }, { title: "All plugins", plugins: shown.filter(p => !isKittenCordPlugin(p)) }]
+        // The MaltCord and KittenCord groups are small, so they always show in full instead of only what the first page reached.
+        ? [
+            { title: "MaltCord", plugins: filteredPlugins.filter(isMaltCordPlugin) },
+            { title: "KittenCord", plugins: filteredPlugins.filter(isKittenCordPlugin) },
+            { title: "All plugins", plugins: shown.filter(p => !isKittenCordPlugin(p) && !isMaltCordPlugin(p)) }
+        ].filter(section => section.plugins.length > 0 || section.title === "All plugins")
         : [{ title: `${filteredPlugins.length} ${filteredPlugins.length === 1 ? "plugin" : "plugins"}`, plugins: shown }];
     const cards = kittenSettings.store.pluginsView === "cards";
     const renderRows = (list: Plugin[]) => {

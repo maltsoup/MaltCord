@@ -15,7 +15,8 @@ import { classes } from "@utils/misc";
 import { getTestcordModifiedDetails, isTestcordModified, TestcordPluginIconUrl } from "@utils/testcordIcons";
 import { Plugin } from "@utils/types";
 import { React, Tooltip, UserStore } from "@webpack/common";
-import KittenLogo from "file://../../../kittencord.png?base64";
+import MaltLogo from "file://../../../kittencord.png?base64";
+import KittenLogo from "file://../../../kittencord-upstream.png?base64";
 
 import gitRemote from "~git-remote";
 import { PluginMeta } from "~plugins";
@@ -53,7 +54,8 @@ export function PluginCard({ plugin, disabled, onRestartNeeded, onMouseEnter, on
     const testcordModDetails = isTestcordMod ? getTestcordModifiedDetails(plugin, pluginMeta.folderName) : null;
 
     const pluginInfo = [
-        { condition: !!plugin.kittencordOrigin && !studio, src: `data:image/png;base64,${KittenLogo}`, alt: "MaltCord", title: plugin.kittencordOrigin === "original" ? "MaltCord Original" : "MaltCord Edition" },
+        { condition: !!plugin.maltcordOrigin && !studio, src: `data:image/png;base64,${MaltLogo}`, alt: "MaltCord", title: "MaltCord" },
+        { condition: !!plugin.kittencordOrigin && !plugin.maltcordOrigin && !studio, src: `data:image/png;base64,${KittenLogo}`, alt: "KittenCord", title: plugin.kittencordOrigin === "original" ? "KittenCord Original" : "KittenCord Edition" },
         {
             condition: Boolean(testcordModDetails),
             src: testcordModDetails?.src ?? "",

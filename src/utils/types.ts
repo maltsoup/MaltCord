@@ -146,6 +146,8 @@ export type IconComponent = (props: IconProps & Record<string, any>) => ReactNod
 export type IconProps = { height?: number | string; width?: number | string; className?: string; };
 export interface PluginDef {
     kittencordOrigin?: "original" | "edition";
+    /** Written for MaltCord itself. Listed under MaltCord, separately from the inherited KittenCord plugins. */
+    maltcordOrigin?: boolean;
     /**
      * Stable unique identifier for this plugin. Changing `name` will no longer
      * disable the plugin as long as `id` stays the same. If omitted, `name`

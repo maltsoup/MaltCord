@@ -261,7 +261,7 @@ export default definePlugin({
     name: "KittyPresencePal",
     description: "Set your Discord game activity for any game, including mobile titles Discord can't detect. Port of PresencePal.",
     authors: [Devs.Maltsoup],
-    kittencordOrigin: "original",
+    maltcordOrigin: true,
     managedStyle: style,
     tags: ["MaltCord", "Activity", "Utility"],
     settings,

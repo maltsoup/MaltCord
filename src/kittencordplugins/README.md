@@ -13,6 +13,7 @@ Plugins written for KittenCord itself. Inherited plugins stay in their upstream 
 | `kittyVoiceLog` | Voice Log: a recap of every call you join, with who was there, how long each person stayed and a timeline | Desktop and web |
 | `kittyVoiceLab.web` | Voice Lab: browser microphone effects with live presets | Web only |
 
-Each plugin sets `authors: [Devs.Kittencord]`. Plugins marked `kittencordOrigin: "original"` show under the
-MaltCord filter in Plugins. Core MaltCord plugins that must always run (`kittycordCloud`, `nativeThemePreviews`)
+Plugins marked `kittencordOrigin: "original"` come from KittenCord and show under the KittenCord filter in Plugins.
+Plugins written for MaltCord itself (`kittyPresencePal`, `maltBadges`) set `maltcordOrigin: true` and
+`authors: [Devs.Maltsoup]`, and show under their own MaltCord filter. Core MaltCord plugins that must always run (`kittycordCloud`, `nativeThemePreviews`)
 stay in `src/plugins/_core`.

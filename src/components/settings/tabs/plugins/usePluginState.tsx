@@ -18,7 +18,8 @@ import { getPluginWarning, type PluginWarningInfo } from "@utils/pluginWarnings"
 import { getTestcordModifiedDetails, isTestcordModified, TestcordPluginIconUrl } from "@utils/testcordIcons";
 import type { Plugin } from "@utils/types";
 import { ConfirmModal, openModal, React, showToast, Toasts } from "@webpack/common";
-import KittenLogo from "file://../../../kittencord.png?base64";
+import MaltLogo from "file://../../../kittencord.png?base64";
+import KittenLogo from "file://../../../kittencord-upstream.png?base64";
 
 import { PluginMeta } from "~plugins";
 
@@ -63,7 +64,7 @@ function showEnableWarningModal(plugin: Plugin, warningInfo: PluginWarningInfo, 
     ));
 }
 
-export type PluginSource = "kittencord" | "studio" | "local" | "cloud" | "testcord" | "equicord" | "vencord" | "betterdiscord" | "imported";
+export type PluginSource = "maltcord" | "kittencord" | "studio" | "local" | "cloud" | "testcord" | "equicord" | "vencord" | "betterdiscord" | "imported";
 
 export function pluginDisplayName(name: string) {
     return (TestcordHelperSettings?.store?.splitPluginNames ?? true) ? name.replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2").replace(/([a-z])([A-Z])/g, "$1 $2") : name;
@@ -171,14 +172,16 @@ export function usePluginState(plugin: Plugin, onRestartNeeded: (name: string, k
     const isTestcordMod = isTestcordModified(plugin, pluginMeta.folderName);
     const testcordModDetails = isTestcordMod ? getTestcordModifiedDetails(plugin, pluginMeta.folderName) : null;
     const isBDPlugin = pluginMeta.folderName?.startsWith("src/Betterdiscordplugins/") || plugin.tags?.includes("betterdiscord");
-    const source: PluginSource = plugin.kittencordOrigin && !studio ? "kittencord"
+    const source: PluginSource = plugin.maltcordOrigin && !studio ? "maltcord"
+        : plugin.kittencordOrigin && !studio ? "kittencord"
         : cloudSource ? "cloud"
             : isBDPlugin ? "betterdiscord"
                 : pluginMeta.userPlugin ? studio ? "studio" : "local"
                     : pluginMeta.folderName.startsWith("src/testcordplugins/") ? "testcord"
                         : pluginMeta.folderName.startsWith("src/equicordplugins/") ? "equicord"
                             : pluginMeta.folderName.startsWith("src/plugins/") ? "vencord" : "imported";
-    const sourceLabel = source === "kittencord" ? plugin.kittencordOrigin === "original" ? "MaltCord Original" : "MaltCord Edition"
+    const sourceLabel = source === "maltcord" ? "MaltCord"
+        : source === "kittencord" ? plugin.kittencordOrigin === "original" ? "KittenCord Original" : "KittenCord Edition"
         : source === "cloud" && cloudSource ? verifiedSourceLabel(cloudSource)
             : ({ studio: "MaltCord Studio", local: "Local Plugin", testcord: "TestCord", equicord: "Equicord", vencord: "Vencord", betterdiscord: "BetterDiscord", imported: "Imported Plugin" } as Record<string, string>)[source] ?? "Plugin";
 
@@ -189,7 +192,8 @@ export function usePluginState(plugin: Plugin, onRestartNeeded: (name: string, k
     }, [plugin.tags, isTestcordMod]);
 
     const sourceIcon: { src: string; alt: string; } | undefined =
-        source === "kittencord" ? { src: `data:image/png;base64,${KittenLogo}`, alt: "MaltCord" }
+        source === "maltcord" ? { src: `data:image/png;base64,${MaltLogo}`, alt: "MaltCord" }
+            : source === "kittencord" ? { src: `data:image/png;base64,${KittenLogo}`, alt: "KittenCord" }
             : testcordModDetails ? { src: testcordModDetails.src, alt: testcordModDetails.alt }
                 : plugin.isModified ? { src: "https://equicord.org/assets/icons/equicord/modified.png", alt: "Modified" }
                     : source === "local" || source === "studio" || source === "cloud" ? { src: "https://equicord.org/assets/icons/misc/userplugin.png", alt: "Local" }

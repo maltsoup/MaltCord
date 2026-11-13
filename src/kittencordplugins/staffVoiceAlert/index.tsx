@@ -186,7 +186,6 @@ export default definePlugin({
     authors: [Devs.Maltsoup],
     maltcordOrigin: true,
     tags: ["MaltCord", "Voice", "Notifications"],
-    enabledByDefault: true,
     settings,
 
     stop() {

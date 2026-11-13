@@ -6,13 +6,15 @@
 
 import { definePluginSettings } from "@api/Settings";
 import { Devs } from "@utils/constants";
+import { Logger } from "@utils/Logger";
 import definePlugin, { OptionType } from "@utils/types";
 import { ApplicationStreamingStore, FluxDispatcher, SelectedChannelStore } from "@webpack/common";
 
 // Discord shows the purple "Streaming" status for an activity of type 1 that has a Twitch or YouTube link.
+const logger = new Logger("StreamingStatus");
 const STREAMING = 1;
 const SOCKET_ID = "MaltCordStreamingStatus";
-const DEFAULT_URL = "https://www.twitch.tv/directory";
+const DEFAULT_URL = "https://www.twitch.tv/discord";
 
 const settings = definePluginSettings({
     activityName: {
@@ -53,10 +55,12 @@ function validUrl(value: string) {
 function activity() {
     const details = String(settings.store.details ?? "").trim().slice(0, 128);
     return {
+        // Same shape Discord's own custom activities use, so the gateway accepts it.
+        application_id: "0",
         name: String(settings.store.activityName || "Streaming").trim().slice(0, 128),
         type: STREAMING,
         url: validUrl(String(settings.store.streamUrl ?? "")),
-        flags: 0,
+        flags: 1,
         timestamps: { start: startedAt },
         ...(details ? { details } : {})
     };
@@ -70,6 +74,7 @@ function update() {
     const streaming = isStreamingInVoice();
     if (streaming === active) return;
     active = streaming;
+    logger.info(streaming ? "Streaming in voice: showing the Streaming status." : "Stopped streaming: status restored.");
     if (streaming) startedAt = Date.now();
     dispatch(streaming ? activity() : null);
 }
@@ -83,7 +88,12 @@ export default definePlugin({
     settings,
 
     flux: {
-        VOICE_CHANNEL_SELECT: update
+        VOICE_CHANNEL_SELECT: update,
+        STREAM_CREATE: update,
+        STREAM_UPDATE: update,
+        STREAM_CLOSE: update,
+        STREAM_DELETE: update,
+        RTC_CONNECTION_STATE: update
     },
 
     start() {

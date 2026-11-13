@@ -634,14 +634,18 @@ function normalizeProfile(value: unknown): InstanceProfile | null {
     const name = typeof value.name === "string" ? normalizeDisplayName(value.name, "") : "";
     if (!id || !name) return null;
 
+    const user = normalizeInstanceUser(value.user);
+    const token = typeof value.token === "string" && value.token.trim() ? value.token.trim() : undefined;
+
+    // Only keys that have a value are included, so an empty one is never sent to the screen.
     return {
         id,
         name,
-        saveSession: typeof value.saveSession === "boolean" ? value.saveSession : undefined,
         domain: normalizeDomain(value.domain),
         mode: normalizeInstanceMode(value.mode),
-        user: normalizeInstanceUser(value.user),
-        token: typeof value.token === "string" && value.token.trim() ? value.token.trim() : undefined
+        ...(typeof value.saveSession === "boolean" ? { saveSession: value.saveSession } : {}),
+        ...(user ? { user } : {}),
+        ...(token ? { token } : {})
     };
 }
 
@@ -708,7 +712,7 @@ async function loadProfileStore(legacy?: unknown): Promise<ProfileStore> {
 
 /** Returns the saved profiles. The first call imports the old list from the settings file and recovers lost ones. */
 export function listProfiles(_event: Electron.IpcMainInvokeEvent, legacy?: unknown): Promise<InstanceProfile[]> {
-    return enqueue(async () => structuredClone((await loadProfileStore(legacy)).profiles));
+    return enqueue(async () => JSON.parse(JSON.stringify((await loadProfileStore(legacy)).profiles)) as InstanceProfile[]);
 }
 
 export function upsertProfile(_event: Electron.IpcMainInvokeEvent, rawProfile: unknown): Promise<NativeResult> {

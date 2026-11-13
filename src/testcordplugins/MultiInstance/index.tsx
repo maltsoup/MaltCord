@@ -80,10 +80,12 @@ function isProfile(value: unknown): value is InstanceProfile {
         "name" in value &&
         typeof value.id === "string" &&
         typeof value.name === "string" &&
-        (!("saveSession" in value) || typeof value.saveSession === "boolean") &&
-        (!("domain" in value) || isDomain(value.domain)) &&
-        (!("mode" in value) || value.mode === "detached" || value.mode === "grouped") &&
-        (!("user" in value) || isInstanceUser(value.user)) &&
+        // An empty value (undefined or null) counts the same as a missing one, because that is what the
+        // main process sends for a profile that has no logged-in user yet.
+        (!("saveSession" in value) || value.saveSession == null || typeof value.saveSession === "boolean") &&
+        (!("domain" in value) || value.domain == null || isDomain(value.domain)) &&
+        (!("mode" in value) || value.mode == null || value.mode === "detached" || value.mode === "grouped") &&
+        (!("user" in value) || value.user == null || isInstanceUser(value.user)) &&
         (!("token" in value) || typeof value.token === "string" || value.token == null) &&
         /^[a-z0-9_-]{1,32}$/i.test(value.id) &&
         value.name.trim().length > 0;

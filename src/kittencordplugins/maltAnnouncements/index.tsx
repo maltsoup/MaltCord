@@ -47,19 +47,19 @@ const settings = definePluginSettings({
         description: "Also show a bell in the top bar that opens the list of announcements",
         default: false
     },
-    readIds: { type: OptionType.STRING, description: "Read announcements (JSON)", default: "[]", hidden: true },
-    notifiedIds: { type: OptionType.STRING, description: "Announcements already announced (JSON)", default: "[]", hidden: true }
+    readIds: { type: OptionType.STRING, description: "Read announcements (JSON)", default: "[]", hidden: true }
 });
 
 let items: Announcement[] = [];
+const shownThisSession = new Set<string>();
 let timer: ReturnType<typeof setInterval> | undefined;
 const listeners = new Set<() => void>();
 const emit = () => listeners.forEach(l => l());
 
-const readSet = (key: "readIds" | "notifiedIds") => {
+const readSet = (key: "readIds") => {
     try { return new Set<string>(JSON.parse(settings.store[key])); } catch { return new Set<string>(); }
 };
-const saveSet = (key: "readIds" | "notifiedIds", set: Set<string>) => {
+const saveSet = (key: "readIds", set: Set<string>) => {
     settings.store[key] = JSON.stringify([...set].slice(-200));
 };
 
@@ -95,17 +95,21 @@ async function refresh() {
         emit();
 
         if (!settings.store.showPopups) return;
+        // Every unread announcement stays in the top corner until you dismiss it, so a new one cannot be missed.
+        // Each one is shown once per session, and the three newest at most.
         const read = readSet("readIds");
-        const notified = readSet("notifiedIds");
-        const first = notified.size === 0 && read.size === 0;
-        for (const item of items) {
-            if (read.has(item.id) || notified.has(item.id)) continue;
-            notified.add(item.id);
-            // On the very first run only mark old items as seen, so a new user is not flooded.
-            if (!first) showNotification({ title: item.title, body: item.body.slice(0, 200), position: "top-right", onClick: openAnnouncements });
-        }
-        saveSet("notifiedIds", notified);
-    } catch {
+        for (const item of items.filter(i => !read.has(i.id) && !shownThisSession.has(i.id)).slice(0, 3)) {
+            shownThisSession.add(item.id);
+            showNotification({
+                title: item.title,
+                body: item.body.slice(0, 200),
+                position: "top-right",
+                permanent: true,
+                noPersist: true,
+                onClick: openAnnouncements,
+                onClose: () => markRead([item.id])
+            });
+        } } catch {
         // Offline or the feed is missing: keep what we have.
     }
 }
@@ -219,5 +223,6 @@ export default definePlugin({
         if (timer) clearInterval(timer);
         timer = undefined;
         items = [];
+        shownThisSession.clear();
     }
 });

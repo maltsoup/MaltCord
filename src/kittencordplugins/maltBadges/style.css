@@ -127,3 +127,59 @@
     font-family: var(--font-code);
     font-size: 12px;
 }
+
+.kmb-bar {
+    justify-content: space-between;
+}
+
+.kmb-tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.kmb-tabs button {
+    padding: 6px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--background-secondary);
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.kmb-tabs button[data-active] {
+    background: var(--brand-500, #5865f2);
+    color: #fff;
+}
+
+.kmb-check {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.kmb-code {
+    display: block;
+    padding: 8px;
+    border-radius: 4px;
+    background: var(--background-tertiary);
+    font-size: 12px;
+    word-break: break-all;
+    user-select: text;
+}
+
+.kmb-ann {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px;
+    border-radius: 6px;
+    background: var(--background-secondary);
+}
+
+.kmb-ann-head {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    justify-content: space-between;
+}

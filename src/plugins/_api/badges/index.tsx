@@ -19,7 +19,7 @@
 import "./fixDiscordBadgePadding.css";
 
 import { _getBadges, BadgePosition, BadgeRarity, BadgeUserArgs, ProfileBadge } from "@api/Badges";
-import { cloudBadges, useCloudBadges } from "@api/KittycordCloud";
+import { cloudBadges } from "@api/KittycordCloud";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { CopyIcon, LinkIcon } from "@components/Icons";
 import { openContributorModal } from "@components/settings/tabs";
@@ -36,8 +36,6 @@ import testcordArtistIconBase64 from "file://../../../../browser/TestcordArtist.
 
 import Plugins, { PluginMeta } from "~plugins";
 
-import { cloudProfileBadgeItems, CloudProfileDetails } from "./CloudProfileBadges";
-import { KittenNameCrown } from "./KittenProfileBadge";
 import { EquicordTranslatorModal, TestCordDonorModal, VencordDonorModal } from "./modals";
 
 // TestCord badges stay visible in MaltCord (owner, 2026-11-04). MaltCord only shows them; unlike TestCord it
@@ -210,14 +208,6 @@ export default definePlugin({
     authors: [Devs.Megu, Devs.Ven, Devs.TheSun],
     required: true,
     dependencies: ["ProfileSectionsAPI"],
-    renderProfileSection: { render:CloudProfileDetails,priority:-20 },
-    renderNicknameIcon: KittenNameCrown,
-    renderMessageDecoration({ message }) {
-        return <KittenNameCrown userId={message.author.id} />;
-    },
-    renderMemberListDecorator({ user }) {
-        return user ? <KittenNameCrown userId={user.id} /> : null;
-    },
     patches: [
         {
             find: "#{intl::PROFILE_USER_BADGES}",
@@ -298,15 +288,8 @@ export default definePlugin({
         }
     },
 
-    userProfileBadges: [ContributorBadge, EquicordContributorBadge, ...TestcordBadges, UserPluginContributorBadge, {
-        id: "kittencord_cloud_profile",
-        position: BadgePosition.START,
-        shouldShow: () => cloudBadges.enabled,
-        getBadges: ({ userId }) => {
-            void cloudBadges.load(userId);
-            return cloudProfileBadgeItems(userId, cloudBadges.peek(userId));
-        }
-    }],
+    // KittenCord's cloud badges are not shown on profiles; MaltCord's own badge comes from the MaltCordBadges plugin.
+    userProfileBadges: [ContributorBadge, EquicordContributorBadge, ...TestcordBadges, UserPluginContributorBadge],
 
     start() {
         setTimeout(() => {
@@ -332,11 +315,8 @@ export default definePlugin({
         }
     },
 
-    useBadgeRow(props: { userId?:string;user?:{ id:string; }; guildId?:string; }, badges: (ProfileBadge & Partial<BadgeUserArgs>)[]) {
-        const userId=props.userId??props.user?.id??badges.find(badge=>badge.userId)?.userId??"";
-        const guildId=props.guildId??badges.find(badge=>badge.guildId)?.guildId??"";
-        const assigned=useCloudBadges(userId);
-        return [...cloudProfileBadgeItems(userId,assigned).map(badge=>({ ...badge,userId,guildId })),...badges.filter(badge=>!badge.id.startsWith("kittencord_cloud_"))];
+    useBadgeRow(_props: { userId?: string; user?: { id: string; }; guildId?: string; }, badges: (ProfileBadge & Partial<BadgeUserArgs>)[]) {
+        return badges.filter(badge => !badge.id.startsWith("kittencord_cloud_"));
     },
 
     getDirectoryBadge(badgeId: string) {

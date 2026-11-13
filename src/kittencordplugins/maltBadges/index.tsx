@@ -8,10 +8,12 @@ import { BadgePosition, type ProfileBadge } from "@api/Badges";
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
 import { Devs } from "@utils/constants";
-import { copyWithToast } from "@utils/discord";
+import { copyWithToast, fetchUserProfile } from "@utils/discord";
+import { Logger } from "@utils/Logger";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
-import { Button, React, TextInput, UserStore, useState } from "@webpack/common";
+import { Button, React, RestAPI, TextInput, UserProfileStore, UserStore, useState } from "@webpack/common";
+import MaltLogo from "file://../../components/kittencord.png?base64";
 
 import style from "./style.css?managed";
 
@@ -29,9 +31,60 @@ const OWNER_ID = String(Devs.Maltsoup.id);
 const MAX_BADGES = 200;
 const ICON_SIZE = 64;
 
+const logger = new Logger("MaltCordBadges");
+
+// Other MaltCord users recognise a MaltCord user by this invisible marker in their profile pronouns.
+const MARKER = "‌​‌";
+const MAX_PRONOUNS = 40;
+const MALT_ICON = `data:image/png;base64,${MaltLogo}`;
+
 const settings = definePluginSettings({
-    badges: { type: OptionType.STRING, description: "Local badges (JSON)", default: "[]", hidden: true }
+    badges: { type: OptionType.STRING, description: "Local badges (JSON)", default: "[]", hidden: true },
+    showMyBadge: {
+        type: OptionType.BOOLEAN,
+        description: "Show the MaltCord badge on my profile. Other MaltCord users can see it. This keeps an invisible mark in your Discord profile pronouns, and turning this off removes it.",
+        default: true,
+        onChange: () => void syncMarker()
+    }
 });
+
+function hasMarker(userId: string) {
+    return !!UserProfileStore.getUserProfile(userId)?.pronouns?.includes(MARKER);
+}
+
+/** Adds or removes the invisible marker in the user's own pronouns so the badge matches the setting. */
+async function syncMarker(forceRemove = false) {
+    try {
+        const me = UserStore.getCurrentUser()?.id;
+        if (!me) return;
+        if (UserProfileStore.getUserProfile(me) == null) await fetchUserProfile(me);
+        const profile = UserProfileStore.getUserProfile(me);
+        if (!profile) return; // Never overwrite pronouns that could not be read.
+
+        const current = profile.pronouns ?? "";
+        const want = !forceRemove && settings.store.showMyBadge;
+        const has = current.includes(MARKER);
+        if (want === has) return;
+
+        const next = want ? current + MARKER : current.split(MARKER).join("");
+        if (next.length > MAX_PRONOUNS) return logger.warn("Pronouns are too long to hold the MaltCord marker.");
+        await RestAPI.patch({ url: "/users/@me/profile", body: { pronouns: next } });
+    } catch (e) {
+        logger.warn("Could not update the MaltCord badge marker.", e);
+    }
+}
+
+function userBadge(userId: string): ProfileBadge[] {
+    const mine = userId === UserStore.getCurrentUser()?.id;
+    if (!(mine ? settings.store.showMyBadge : hasMarker(userId))) return [];
+    return [{
+        id: "maltcord_user",
+        description: "MaltCord User",
+        iconSrc: MALT_ICON,
+        position: BadgePosition.START,
+        props: { style: { borderRadius: "50%", transform: "scale(0.9)" } }
+    }];
+}
 
 let remoteBadges: MaltBadge[] = [];
 let timer: ReturnType<typeof setInterval> | undefined;
@@ -76,7 +129,7 @@ async function loadRemote() {
 function badgesFor(userId: string): ProfileBadge[] {
     const local = localBadges();
     const localIds = new Set(local.map(b => b.id));
-    return [...local, ...remoteBadges.filter(b => !localIds.has(b.id))]
+    return [...userBadge(userId), ...[...local, ...remoteBadges.filter(b => !localIds.has(b.id))]
         .filter(b => b.userId === userId)
         .map(b => ({
             id: `maltcord_badge_${b.id}`,
@@ -84,7 +137,7 @@ function badgesFor(userId: string): ProfileBadge[] {
             iconSrc: b.icon,
             position: BadgePosition.START,
             props: { style: { borderRadius: "50%", transform: "scale(0.9)" } }
-        }));
+        }))];
 }
 
 /** Scales a picked image down to a small square PNG so it can be stored and published without hosting. */
@@ -271,14 +324,23 @@ export default definePlugin({
         getBadges: ({ userId }) => badgesFor(userId)
     }],
 
+    flux: {
+        CONNECTION_OPEN() {
+            setTimeout(() => void syncMarker(), 8000);
+        }
+    },
+
     start() {
         void loadRemote();
         timer = setInterval(() => void loadRemote(), 30 * 60 * 1000);
+        setTimeout(() => void syncMarker(), 8000);
     },
 
     stop() {
         if (timer) clearInterval(timer);
         timer = undefined;
         remoteBadges = [];
+        // Turning the plugin off also takes the invisible mark out of your pronouns.
+        void syncMarker(true);
     }
 });

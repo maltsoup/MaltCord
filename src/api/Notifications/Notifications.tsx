@@ -75,6 +75,8 @@ export interface NotificationData {
     noPersist?: boolean;
     /** Whether this notification should be dismissed when clicked (defaults to true) */
     dismissOnClick?: boolean;
+    /** Where this notification appears. Defaults to the Notification Position setting. */
+    position?: "top-right" | "bottom-right";
 }
 
 function _showNotification(notification: NotificationData, id: number) {

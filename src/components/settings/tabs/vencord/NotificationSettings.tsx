@@ -86,8 +86,8 @@ function NotificationSettings() {
                 isDisabled={settings.useNative === "always"}
                 placeholder="Notification Position"
                 options={[
-                    { label: "Bottom Right", value: "bottom-right", default: true },
-                    { label: "Top Right", value: "top-right" },
+                    { label: "Bottom Right", value: "bottom-right" },
+                    { label: "Top Right", value: "top-right", default: true },
                 ] satisfies Array<{ value: typeof settings["position"]; } & Record<string, any>>}
                 select={v => settings.position = v}
                 isSelected={v => v === settings.position}

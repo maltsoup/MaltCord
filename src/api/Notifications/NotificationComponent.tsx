@@ -36,9 +36,11 @@ export default ErrorBoundary.wrap(function NotificationComponent({
     image,
     permanent,
     className,
-    dismissOnClick
+    dismissOnClick,
+    position: positionOverride
 }: NotificationData & { className?: string; }) {
-    const { timeout, position } = useSettings(["notifications.timeout", "notifications.position"]).notifications;
+    const { timeout, position: settingsPosition } = useSettings(["notifications.timeout", "notifications.position"]).notifications;
+    const position = positionOverride ?? settingsPosition;
 
     const [isHover, setIsHover] = useState(false);
 

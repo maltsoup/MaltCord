@@ -39,8 +39,13 @@ const settings = definePluginSettings({
     },
     showPopups: {
         type: OptionType.BOOLEAN,
-        description: "Show a notification when a new announcement arrives",
+        description: "Show a notification at the top of the window when a new announcement arrives",
         default: true
+    },
+    showBell: {
+        type: OptionType.BOOLEAN,
+        description: "Also show a bell in the top bar that opens the list of announcements",
+        default: false
     },
     readIds: { type: OptionType.STRING, description: "Read announcements (JSON)", default: "[]", hidden: true },
     notifiedIds: { type: OptionType.STRING, description: "Announcements already announced (JSON)", default: "[]", hidden: true }
@@ -97,7 +102,7 @@ async function refresh() {
             if (read.has(item.id) || notified.has(item.id)) continue;
             notified.add(item.id);
             // On the very first run only mark old items as seen, so a new user is not flooded.
-            if (!first) showNotification({ title: item.title, body: item.body.slice(0, 200), onClick: openAnnouncements });
+            if (!first) showNotification({ title: item.title, body: item.body.slice(0, 200), position: "top-right", onClick: openAnnouncements });
         }
         saveSet("notifiedIds", notified);
     } catch {
@@ -170,6 +175,8 @@ function openAnnouncements() {
 
 function AnnouncementsButton() {
     const { unread } = useAnnouncements();
+    const { showBell } = settings.use(["showBell"]);
+    if (!showBell) return null;
     return (
         <HeaderBarButton
             icon={() => <BellIcon dot={unread > 0} />}

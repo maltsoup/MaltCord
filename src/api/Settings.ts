@@ -147,7 +147,7 @@ const DefaultSettings: Settings = {
 
     notifications: {
         timeout: 5000,
-        position: "bottom-right",
+        position: "top-right",
         useNative: "not-focused",
         missed: true,
         logLimit: 50

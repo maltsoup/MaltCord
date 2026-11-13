@@ -37,10 +37,14 @@ const settings = definePluginSettings({
     favorites: { type: OptionType.STRING, description: "Favorite game IDs (JSON)", default: "[]", hidden: true },
     recents: { type: OptionType.STRING, description: "Recent game IDs (JSON)", default: "[]", hidden: true },
     customGames: { type: OptionType.STRING, description: "Custom games (JSON)", default: "[]", hidden: true },
-    startMinimized: {
-        type: OptionType.BOOLEAN,
-        description: "Start the game window minimized",
-        default: false
+    windowMode: {
+        type: OptionType.SELECT,
+        description: "The small window each game opens. Hidden has no window or taskbar button, so stop it from here or by quitting Discord.",
+        options: [
+            { label: "Normal window", value: "normal", default: true },
+            { label: "Minimized to the taskbar", value: "minimized" },
+            { label: "Hidden", value: "hidden" }
+        ]
     }
 });
 
@@ -148,7 +152,7 @@ function PresencePalModal({ modalProps }: { modalProps: any; }) {
 
     const play = async (game: Game) => {
         setNotice(null);
-        const result = await native.startGame(game.id, game.exe, game.name, settings.store.startMinimized).catch(e => ({ ok: false as const, error: String(e?.message ?? e) }));
+        const result = await native.startGame(game.id, game.exe, game.name, settings.store.windowMode).catch(e => ({ ok: false as const, error: String(e?.message ?? e) }));
         if (result.ok) pushRecent(game.id);
         else setNotice(result.error);
         await refreshRunning();

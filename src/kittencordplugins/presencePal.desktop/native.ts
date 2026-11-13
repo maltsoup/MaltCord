@@ -27,11 +27,11 @@ static class Runner {
     static void Main(string[] args) {
         string title = "Game";
         int parent = 0;
-        bool minimized = false;
+        string mode = "normal";
         for (int i = 0; i < args.Length; i++) {
             if (args[i] == "--title" && i + 1 < args.Length) title = args[++i];
             else if (args[i] == "--parent" && i + 1 < args.Length) int.TryParse(args[++i], out parent);
-            else if (args[i] == "--minimized") minimized = true;
+            else if (args[i] == "--mode" && i + 1 < args.Length) mode = args[++i];
         }
         Application.EnableVisualStyles();
         Form form = new Form();
@@ -41,7 +41,16 @@ static class Runner {
         form.FormBorderStyle = FormBorderStyle.FixedSingle;
         form.MaximizeBox = false;
         form.ShowInTaskbar = true;
-        if (minimized) form.WindowState = FormWindowState.Minimized;
+        if (mode == "minimized") form.WindowState = FormWindowState.Minimized;
+        if (mode == "hidden") {
+            // A real window that cannot be seen: no border, fully transparent, off screen, no taskbar button.
+            form.FormBorderStyle = FormBorderStyle.None;
+            form.ShowInTaskbar = false;
+            form.Opacity = 0;
+            form.StartPosition = FormStartPosition.Manual;
+            form.Location = new Point(-32000, -32000);
+            form.Size = new Size(1, 1);
+        }
         Label label = new Label();
         label.Dock = DockStyle.Fill;
         label.TextAlign = ContentAlignment.MiddleCenter;
@@ -125,7 +134,7 @@ async function stopOne(id: string) {
     }
 }
 
-export async function startGame(_: IpcMainInvokeEvent, appId: unknown, executable: unknown, title: unknown, minimized: unknown) {
+export async function startGame(_: IpcMainInvokeEvent, appId: unknown, executable: unknown, title: unknown, windowMode: unknown) {
     if (process.platform !== "win32") return { ok: false as const, error: "PresencePal only works on Windows." };
     const id = appId;
     const segments = parseExecutable(executable);
@@ -145,7 +154,8 @@ export async function startGame(_: IpcMainInvokeEvent, appId: unknown, executabl
         const runner = await ensureRunner();
         await mkdir(dirname(target), { recursive: true });
         await copyFile(runner, target);
-        const args = ["--title", name, "--parent", String(process.pid), ...(minimized ? ["--minimized"] : [])];
+        const mode = windowMode === "minimized" || windowMode === "hidden" ? windowMode : "normal";
+        const args = ["--title", name, "--parent", String(process.pid), "--mode", mode];
         const proc = spawn(target, args, { cwd: dirname(target), stdio: "ignore", windowsHide: false });
         await new Promise<void>((done, fail) => { proc.once("spawn", () => done()); proc.once("error", fail); });
         proc.once("exit", () => { if (runners.get(id)?.proc === proc) void stopOne(id); });

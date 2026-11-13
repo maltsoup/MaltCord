@@ -333,7 +333,8 @@ export async function openInstance(
     rawBlockExternalTokenAccess: unknown = false,
     rawPerformanceMode: unknown = false,
     rawMode: unknown = "detached",
-    rawToken: unknown = null
+    rawToken: unknown = null,
+    rawLight: unknown = false
 ): Promise<NativeResult> {
     const profileId = normalizeProfileId(rawProfileId);
     if (!profileId) return { ok: false, error: "Invalid instance profile." };
@@ -345,6 +346,8 @@ export async function openInstance(
     const domain = normalizeDomain(rawDomain);
     const mode = normalizeInstanceMode(rawMode);
     const token = typeof rawToken === "string" && rawToken.trim() ? rawToken.trim() : null;
+    // A light window is never shown and does not load pictures or videos, so it costs much less to keep open.
+    const light = rawLight === true;
     const existing = openWindows.get(profileId);
 
     if (existing && !existing.win.isDestroyed()) {
@@ -374,6 +377,9 @@ export async function openInstance(
             : `testcord-mi-${profileId}-${Date.now()}`;
         const ses = session.fromPartition(partition, { cache: !blockExternalTokenAccess });
         configureSession(partition, ses);
+        ses.webRequest.onBeforeRequest(light
+            ? (details, callback) => callback({ cancel: details.resourceType === "image" || details.resourceType === "media" })
+            : null);
 
         const win = new BrowserWindow({
             width: 1280,
@@ -409,7 +415,7 @@ export async function openInstance(
             });
         }
 
-        win.once("ready-to-show", () => focusWindow(win));
+        win.once("ready-to-show", () => { if (!light) focusWindow(win); });
         win.once("closed", () => {
             cleanupWindowControls();
             openWindows.delete(profileId);

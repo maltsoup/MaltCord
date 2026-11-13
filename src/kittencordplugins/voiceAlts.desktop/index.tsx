@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { definePluginSettings, Settings } from "@api/Settings";
+import { definePluginSettings, PlainSettings, Settings } from "@api/Settings";
 import type { InstanceProfile } from "@testcordplugins/MultiInstance/native";
 import { Devs } from "@utils/constants";
 import definePlugin, { OptionType, type PluginNative } from "@utils/types";
@@ -33,6 +33,11 @@ const settings = definePluginSettings({
         type: OptionType.BOOLEAN,
         description: "Unmute an alt when it joins, so it sends the microphone sound",
         default: true
+    },
+    startHidden: {
+        type: OptionType.BOOLEAN,
+        description: "Start closed alts hidden and light: no window, no taskbar button and no pictures or videos loaded, so they use less of your computer. Close them from Multi-instance.",
+        default: false
     },
     quietAlts: {
         type: OptionType.BOOLEAN,
@@ -94,7 +99,8 @@ async function refreshOffline() {
     if (!instances) return;
     try {
         const [profiles, open] = await Promise.all([
-            instances.listProfiles((Settings.plugins as any).MultiInstance?.instances),
+            // The plain copy of the settings can be sent to the main process; the live settings object cannot.
+            instances.listProfiles(JSON.parse(JSON.stringify((PlainSettings.plugins as any).MultiInstance?.instances ?? null))),
             instances.getOpenInstances()
         ]);
         const openIds = new Set(open.map(i => i.id));
@@ -111,7 +117,7 @@ async function startProfile(profile: InstanceProfile): Promise<boolean> {
     const saveSession = !block && (profile.saveSession ?? options.saveSessionsByDefault ?? true);
     const result = await instances.openInstance(
         profile.id, profile.name, saveSession, profile.domain ?? "discord.com", block,
-        options.performanceMode === true, profile.mode ?? "detached", profile.token
+        options.performanceMode === true, profile.mode ?? "detached", profile.token, settings.store.startHidden
     ).catch(() => null);
     return !!result?.ok;
 }

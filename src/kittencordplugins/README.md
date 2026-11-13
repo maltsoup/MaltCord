@@ -7,13 +7,13 @@ Plugins written for KittenCord itself. Inherited plugins stay in their upstream 
 |---|---|---|
 | `kittyMediaLab` | Media Lab: crop, resize and convert images; trim and compress videos with local FFmpeg | Desktop and web |
 | `kittyMiniDock.desktop` | Mini Dock: a compact voice window with live participants and voice controls | Desktop |
-| `kittyPresencePal` | PresencePal: show as a real game, tagged MaltCord, by maltsoup | Desktop and web |
+| `staffVoiceAlert` | Staff Voice Alert: plays a sound when staff (by permission) join your voice channel, by maltsoup | Desktop and web |
 | `maltBadges` | MaltCord Badges: custom profile badges with an owner-only badge editor, by maltsoup | Desktop and web |
 | `kittyTimeCapsule` | Time Capsule: local message reminders with scheduling, snooze and a link back | Desktop and web |
 | `kittyVoiceLog` | Voice Log: a recap of every call you join, with who was there, how long each person stayed and a timeline | Desktop and web |
 | `kittyVoiceLab.web` | Voice Lab: browser microphone effects with live presets | Web only |
 
 Plugins marked `kittencordOrigin: "original"` come from KittenCord and show under the KittenCord filter in Plugins.
-Plugins written for MaltCord itself (`kittyPresencePal`, `maltBadges`) set `maltcordOrigin: true` and
+Plugins written for MaltCord itself (`staffVoiceAlert`, `maltBadges`) set `maltcordOrigin: true` and
 `authors: [Devs.Maltsoup]`, and show under their own MaltCord filter. Core MaltCord plugins that must always run (`kittycordCloud`, `nativeThemePreviews`)
 stay in `src/plugins/_core`.

@@ -21,7 +21,7 @@ About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Disc
 
 </div>
 
-> **MaltCord is a fork of [KittenCord](https://github.com/xtufa7/KittenCord)**, which is itself built on TestCord, Equicord and Vencord. All credit for the original work goes to those projects and their authors. The download links below are KittenCord's official releases. This fork adds **KittyPresencePal**, a port of [PresencePal](https://github.com/foxmanhwa/presencepal) that sets a Discord game activity for any game.
+> **MaltCord is a fork of [KittenCord](https://github.com/xtufa7/KittenCord)**, which is itself built on TestCord, Equicord and Vencord. All credit for the original work goes to those projects and their authors. The download links below are KittenCord's official releases. This fork adds **StaffVoiceAlert**, which plays a sound when a moderator, admin or other staff member joins your voice channel, and **MaltCordBadges**, custom profile badges with an owner-only editor.
 
 ## ✨ Features
 

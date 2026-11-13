@@ -7,6 +7,7 @@
 import { BadgePosition, type ProfileBadge } from "@api/Badges";
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { BADGES_FEED, fetchMaltcordJson } from "@shared/maltcordCloud";
 import { Devs } from "@utils/constants";
 import { copyWithToast, fetchUserProfile } from "@utils/discord";
 import { Logger } from "@utils/Logger";
@@ -24,9 +25,9 @@ interface MaltBadge {
     icon: string;
 }
 
-// Badges listed in this file are shown to every MaltCord user. The editor below
-// produces the JSON for it; commit it to the repository to publish.
-const REMOTE_URL = "https://raw.githubusercontent.com/maltsoup/MaltCord/main/maltcord-badges.json";
+// Badges in the MaltCord Supabase table are shown to every MaltCord user. If it is unreachable, the file in the
+// repository is used instead. The editor below produces JSON that can be pasted into either.
+const REMOTE_FALLBACK_URL = "https://raw.githubusercontent.com/maltsoup/MaltCord/main/maltcord-badges.json";
 const OWNER_ID = String(Devs.Maltsoup.id);
 const MAX_BADGES = 200;
 const ICON_SIZE = 64;
@@ -119,10 +120,14 @@ function saveLocal(badges: MaltBadge[]) {
 
 async function loadRemote() {
     try {
-        const res = await fetch(REMOTE_URL, { cache: "no-cache" });
-        remoteBadges = res.ok ? sanitize(await res.json()) : [];
+        const rows = await fetchMaltcordJson(BADGES_FEED);
+        remoteBadges = sanitize(Array.isArray(rows) ? rows.map((r: any) => ({ id: r?.id, userId: r?.user_id, tooltip: r?.tooltip, icon: r?.icon })) : []);
     } catch {
-        remoteBadges = [];
+        try {
+            remoteBadges = sanitize(await fetchMaltcordJson(REMOTE_FALLBACK_URL));
+        } catch {
+            remoteBadges = [];
+        }
     }
 }
 

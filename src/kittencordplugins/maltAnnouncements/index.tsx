@@ -8,6 +8,7 @@ import { HeaderBarButton } from "@api/HeaderBar";
 import { showNotification } from "@api/Notifications";
 import { definePluginSettings } from "@api/Settings";
 import ErrorBoundary from "@components/ErrorBoundary";
+import { ANNOUNCEMENTS_FEED, fetchMaltcordJson } from "@shared/maltcordCloud";
 import { Devs } from "@utils/constants";
 import { ModalCloseButton, ModalContent, ModalHeader, ModalRoot, ModalSize, openModal } from "@utils/modal";
 import definePlugin, { OptionType } from "@utils/types";
@@ -23,9 +24,10 @@ interface Announcement {
     date?: string;
 }
 
-// A JSON list of announcements. Each item has an id, title, body and optionally a url and a date.
-// A Supabase table exposed over its REST API returns the same shape, so the link can be switched later.
-const DEFAULT_FEED = "https://raw.githubusercontent.com/maltsoup/MaltCord/main/maltcord-announcements.json";
+// The feed is a JSON list of announcements: an id, title, body and optionally a url and a date.
+// MaltCord reads them from its Supabase table, and falls back to the file in the repository if that is unreachable.
+const DEFAULT_FEED = ANNOUNCEMENTS_FEED;
+const FALLBACK_FEED = "https://raw.githubusercontent.com/maltsoup/MaltCord/main/maltcord-announcements.json";
 const MAX_ITEMS = 50;
 const REFRESH_MS = 15 * 60 * 1000;
 
@@ -77,9 +79,14 @@ async function refresh() {
     const url = String(settings.store.feedUrl || DEFAULT_FEED).trim();
     if (!/^https:\/\//i.test(url)) return;
     try {
-        const res = await fetch(url, { cache: "no-cache" });
-        if (!res.ok) return;
-        items = clean(await res.json());
+        let data: unknown;
+        try {
+            data = await fetchMaltcordJson(url);
+        } catch (e) {
+            if (url !== DEFAULT_FEED) throw e;
+            data = await fetchMaltcordJson(FALLBACK_FEED);
+        }
+        items = clean(data);
         emit();
 
         if (!settings.store.showPopups) return;

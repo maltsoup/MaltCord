@@ -30,4 +30,4 @@ pnpm lint-styles
 
 ## Reporting bugs
 
-Open an issue with your Discord version, the KittenCord version (shown in Settings > KittenCord) and the steps to reproduce. For help and plugin ideas, join the [Discord server](https://discord.gg/7bZ5qKdDR).
+Open an issue with your Discord version, the KittenCord version (shown in Settings > KittenCord) and the steps to reproduce. For help and plugin ideas, join the [Discord server](https://discord.gg/XfyH3Qcwgp).

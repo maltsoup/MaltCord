@@ -8,7 +8,7 @@ export const Kittycord = {
     name: "MaltCord",
     id: "kittencord",
     channel: "beta",
-    communityUrl: "https://discord.gg/7bZ5qKdDR",
+    communityUrl: "https://discord.gg/XfyH3Qcwgp",
     maintainer: { name: "xtufa7", url: "https://github.com/xtufa7" },
     apiVersion: "1.1.0",
     profileSchema: 1,

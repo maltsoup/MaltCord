@@ -10,7 +10,7 @@ About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Disc
 
 [![Release](https://img.shields.io/github/v/release/maltsoup/MaltCord?include_prereleases&style=for-the-badge&color=b996ff&label=release)](https://github.com/maltsoup/MaltCord/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/maltsoup/MaltCord/total?style=for-the-badge&color=ff8fd8)](https://github.com/maltsoup/MaltCord/releases)
-[![Discord](https://img.shields.io/badge/Discord-Join_us-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/7bZ5qKdDR)
+[![Discord](https://img.shields.io/badge/Discord-Join_us-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/XfyH3Qcwgp)
 [![License](https://img.shields.io/github/license/maltsoup/MaltCord?style=for-the-badge&color=9fb4ff)](LICENSE)
 
 [**Download for Windows**](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCordSetup.exe) &nbsp;•&nbsp;
@@ -23,6 +23,18 @@ About 800 plugins, a Theme Library, Plugin Studio and badges,<br>inside the Disc
 
 > **MaltCord is a fork of [KittenCord](https://github.com/xtufa7/KittenCord)**, which is itself built on TestCord, Equicord and Vencord. All credit for the original work goes to those projects and their authors. The downloads below are MaltCord releases built from this repository. This fork adds **PresencePal** (shows you as playing any game, detected like a real one, Windows desktop), **StaffVoiceAlert** (plays a sound when a moderator, admin or other staff member joins your voice channel) and **MaltCordBadges** (custom profile badges with an owner-only editor).
 
+## 📥 Downloads
+
+Latest release: **[MaltCord on GitHub Releases](https://github.com/maltsoup/MaltCord/releases/latest)** · Join the **[Discord server](https://discord.gg/XfyH3Qcwgp)**
+
+| Platform | Download |
+| --- | --- |
+| 🪟 Windows (Discord desktop) | [**MaltCordSetup.exe**](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCordSetup.exe) |
+| 🌐 Chrome, Edge, Brave, Opera | [**MaltCord-Chrome-Edge.zip**](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCord-Chrome-Edge.zip) |
+| 🦊 Firefox | [**MaltCord-Firefox.zip**](https://github.com/maltsoup/MaltCord/releases/latest/download/MaltCord-Firefox.zip) |
+| 🔐 Checksums | [SHA256SUMS.txt](https://github.com/maltsoup/MaltCord/releases/latest/download/SHA256SUMS.txt) |
+
+Not code-signed yet, so Windows SmartScreen may warn. Choose **More info**, then **Run anyway**. Install steps are [below](#-installing).
 ## ✨ Features
 
 - 🧩 **About 800 plugins** from Vencord, Equicord, TestCord and KittenCord, each with its original authors
@@ -102,7 +114,7 @@ Want to help? Read [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 💜 Community
 
-Questions, ideas and bug reports are welcome in the [Discord server](https://discord.gg/7bZ5qKdDR) or in [GitHub issues](https://github.com/maltsoup/MaltCord/issues).
+Questions, ideas and bug reports are welcome in the [Discord server](https://discord.gg/XfyH3Qcwgp) or in [GitHub issues](https://github.com/maltsoup/MaltCord/issues).
 
 ## 🙏 Credits
 

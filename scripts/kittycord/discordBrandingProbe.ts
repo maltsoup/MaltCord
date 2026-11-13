@@ -81,7 +81,7 @@ export async function run() {
         kittycordLoaded: true,
         anonymousSession: true,
         communityCard: card.querySelector("h2")?.textContent === "Kittencord",
-        communityLink: link?.href === "https://discord.gg/7bZ5qKdDR" && link.rel.includes("noopener") && link.rel.includes("noreferrer"),
+        communityLink: link?.href === "https://discord.gg/XfyH3Qcwgp" && link.rel.includes("noopener") && link.rel.includes("noreferrer"),
         packagedImage: !!card.querySelector(".kc-community-avatar svg") && !card.querySelector("img"),
         styledCard: style.borderRadius === "18px" && style.getPropertyValue("--kc-accent").trim() === "#e7a5d2",
         styledButtons: !!link && getComputedStyle(link).backgroundColor !== "rgba(0, 0, 0, 0)" && buttons.every(button => getComputedStyle(button).boxSizing === "border-box" && button.getBoundingClientRect().height === link.getBoundingClientRect().height),
